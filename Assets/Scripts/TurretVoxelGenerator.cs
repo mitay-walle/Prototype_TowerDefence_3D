@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UnityEditor;
 
 public class TurretVoxelGenerator : MonoBehaviour
 {
@@ -58,13 +60,15 @@ public class TurretVoxelGenerator : MonoBehaviour
 		}
 	}
 
+	void Awake() => Generate();
+
 	private void Next()
 	{
 		seed += 1;
 		Generate();
 	}
 
-	public void GenerateTurret()
+	private void GenerateTurret()
 	{
 		float baseTopY = profile.GetBaseTopY();
 
@@ -95,7 +99,12 @@ public class TurretVoxelGenerator : MonoBehaviour
 		Transform found = parent.Find("Combined");
 		if (found)
 		{
-			DestroyImmediate(found.gameObject);
+			DestroyImmediate(found.GetComponent<MeshFilter>().sharedMesh);
+
+			// foreach (Material sharedMaterial in found.GetComponent<MeshRenderer>().sharedMaterials)
+			// {
+			// 	DestroyImmediate(sharedMaterial);
+			// }
 		}
 	}
 
@@ -151,12 +160,25 @@ public class TurretVoxelGenerator : MonoBehaviour
 	{
 		if (materialGroups.Count == 0) return;
 
-		GameObject combined = new GameObject("Combined");
-		combined.transform.SetParent(parent);
-		combined.transform.localPosition = Vector3.zero;
+		Transform found = parent.Find("Combined");
+		GameObject combined = null;
+		MeshFilter combinedMF;
+		MeshRenderer combinedMR;
 
-		MeshFilter combinedMF = combined.AddComponent<MeshFilter>();
-		MeshRenderer combinedMR = combined.AddComponent<MeshRenderer>();
+		if (found)
+		{
+			combined = found.gameObject;
+			combinedMF = combined.GetComponent<MeshFilter>();
+			combinedMR = combined.GetComponent<MeshRenderer>();
+		}
+		else
+		{
+			combined = new GameObject("Combined");
+			combined.transform.SetParent(parent);
+			combined.transform.localPosition = Vector3.zero;
+			combinedMF = combined.AddComponent<MeshFilter>();
+			combinedMR = combined.AddComponent<MeshRenderer>();
+		}
 
 		Mesh finalMesh = new Mesh();
 		List<Material> materials = new List<Material>();
@@ -200,6 +222,10 @@ public class TurretVoxelGenerator : MonoBehaviour
 				DestroyImmediate(voxel);
 			}
 		}
+		#if UNITY_EDITOR
+		EditorUtility.SetDirty(combinedMR);
+		EditorUtility.SetDirty(combinedMF);
+		#endif
 	}
 
 	[Button]

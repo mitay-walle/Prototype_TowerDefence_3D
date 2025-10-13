@@ -7,6 +7,13 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.mitay-walle.rect-transform-editor": {
+      "version": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "1dd36e8e95b73a5e097e97b774604dd05ada41ab"
+    },
     "com.mitay-walle.transforminspector": {
       "version": "https://github.com/mitay-walle/TransformInspector.git",
       "depth": 0,

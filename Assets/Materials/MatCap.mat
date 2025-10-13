@@ -108,8 +108,8 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _MATCAP_SPACE: 1
-    - _MatCapPow: 15
-    - _MatCapStrength: 2.39
+    - _MatCapPow: 1.01
+    - _MatCapStrength: 1.14
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Opacity: 1

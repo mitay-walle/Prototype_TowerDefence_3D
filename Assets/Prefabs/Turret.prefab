@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5953614409444121537}
   - component: {fileID: 719208067700551869}
   - component: {fileID: 8913440904606053794}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Combined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4478596717585867858}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2604770748206252731}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MuzzlePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7799916115541150555}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1760194054512628444}
   - component: {fileID: 1724461785092567337}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6658,7 +6658,7 @@ GameObject:
   - component: {fileID: 8751582641565173368}
   - component: {fileID: 4709668277784987642}
   - component: {fileID: 7253278227055791285}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Combined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6749,6 +6749,10 @@ PrefabInstance:
     - target: {fileID: 5378851949567432351, guid: 087c1a9504650914598e1c50f66b26e5, type: 3}
       propertyPath: m_Name
       value: Muzzle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5378851949567432351, guid: 087c1a9504650914598e1c50f66b26e5, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5940286284371944949, guid: 087c1a9504650914598e1c50f66b26e5, type: 3}
       propertyPath: m_LocalPosition.x
