@@ -1,0 +1,20 @@
+{
+    "asset": "e2da6a49d9200ee4b84373c0bd275362",
+    "fileName": "0199d9cb-bef5-7959-90cd-42c7274642b6.png",
+    "prompt": "турель, собранная из кубов одинакового размера, как воксели, с высокой детализацией",
+    "negativePrompt": "",
+    "model": "6555098e-bf5d-4fa1-8951-f2627fc68af6",
+    "modelName": "Colorful Digital Icons",
+    "customSeed": -1,
+    "w3CTraceId": "7e13ec11da80d3db78b3fe259fb4b3ca",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

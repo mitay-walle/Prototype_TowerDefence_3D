@@ -1,0 +1,20 @@
+{
+    "asset": "e2da6a49d9200ee4b84373c0bd275362",
+    "fileName": "0199d9cd-77b5-7a4e-9f9c-2b1d7e6332d0.png",
+    "prompt": "a turret assembled from cubes of the same size as voxels, with high detail",
+    "negativePrompt": "",
+    "model": "6555098e-bf5d-4fa1-8951-f2627fc68af6",
+    "modelName": "Colorful Digital Icons",
+    "customSeed": -1,
+    "w3CTraceId": "e0e2e60ba05c1e575904f6ed48e304a6",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

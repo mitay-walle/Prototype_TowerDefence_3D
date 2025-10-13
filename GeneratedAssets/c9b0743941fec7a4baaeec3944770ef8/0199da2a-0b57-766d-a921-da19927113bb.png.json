@@ -1,0 +1,29 @@
+{
+    "asset": "c9b0743941fec7a4baaeec3944770ef8",
+    "fileName": "0199da2a-0b57-766d-a921-da19927113bb.png",
+    "prompt": "An isolated, top-down view of a turret , tight cross-formed base, with small rotating blocky-formed head and single 2x length giant long gun barrel, viewed directly from above at a 90-degree angle. The turret should have a hand-drawn style with clean, bold outlines. The design should feature simple geometric forms, resembling a mechanical structure. The turret should appear robust and functional, with visible details such as bolts, panels, and slight wear for added realism. The color palette should be industrial and contrast, with metallic tones, and highlights. The sprite should be centered and have a transparent background for easy integration into a game, visible Ambient Occlusion, ammunition block, bright glowing colored lights, refrigerator grids, gas-out holes, armor shields",
+    "negativePrompt": "background, sheet, atlas, isometric, landmine",
+    "model": "6555098e-bf5d-4fa1-8951-f2627fc68af6",
+    "modelName": "Colorful Digital Icons",
+    "customSeed": -1,
+    "w3CTraceId": "9d45fd00c5b76fd97183f9f0c595adbd",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 2,
+                "doodle": [],
+                "label": "Feature",
+                "strength": 0.75,
+                "invertStrength": false,
+                "assetReferenceGuid": "4da47496672a749438eb1705c348f163"
+            }
+        ]
+    },
+    "upscaleFactor": 0
+}

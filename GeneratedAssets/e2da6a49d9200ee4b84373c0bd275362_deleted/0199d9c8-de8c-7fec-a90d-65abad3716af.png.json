@@ -1,0 +1,20 @@
+{
+    "asset": "e2da6a49d9200ee4b84373c0bd275362",
+    "fileName": "0199d9c8-de8c-7fec-a90d-65abad3716af.png",
+    "prompt": "турель, собранная из кубов одинакового размера, как воксели, с высокой детализацией",
+    "negativePrompt": "",
+    "model": "94c4260f-b988-40e7-b3d3-435b9f449bd0",
+    "modelName": "Flux.1 Dev",
+    "customSeed": -1,
+    "w3CTraceId": "71fe481238529058b0b8a264176ddea6",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

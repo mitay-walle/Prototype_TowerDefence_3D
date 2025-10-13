@@ -1,0 +1,20 @@
+{
+    "asset": "c9b0743941fec7a4baaeec3944770ef8",
+    "fileName": "0199da0b-773c-7189-966f-63e4972d6376.png",
+    "prompt": "An isolated, top-down view of a large turret with small rotating head and single long gun barrel, viewed directly from above at a 90-degree angle. The turret should have a hand-drawn style with clean, bold outlines. The design should feature simple geometric forms, resembling a mechanical structure. The turret should appear robust and functional, with visible details such as bolts, panels, and slight wear for added realism. The color palette should be industrial and contrast, with metallic tones, and highlights. The sprite should be centered and have a transparent background for easy integration into a game, visible Ambient Occlusion, ammunition block, glowing lights, refrigerator grids, gas-out holes, armor shields",
+    "negativePrompt": "background, sheet, atlas, isometric, landmine",
+    "model": "94c4260f-b988-40e7-b3d3-435b9f449bd0",
+    "modelName": "Flux.1 Dev",
+    "customSeed": -1,
+    "w3CTraceId": "22dc130bf065f3f89d5584d9fe383a44",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

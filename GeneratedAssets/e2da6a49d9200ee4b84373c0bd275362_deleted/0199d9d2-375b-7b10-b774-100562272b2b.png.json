@@ -1,0 +1,20 @@
+{
+    "asset": "e2da6a49d9200ee4b84373c0bd275362",
+    "fileName": "0199d9d2-375b-7b10-b774-100562272b2b.png",
+    "prompt": "isolated single straight Top-down turret with single gun handdrawn style, simple forms, outlined",
+    "negativePrompt": "background, sheet, atlas",
+    "model": "6555098e-bf5d-4fa1-8951-f2627fc68af6",
+    "modelName": "Colorful Digital Icons",
+    "customSeed": -1,
+    "w3CTraceId": "1c2848f840d7a8bd93c58f76cb11cb3d",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}

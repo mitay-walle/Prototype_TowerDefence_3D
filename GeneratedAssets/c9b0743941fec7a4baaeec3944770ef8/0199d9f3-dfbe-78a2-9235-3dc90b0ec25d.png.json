@@ -1,0 +1,29 @@
+{
+    "asset": "c9b0743941fec7a4baaeec3944770ef8",
+    "fileName": "0199d9f3-dfbe-78a2-9235-3dc90b0ec25d.png",
+    "prompt": "An isolated, top-down view of a large turret with a single gun barrel, viewed directly from above at a 90-degree angle. The turret should have a hand-drawn style with clean, bold outlines. The design should feature simple geometric forms, resembling a mechanical structure. The turret should appear robust and functional, with visible details such as bolts, panels, and slight wear for added realism. The color palette should be muted and industrial, with shades of gray, metallic tones, and subtle highlights. The sprite should be centered and have a transparent background for easy integration into a game, visible Ambient Occlusion",
+    "negativePrompt": "background, sheet, atlas, isometric, multiplie guns",
+    "model": "57ebc7c8-977d-41fb-8263-bfd5fa55e2f4",
+    "modelName": "3D Blocky Elements",
+    "customSeed": -1,
+    "w3CTraceId": "f7164bebb88558c55e76d2f1a78d88b2",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "8f1f24b12eb1faf478665bebbffa5059"
+            }
+        ]
+    },
+    "upscaleFactor": 0
+}

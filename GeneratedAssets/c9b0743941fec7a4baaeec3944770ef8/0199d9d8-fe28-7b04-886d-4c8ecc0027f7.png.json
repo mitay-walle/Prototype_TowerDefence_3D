@@ -1,0 +1,20 @@
+{
+    "asset": "c9b0743941fec7a4baaeec3944770ef8",
+    "fileName": "0199d9d8-fe28-7b04-886d-4c8ecc0027f7.png",
+    "prompt": "An isolated, top-down view of a large turret with a single gun barrel, viewed directly from above at a 90-degree angle. The turret should have a hand-drawn style with clean, bold outlines. The design should feature simple geometric forms, resembling a mechanical structure. The turret should appear robust and functional, with visible details such as bolts, panels, and slight wear for added realism. The color palette should be muted and industrial, with shades of gray, metallic tones, and subtle highlights. The sprite should be centered and have a transparent background for easy integration into a game",
+    "negativePrompt": "background, sheet, atlas, isometric, multiplie guns",
+    "model": "6555098e-bf5d-4fa1-8951-f2627fc68af6",
+    "modelName": "Colorful Digital Icons",
+    "customSeed": -1,
+    "w3CTraceId": "8916008a7f4499fb1f9db9f43cdcb808",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}
