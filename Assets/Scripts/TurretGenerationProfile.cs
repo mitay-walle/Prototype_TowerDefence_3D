@@ -1,30 +1,33 @@
-﻿using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace TD
 {
 	[System.Serializable]
 	public class TurretGenerationProfile : GenerationProfile
 	{
-		public Vector2 baseSizeRange = new Vector2(20, 36);
+		public Vector2 baseSizeRange = new Vector2(3, 5);
 		public Vector2 baseFeetCountRange = new Vector2(4, 8);
 		public Vector2 baseFeetHeightRange = new Vector2(4, 12);
 
-		public Vector2 bodyWidthRange = new Vector2(16, 28);
-		public Vector2 bodyHeightRange = new Vector2(10, 18);
+		public Vector2 bodyWidthRange = new Vector2(2, 4);
+		public Vector2 bodyHeightRange = new Vector2(5, 10);
+		public bool chamferCorners = true;
 
-		public Vector2 barrelLengthRange = new Vector2(20, 50);
-		public Vector2 barrelThicknessRange = new Vector2(3, 6);
+		public Vector2 barrelLengthRange = new Vector2(5, 10);
+		public Vector2 barrelThicknessRange = new Vector2(1, 3);
 
 		public int sensorCount = 3;
-		public Vector2 sensorSizeRange = new Vector2(3, 6);
+		public Vector2 sensorSizeRange = new Vector2(2, 2);
 
 		public Vector2 corePositionRange = new Vector2(-12, -4);
 		public Vector2 coreSizeRange = new Vector2(4, 10);
 
 		public List<Color> colorPalette = new List<Color>();
 		public List<Color> emissionPalette = new List<Color>();
+
+		public Part basePlate = new Part { name = "Base" };
+		public Part Rotating = new Part { name = "Turret" };
 
 		private int cachedFeetHeight;
 		private int cachedBodyHeight;
@@ -37,11 +40,22 @@ namespace TD
 		private bool hasBarrelAttachment;
 		private bool hasFuelTanks;
 
-		public Part basePlate = new Part { name = "Base" };
-		public Part Rotating = new Part { name = "Turret" };
-
-		[SerializeField, ReadOnly] private GameObject baseObject;
-		[SerializeField, ReadOnly] private GameObject turretObject;
+		protected override void Randomize()
+		{
+			Random.InitState(Seed);
+			GenerateColorPalette();
+			cachedFeetHeight = Mathf.RoundToInt(RandomRange(baseFeetHeightRange.x, baseFeetHeightRange.y));
+			cachedBodyHeight = Mathf.RoundToInt(RandomRange(bodyHeightRange.x, bodyHeightRange.y));
+			cachedBodyWidth = Mathf.RoundToInt(RandomRange(bodyWidthRange.x, bodyWidthRange.y));
+			if (cachedBodyWidth % 2 == 0) cachedBodyWidth++;
+			cachedBodyDepth = cachedBodyWidth * 3 / 4;
+			cachedBaseTopY = 0;
+			cachedBarrelCount = RandomRangeInt(1, 4);
+			hasBarrel = Random.value > 0.15f;
+			hasSuppressor = hasBarrel && Random.value > 0.6f;
+			hasBarrelAttachment = hasBarrel && Random.value > 0.5f;
+			hasFuelTanks = Random.value > 0.5f;
+		}
 
 		public override void Generate(VoxelGenerator generator)
 		{
@@ -59,43 +73,28 @@ namespace TD
 			var transform = generator.transform;
 			float baseTopY = GetBaseTopY();
 
+			Transform baseObject = transform.Find("Base");
 			if (baseObject == null)
 			{
-				baseObject = new GameObject("Base");
-				baseObject.transform.SetParent(transform);
-				baseObject.transform.localPosition = Vector3.zero;
+				baseObject = new GameObject("Base").transform;
+				baseObject.SetParent(transform);
+				baseObject.localPosition = Vector3.zero;
 			}
 
+			Transform turretObject = transform.Find("Turret");
 			if (turretObject == null)
 			{
-				turretObject = new GameObject("Turret");
-				turretObject.transform.SetParent(transform);
+				turretObject = new GameObject("Turret").transform;
+				turretObject.SetParent(transform);
 			}
 
-			turretObject.transform.localPosition = new Vector3(0, baseTopY * generator.voxelSize, 0);
+			turretObject.localPosition = new Vector3(0, baseTopY * generator.voxelSize, 0);
 
-			ClearMeshes(baseObject.transform);
-			ClearMeshes(turretObject.transform);
+			ClearMeshes(baseObject);
+			ClearMeshes(turretObject);
 
-			GeneratePart(generator, basePlate, baseObject.transform, Vector3.zero);
-			GeneratePart(generator, Rotating, turretObject.transform, Vector3.zero);
-		}
-
-		protected override void Randomize()
-		{
-			Random.InitState(Seed);
-			GenerateColorPalette();
-			cachedFeetHeight = Mathf.RoundToInt(RandomRange(baseFeetHeightRange.x, baseFeetHeightRange.y));
-			cachedBodyHeight = Mathf.RoundToInt(RandomRange(bodyHeightRange.x, bodyHeightRange.y));
-			cachedBodyWidth = Mathf.RoundToInt(RandomRange(bodyWidthRange.x, bodyWidthRange.y));
-			if (cachedBodyWidth % 2 == 0) cachedBodyWidth++;
-			cachedBodyDepth = cachedBodyWidth * 3 / 4;
-			cachedBaseTopY = 0;
-			cachedBarrelCount = RandomRangeInt(1, 4);
-			hasBarrel = Random.value > 0.15f;
-			hasSuppressor = hasBarrel && Random.value > 0.6f;
-			hasBarrelAttachment = hasBarrel && Random.value > 0.5f;
-			hasFuelTanks = Random.value > 0.5f;
+			GeneratePart(generator, basePlate, baseObject, Vector3.zero);
+			GeneratePart(generator, Rotating, turretObject, Vector3.zero);
 		}
 
 		public float GetBaseTopY()

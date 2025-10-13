@@ -9,6 +9,7 @@ namespace TD
 	{
 		public Material voxelMaterial;
 		public float voxelSize = 0.1f;
+		public float emissionScale = 1.02f;
 
 		[OnValueChanged("Generate"), InlineButton("Next", ">")] public int seed;
 
@@ -56,7 +57,8 @@ namespace TD
 			foreach (var kvp in materialGroups)
 			{
 				var optimizedVoxels = OptimizeVoxels(kvp.Value);
-				Mesh submesh = CreateMeshFromVoxels(optimizedVoxels);
+				bool hasEmission = kvp.Key.emissionIntensity > 0;
+				Mesh submesh = CreateMeshFromVoxels(optimizedVoxels, hasEmission);
 
 				submeshCombines.Add(new CombineInstance
 				{
@@ -67,7 +69,7 @@ namespace TD
 				Material mat = new Material(voxelMaterial);
 				mat.color = kvp.Key.color;
 
-				if (kvp.Key.emissionIntensity > 0)
+				if (hasEmission)
 				{
 					mat.EnableKeyword("_EMISSION");
 					mat.SetColor("_EmissionColor", kvp.Key.emissionColor * kvp.Key.emissionIntensity);
@@ -92,128 +94,107 @@ namespace TD
 			if (voxels.Count == 0) return voxels;
 
 			var result = new List<VoxelData>();
-			var processed = new HashSet<VoxelData>();
-
-			voxels.Sort((a, b) =>
-			{
-				int cmpY = a.position.y.CompareTo(b.position.y);
-				if (cmpY != 0) return cmpY;
-
-				int cmpZ = a.position.z.CompareTo(b.position.z);
-				if (cmpZ != 0) return cmpZ;
-
-				return a.position.x.CompareTo(b.position.x);
-			});
+			var voxelMap = new Dictionary<Vector3, VoxelData>(voxels.Count);
 
 			foreach (var voxel in voxels)
 			{
-				if (processed.Contains(voxel)) continue;
-
 				if (voxel.size != Vector3.one)
 				{
 					result.Add(voxel);
-					processed.Add(voxel);
-					continue;
 				}
+				else
+				{
+					voxelMap[voxel.position] = voxel;
+				}
+			}
 
-				var merged = TryMergeVoxels(voxel, voxels, processed);
+			var sortedPositions = new List<Vector3>(voxelMap.Keys);
+			sortedPositions.Sort((a, b) =>
+			{
+				int cmpY = a.y.CompareTo(b.y);
+				if (cmpY != 0) return cmpY;
+				int cmpZ = a.z.CompareTo(b.z);
+				if (cmpZ != 0) return cmpZ;
+				return a.x.CompareTo(b.x);
+			});
+
+			var processed = new HashSet<Vector3>();
+
+			foreach (var pos in sortedPositions)
+			{
+				if (processed.Contains(pos)) continue;
+
+				var voxel = voxelMap[pos];
+				var merged = GreedyMerge(voxel, voxelMap, processed);
 				result.Add(merged);
 			}
 
 			return result;
 		}
 
-		private VoxelData TryMergeVoxels(VoxelData start, List<VoxelData> voxels, HashSet<VoxelData> processed)
+		private VoxelData GreedyMerge(VoxelData start, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed)
 		{
-			processed.Add(start);
+			Vector3 startPos = start.position;
+			processed.Add(startPos);
 
-			int maxX = 1;
-			for (int x = 1; x < 50; x++)
-			{
-				var testPos = start.position + new Vector3(x, 0, 0);
-				var found = voxels.Find(v
-					=> !processed.Contains(v) && v.position == testPos && v.size == Vector3.one && v.colorIndex == start.colorIndex &&
-					   v.emissionColorIndex == start.emissionColorIndex && Mathf.Approximately(v.emissionIntensity, start.emissionIntensity));
-
-				if (found == null) break;
-
-				processed.Add(found);
-				maxX++;
-			}
-
+			int maxX = FindMaxExtent(start, voxelMap, processed, Vector3.right, startPos);
+			
 			int maxZ = 1;
-			bool canExpandZ = true;
-			for (int z = 1; z < 50 && canExpandZ; z++)
+			for (int z = 1; z < 100; z++)
 			{
+				bool rowValid = true;
 				for (int x = 0; x < maxX; x++)
 				{
-					var testPos = start.position + new Vector3(x, 0, z);
-					var found = voxels.Find(v
-						=> !processed.Contains(v) && v.position == testPos && v.size == Vector3.one && v.colorIndex == start.colorIndex &&
-						   v.emissionColorIndex == start.emissionColorIndex && Mathf.Approximately(v.emissionIntensity, start.emissionIntensity));
-
-					if (found == null)
+					Vector3 testPos = startPos + new Vector3(x, 0, z);
+					if (!CanMerge(start, testPos, voxelMap, processed))
 					{
-						canExpandZ = false;
+						rowValid = false;
 						break;
 					}
 				}
 
-				if (canExpandZ)
-				{
-					for (int x = 0; x < maxX; x++)
-					{
-						var testPos = start.position + new Vector3(x, 0, z);
-						var found = voxels.Find(v => v.position == testPos);
-						processed.Add(found);
-					}
+				if (!rowValid) break;
 
-					maxZ++;
+				for (int x = 0; x < maxX; x++)
+				{
+					processed.Add(startPos + new Vector3(x, 0, z));
 				}
+				maxZ++;
 			}
 
 			int maxY = 1;
-			bool canExpandY = true;
-			for (int y = 1; y < 50 && canExpandY; y++)
+			for (int y = 1; y < 100; y++)
 			{
+				bool layerValid = true;
 				for (int z = 0; z < maxZ; z++)
 				{
 					for (int x = 0; x < maxX; x++)
 					{
-						var testPos = start.position + new Vector3(x, y, z);
-						var found = voxels.Find(v
-							=> !processed.Contains(v) && v.position == testPos && v.size == Vector3.one && v.colorIndex == start.colorIndex &&
-							   v.emissionColorIndex == start.emissionColorIndex && Mathf.Approximately(v.emissionIntensity, start.emissionIntensity));
-
-						if (found == null)
+						Vector3 testPos = startPos + new Vector3(x, y, z);
+						if (!CanMerge(start, testPos, voxelMap, processed))
 						{
-							canExpandY = false;
+							layerValid = false;
 							break;
 						}
 					}
-
-					if (!canExpandY) break;
+					if (!layerValid) break;
 				}
 
-				if (canExpandY)
+				if (!layerValid) break;
+
+				for (int z = 0; z < maxZ; z++)
 				{
-					for (int z = 0; z < maxZ; z++)
+					for (int x = 0; x < maxX; x++)
 					{
-						for (int x = 0; x < maxX; x++)
-						{
-							var testPos = start.position + new Vector3(x, y, z);
-							var found = voxels.Find(v => v.position == testPos);
-							processed.Add(found);
-						}
+						processed.Add(startPos + new Vector3(x, y, z));
 					}
-
-					maxY++;
 				}
+				maxY++;
 			}
 
 			return new VoxelData
 			{
-				position = start.position + new Vector3(maxX - 1, maxY - 1, maxZ - 1) * 0.5f,
+				position = startPos + new Vector3(maxX - 1, maxY - 1, maxZ - 1) * 0.5f,
 				size = new Vector3(maxX, maxY, maxZ),
 				colorIndex = start.colorIndex,
 				emissionColorIndex = start.emissionColorIndex,
@@ -221,14 +202,41 @@ namespace TD
 			};
 		}
 
-		private Mesh CreateMeshFromVoxels(List<VoxelData> voxels)
+		private int FindMaxExtent(VoxelData start, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed, Vector3 direction, Vector3 startPos)
+		{
+			int extent = 1;
+			for (int i = 1; i < 100; i++)
+			{
+				Vector3 testPos = startPos + direction * i;
+				if (!CanMerge(start, testPos, voxelMap, processed))
+					break;
+
+				processed.Add(testPos);
+				extent++;
+			}
+			return extent;
+		}
+
+		private bool CanMerge(VoxelData reference, Vector3 position, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed)
+		{
+			if (!voxelMap.TryGetValue(position, out var voxel)) return false;
+			if (processed.Contains(position)) return false;
+			if (voxel.colorIndex != reference.colorIndex) return false;
+			if (voxel.emissionColorIndex != reference.emissionColorIndex) return false;
+			if (!Mathf.Approximately(voxel.emissionIntensity, reference.emissionIntensity)) return false;
+			return true;
+		}
+
+		private Mesh CreateMeshFromVoxels(List<VoxelData> voxels, bool hasEmission)
 		{
 			var vertices = new List<Vector3>();
 			var triangles = new List<int>();
 
+			float scale = hasEmission ? emissionScale : 1f;
+
 			foreach (var voxel in voxels)
 			{
-				AddCube(vertices, triangles, voxel.position * voxelSize, voxel.size * voxelSize);
+				AddCube(vertices, triangles, voxel.position * voxelSize, voxel.size * voxelSize * scale);
 			}
 
 			Mesh mesh = new Mesh();
@@ -244,7 +252,6 @@ namespace TD
 		private void AddCube(List<Vector3> vertices, List<int> triangles, Vector3 center, Vector3 size)
 		{
 			Vector3 halfSize = size * 0.5f;
-			int startIndex = vertices.Count;
 
 			Vector3[] corners = new Vector3[8]
 			{
@@ -260,12 +267,12 @@ namespace TD
 
 			int[][] faces =
 			{
-				new[] { 0, 2, 1, 0, 3, 2 }, // Front
-				new[] { 5, 7, 4, 5, 6, 7 }, // Back
-				new[] { 4, 3, 0, 4, 7, 3 }, // Left
-				new[] { 1, 6, 5, 1, 2, 6 }, // Right
-				new[] { 4, 1, 5, 4, 0, 1 }, // Bottom
-				new[] { 3, 6, 2, 3, 7, 6 } // Top
+				new[] { 0, 2, 1, 0, 3, 2 },
+				new[] { 5, 7, 4, 5, 6, 7 },
+				new[] { 4, 3, 0, 4, 7, 3 },
+				new[] { 1, 6, 5, 1, 2, 6 },
+				new[] { 4, 1, 5, 4, 0, 1 },
+				new[] { 3, 6, 2, 3, 7, 6 }
 			};
 
 			foreach (var face in faces)
