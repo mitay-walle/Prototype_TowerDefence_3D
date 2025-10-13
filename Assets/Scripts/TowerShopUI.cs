@@ -1,54 +1,57 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class TowerShopUI : MonoBehaviour
+namespace TD
 {
-	public TowerPreviewGenerator previewGen;
-	public TowerPlacementSystem placementSystem;
-	public RectTransform content;
-	public GameObject towerButtonPrefab;
-
-	[System.Serializable]
-	public class TowerInfo
+	public class TowerShopUI : MonoBehaviour
 	{
-		public GameObject prefab;
-		public int price;
-	}
+		public TowerPreviewGenerator previewGen;
+		public TowerPlacementSystem placementSystem;
+		public RectTransform content;
+		public GameObject towerButtonPrefab;
 
-	public List<TowerInfo> towers;
-
-	void Start()
-	{
-		FillUI();
-	}
-
-	void FillUI()
-	{
-		foreach (Transform c in content) Destroy(c.gameObject);
-
-		previewGen.GeneratePreviews();
-
-		foreach (var info in towers)
+		[System.Serializable]
+		public class TowerInfo
 		{
-			var go = Instantiate(towerButtonPrefab, content);
-			go.name = info.prefab.name;
+			public GameObject prefab;
+			public int price;
+		}
 
-			var img = go.transform.Find("Icon").GetComponent<RawImage>();
-			var txt = go.transform.Find("Price").GetComponent<TMP_Text>();
+		public List<TowerInfo> towers;
 
-			if (previewGen.previews.TryGetValue(info.prefab, out var tex))
+		void Start()
+		{
+			FillUI();
+		}
+
+		void FillUI()
+		{
+			foreach (Transform c in content) Destroy(c.gameObject);
+
+			previewGen.GeneratePreviews();
+
+			foreach (var info in towers)
 			{
-				img.texture = tex;
+				var go = Instantiate(towerButtonPrefab, content);
+				go.name = info.prefab.name;
+
+				var img = go.transform.Find("Icon").GetComponent<RawImage>();
+				var txt = go.transform.Find("Price").GetComponent<TMP_Text>();
+
+				if (previewGen.previews.TryGetValue(info.prefab, out var tex))
+				{
+					img.texture = tex;
+				}
+
+				txt.text = "$" + info.price;
+
+				go.GetComponent<Button>().onClick.AddListener(() =>
+				{
+					placementSystem.BeginPlacement(info.prefab);
+				});
 			}
-
-			txt.text = "$" + info.price;
-
-			go.GetComponent<Button>().onClick.AddListener(() =>
-			{
-				placementSystem.BeginPlacement(info.prefab);
-			});
 		}
 	}
 }
