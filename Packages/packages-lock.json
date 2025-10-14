@@ -7,6 +7,13 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.cqf.urpoutline": {
+      "version": "https://github.com/CristianQiu/Unity-URP-Outline.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "fe3069909b2c7d1351a04ea205baa6963fccd3dd"
+    },
     "com.mitay-walle.rect-transform-editor": {
       "version": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
       "depth": 0,
@@ -20,6 +27,13 @@
       "source": "git",
       "dependencies": {},
       "hash": "e9230c0024c8589b4d07a80709146a30d71c8054"
+    },
+    "com.mitay-walle.ui-graphic-sector": {
+      "version": "https://github.com/mitay-walle/com.mitay-walle.ui-graphic-sector.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b9cf736120f7bfb46dcd6e1f715ed69376a798aa"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

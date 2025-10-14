@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
     "com.mitay-walle.rect-transform-editor": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
     "com.mitay-walle.transforminspector": "https://github.com/mitay-walle/TransformInspector.git",
+    "com.mitay-walle.ui-graphic-sector": "https://github.com/mitay-walle/com.mitay-walle.ui-graphic-sector.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ai.navigation": "2.0.9",
