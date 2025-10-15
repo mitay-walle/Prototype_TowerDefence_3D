@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
@@ -10,20 +11,20 @@ namespace TD
 {
 	public class TowerShopUI : MonoBehaviour
 	{
+		[SerializeField] private List<TowerInfo> towers;
 		[SerializeField] private InputActionReference _buildHotkey;
 		[SerializeField] private TowerPreviewGenerator previewGen;
 		[SerializeField] private TowerPlacementSystem placementSystem;
 		[SerializeField] private RectTransform content;
 		[SerializeField] private GameObject towerButtonPrefab;
+		List<Button> _buttons = new List<Button>();
 
-		[System.Serializable]
+		[Serializable]
 		public class TowerInfo
 		{
 			public GameObject prefab;
 			public int price;
 		}
-
-		public List<TowerInfo> towers;
 
 		void Start()
 		{
@@ -40,9 +41,20 @@ namespace TD
 			_buildHotkey.action.Disable();
 		}
 
+		void Update()
+		{
+			if (_buttons.Count == 0 || !EventSystem.current) return;
+
+			if (!_buttons.Exists(Button => Button.gameObject == EventSystem.current.currentSelectedGameObject))
+			{
+				EventSystem.current.SetSelectedGameObject(_buttons[0].gameObject);
+			}
+		}
+
 		void OnHotkey(CallbackContext callbackContext)
 		{
 			gameObject.SetActive(!gameObject.activeSelf);
+			EventSystem.current.SetSelectedGameObject(_buttons[0].gameObject);
 		}
 
 		public void Hide()
@@ -52,7 +64,11 @@ namespace TD
 
 		void FillUI()
 		{
-			foreach (Transform c in content) Destroy(c.gameObject);
+			// foreach (Transform c in content)
+			// {
+			// 	Destroy(c.gameObject);
+			// }
+			_buttons.Clear();
 
 			previewGen.GeneratePreviews();
 
@@ -71,11 +87,26 @@ namespace TD
 
 				txt.text = "$" + info.price;
 
-				go.GetComponent<Button>().onClick.AddListener(() =>
+				Button btn = go.GetComponent<Button>();
+				_buttons.Add(btn);
+
+				btn.onClick.AddListener(() =>
 				{
 					placementSystem.BeginPlacement(info.prefab);
 					Hide();
 				});
+			}
+
+			foreach (Button btn in _buttons)
+			{
+				var navigation = btn.navigation;
+				// navigation.selectOnLeft = btn.FindSelectableOnLeft();
+				// navigation.selectOnRight = btn.FindSelectableOnRight();
+				// navigation.selectOnUp = btn.FindSelectableOnUp();
+				// navigation.selectOnDown = btn.FindSelectableOnDown();
+				// navigation.mode = Navigation.Mode.Explicit;
+				navigation.wrapAround = false;
+				btn.navigation = navigation;
 			}
 		}
 	}
