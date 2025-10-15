@@ -1,20 +1,45 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace TD
 {
 	public class TowerPlacementSystem : MonoBehaviour
 	{
+		[SerializeField] private InputActionReference _submit;
+		[SerializeField] private InputActionReference _cancel;
 		public LayerMask groundMask;
 		public Material ghostMaterial;
 		private GameObject ghostInstance;
 		private GameObject currentPrefab;
 
+		public bool IsPlacing => ghostInstance != null;
+
 		Camera cam;
 
-		void Start() => cam = Camera.main;
+		void Start()
+		{
+			_submit.action.Enable();
+			_submit.action.started -= PlaceTower;
+			_submit.action.started += PlaceTower;
+
+			_cancel.action.Enable();
+			_cancel.action.started -= CancelPlacement;
+			_cancel.action.started += CancelPlacement;
+
+			cam = Camera.main;
+		}
+
+		void OnDestroy()
+		{
+			_submit.action.Disable();
+			_cancel.action.Disable();
+			_submit.action.started -= PlaceTower;
+			_cancel.action.started -= CancelPlacement;
+		}
 
 		void Update()
 		{
@@ -60,11 +85,17 @@ namespace TD
 			}
 		}
 
+		void PlaceTower(CallbackContext obj) => PlaceTower();
+
 		void PlaceTower()
 		{
+			if (!ghostInstance) return;
+
 			Instantiate(currentPrefab, ghostInstance.transform.position, ghostInstance.transform.rotation);
 			CancelPlacement();
 		}
+
+		void CancelPlacement(CallbackContext obj) => CancelPlacement();
 
 		void CancelPlacement()
 		{

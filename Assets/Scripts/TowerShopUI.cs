@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mitaywalle.UI.Sector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -41,6 +42,16 @@ namespace TD
 			_buildHotkey.action.Disable();
 		}
 
+		void OnEnable()
+		{
+			FindAnyObjectByType<RTSCameraController>().DisablerList.Add(this);
+		}
+
+		void OnDisable()
+		{
+			FindAnyObjectByType<RTSCameraController>().DisablerList.Remove(this);
+		}
+
 		void Update()
 		{
 			if (_buttons.Count == 0 || !EventSystem.current) return;
@@ -53,6 +64,7 @@ namespace TD
 
 		void OnHotkey(CallbackContext callbackContext)
 		{
+			if (FindAnyObjectByType<TowerPlacementSystem>().IsPlacing) return;
 			gameObject.SetActive(!gameObject.activeSelf);
 			EventSystem.current.SetSelectedGameObject(_buttons[0].gameObject);
 		}
@@ -100,6 +112,7 @@ namespace TD
 			foreach (Button btn in _buttons)
 			{
 				var navigation = btn.navigation;
+
 				// navigation.selectOnLeft = btn.FindSelectableOnLeft();
 				// navigation.selectOnRight = btn.FindSelectableOnRight();
 				// navigation.selectOnUp = btn.FindSelectableOnUp();
@@ -108,6 +121,8 @@ namespace TD
 				navigation.wrapAround = false;
 				btn.navigation = navigation;
 			}
+
+			Canvas.ForceUpdateCanvases();
 		}
 	}
 }

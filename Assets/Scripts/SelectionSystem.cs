@@ -22,16 +22,7 @@ namespace TD
 			selectAction = new InputAction(binding: "<Mouse>/leftButton");
 			selectAction.AddBinding("<Gamepad>/buttonSouth");
 			selectAction.performed += OnSelect;
-		}
-
-		void OnEnable()
-		{
-			selectAction.Enable();
-		}
-
-		void OnDisable()
-		{
-			selectAction.Disable();
+			cam = Camera.main;
 		}
 
 		void OnDestroy()
@@ -40,10 +31,9 @@ namespace TD
 			selectAction.Dispose();
 		}
 
-		void Start()
-		{
-			cam = Camera.main;
-		}
+		void OnEnable() => selectAction.Enable();
+
+		void OnDisable() => selectAction.Disable();
 
 		void Update()
 		{

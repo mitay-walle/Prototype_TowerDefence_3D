@@ -1,15 +1,17 @@
 // 12.10.2025 AI-Tag
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
+using TD.Plugins.Runtime;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TD 
+namespace TD
 {
 	[RequireComponent(typeof(CinemachineCamera))]
 	public class RTSCameraController : MonoBehaviour
 	{
+		public DisablerList DisablerList = new();
 		[SerializeField] private float moveSpeed = 10f;
 		[SerializeField] private float maxEdgeScrollSpeed = 15f;
 		[SerializeField] private float edgeScrollThreshold = 10f;
@@ -34,6 +36,7 @@ namespace TD
 			virtualCamera = GetComponent<CinemachineCamera>();
 			target = (virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body) as CinemachinePositionComposer).FollowTarget;
 			mainCamera = Camera.main;
+			DisablerList.Init(hasEntries => enabled = !hasEntries);
 		}
 
 		private void Update()
