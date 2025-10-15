@@ -1,16 +1,20 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace TD
 {
 	public class TowerShopUI : MonoBehaviour
 	{
-		public TowerPreviewGenerator previewGen;
-		public TowerPlacementSystem placementSystem;
-		public RectTransform content;
-		public GameObject towerButtonPrefab;
+		[SerializeField] private InputActionReference _buildHotkey;
+		[SerializeField] private TowerPreviewGenerator previewGen;
+		[SerializeField] private TowerPlacementSystem placementSystem;
+		[SerializeField] private RectTransform content;
+		[SerializeField] private GameObject towerButtonPrefab;
 
 		[System.Serializable]
 		public class TowerInfo
@@ -23,7 +27,27 @@ namespace TD
 
 		void Start()
 		{
+			_buildHotkey.action.Enable();
+			_buildHotkey.action.started -= OnHotkey;
+			_buildHotkey.action.started += OnHotkey;
 			FillUI();
+			gameObject.SetActive(false);
+		}
+
+		void OnDestroy()
+		{
+			_buildHotkey.action.started -= OnHotkey;
+			_buildHotkey.action.Disable();
+		}
+
+		void OnHotkey(CallbackContext callbackContext)
+		{
+			gameObject.SetActive(!gameObject.activeSelf);
+		}
+
+		public void Hide()
+		{
+			gameObject.SetActive(false);
 		}
 
 		void FillUI()
@@ -50,6 +74,7 @@ namespace TD
 				go.GetComponent<Button>().onClick.AddListener(() =>
 				{
 					placementSystem.BeginPlacement(info.prefab);
+					Hide();
 				});
 			}
 		}

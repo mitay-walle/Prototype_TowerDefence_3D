@@ -15,6 +15,7 @@ namespace TD
 		private ITargetable currentHovered;
 		private Camera cam;
 		private InputAction selectAction;
+		private bool isMouseActive = true;
 
 		void Awake()
 		{
@@ -46,12 +47,37 @@ namespace TD
 
 		void Update()
 		{
+			UpdateInputDevice();
 			UpdateHover();
+		}
+
+		private void UpdateInputDevice()
+		{
+			if (Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.1f)
+			{
+				isMouseActive = true;
+			}
+			else if (Gamepad.current != null && Gamepad.current.leftStick.ReadValue().sqrMagnitude > 0.1f)
+			{
+				isMouseActive = false;
+			}
+		}
+
+		private Ray GetRay()
+		{
+			if (isMouseActive && Mouse.current != null)
+			{
+				return cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+			}
+			else
+			{
+				return cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+			}
 		}
 
 		private void UpdateHover()
 		{
-			Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+			Ray ray = GetRay();
 
 			if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, raycastMask))
 			{
@@ -78,7 +104,16 @@ namespace TD
 
 		private void OnSelect(InputAction.CallbackContext context)
 		{
-			Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+			if (context.control.device is Mouse)
+			{
+				isMouseActive = true;
+			}
+			else if (context.control.device is Gamepad)
+			{
+				isMouseActive = false;
+			}
+
+			Ray ray = GetRay();
 
 			if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, raycastMask))
 			{

@@ -45,6 +45,7 @@ namespace TD
 			currentPrefab = prefab;
 			ghostInstance = Instantiate(prefab);
 			ghostInstance.GetComponent<VoxelGenerator>().Generate();
+			Destroy(ghostInstance.GetComponent<ITargetable>() as Component);
 			ghostInstance.name = prefab.name + "_Ghost";
 			ApplyGhostMaterials(ghostInstance);
 		}
