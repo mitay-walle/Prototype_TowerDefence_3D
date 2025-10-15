@@ -83,6 +83,10 @@ namespace TD
 			combinedMR.sharedMaterials = materials.ToArray();
 			finalMesh.RecalculateBounds();
 			finalMesh.RecalculateNormals(UnityEngine.Rendering.MeshUpdateFlags.Default);
+			if (combined.TryGetComponent<MeshCollider>(out var coll))
+			{
+				coll.sharedMesh = combined.GetComponent<MeshFilter>().sharedMesh;
+			}
 		#if UNITY_EDITOR
 			EditorUtility.SetDirty(combinedMR);
 			EditorUtility.SetDirty(combinedMF);
@@ -94,58 +98,71 @@ namespace TD
 			if (voxels.Count == 0) return voxels;
 
 			var result = new List<VoxelData>();
-			var voxelMap = new Dictionary<Vector3, VoxelData>(voxels.Count);
+			var groupedBySize = new Dictionary<Vector3, List<VoxelData>>();
 
 			foreach (var voxel in voxels)
 			{
-				if (voxel.size != Vector3.one)
+				if (!groupedBySize.ContainsKey(voxel.size))
 				{
-					result.Add(voxel);
+					groupedBySize[voxel.size] = new List<VoxelData>();
 				}
-				else
+
+				groupedBySize[voxel.size].Add(voxel);
+			}
+
+			foreach (var group in groupedBySize.Values)
+			{
+				if (group.Count == 0) continue;
+
+				Vector3 voxelSize = group[0].size;
+				var voxelMap = new Dictionary<Vector3, VoxelData>(group.Count);
+
+				foreach (var voxel in group)
 				{
 					voxelMap[voxel.position] = voxel;
 				}
-			}
 
-			var sortedPositions = new List<Vector3>(voxelMap.Keys);
-			sortedPositions.Sort((a, b) =>
-			{
-				int cmpY = a.y.CompareTo(b.y);
-				if (cmpY != 0) return cmpY;
-				int cmpZ = a.z.CompareTo(b.z);
-				if (cmpZ != 0) return cmpZ;
-				return a.x.CompareTo(b.x);
-			});
+				var sortedPositions = new List<Vector3>(voxelMap.Keys);
+				sortedPositions.Sort((a, b) =>
+				{
+					int cmpY = a.y.CompareTo(b.y);
+					if (cmpY != 0) return cmpY;
 
-			var processed = new HashSet<Vector3>();
+					int cmpZ = a.z.CompareTo(b.z);
+					if (cmpZ != 0) return cmpZ;
 
-			foreach (var pos in sortedPositions)
-			{
-				if (processed.Contains(pos)) continue;
+					return a.x.CompareTo(b.x);
+				});
 
-				var voxel = voxelMap[pos];
-				var merged = GreedyMerge(voxel, voxelMap, processed);
-				result.Add(merged);
+				var processed = new HashSet<Vector3>();
+
+				foreach (var pos in sortedPositions)
+				{
+					if (processed.Contains(pos)) continue;
+
+					var voxel = voxelMap[pos];
+					var merged = GreedyMerge(voxel, voxelMap, processed, voxelSize);
+					result.Add(merged);
+				}
 			}
 
 			return result;
 		}
 
-		private VoxelData GreedyMerge(VoxelData start, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed)
+		private VoxelData GreedyMerge(VoxelData start, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed, Vector3 voxelSize)
 		{
 			Vector3 startPos = start.position;
 			processed.Add(startPos);
 
-			int maxX = FindMaxExtent(start, voxelMap, processed, Vector3.right, startPos);
-			
+			int maxX = FindMaxExtent(start, voxelMap, processed, voxelSize, startPos, Vector3.right);
+
 			int maxZ = 1;
 			for (int z = 1; z < 100; z++)
 			{
 				bool rowValid = true;
 				for (int x = 0; x < maxX; x++)
 				{
-					Vector3 testPos = startPos + new Vector3(x, 0, z);
+					Vector3 testPos = startPos + new Vector3(x * voxelSize.x, 0, z * voxelSize.z);
 					if (!CanMerge(start, testPos, voxelMap, processed))
 					{
 						rowValid = false;
@@ -157,8 +174,9 @@ namespace TD
 
 				for (int x = 0; x < maxX; x++)
 				{
-					processed.Add(startPos + new Vector3(x, 0, z));
+					processed.Add(startPos + new Vector3(x * voxelSize.x, 0, z * voxelSize.z));
 				}
+
 				maxZ++;
 			}
 
@@ -170,13 +188,14 @@ namespace TD
 				{
 					for (int x = 0; x < maxX; x++)
 					{
-						Vector3 testPos = startPos + new Vector3(x, y, z);
+						Vector3 testPos = startPos + new Vector3(x * voxelSize.x, y * voxelSize.y, z * voxelSize.z);
 						if (!CanMerge(start, testPos, voxelMap, processed))
 						{
 							layerValid = false;
 							break;
 						}
 					}
+
 					if (!layerValid) break;
 				}
 
@@ -186,34 +205,42 @@ namespace TD
 				{
 					for (int x = 0; x < maxX; x++)
 					{
-						processed.Add(startPos + new Vector3(x, y, z));
+						processed.Add(startPos + new Vector3(x * voxelSize.x, y * voxelSize.y, z * voxelSize.z));
 					}
 				}
+
 				maxY++;
 			}
 
 			return new VoxelData
 			{
-				position = startPos + new Vector3(maxX - 1, maxY - 1, maxZ - 1) * 0.5f,
-				size = new Vector3(maxX, maxY, maxZ),
+				position = startPos + new Vector3((maxX - 1) * voxelSize.x, (maxY - 1) * voxelSize.y, (maxZ - 1) * voxelSize.z) * 0.5f,
+				size = new Vector3(maxX * voxelSize.x, maxY * voxelSize.y, maxZ * voxelSize.z),
 				colorIndex = start.colorIndex,
 				emissionColorIndex = start.emissionColorIndex,
 				emissionIntensity = start.emissionIntensity
 			};
 		}
 
-		private int FindMaxExtent(VoxelData start, Dictionary<Vector3, VoxelData> voxelMap, HashSet<Vector3> processed, Vector3 direction, Vector3 startPos)
+		private int FindMaxExtent(VoxelData start,
+		                          Dictionary<Vector3, VoxelData> voxelMap,
+		                          HashSet<Vector3> processed,
+		                          Vector3 voxelSize,
+		                          Vector3 startPos,
+		                          Vector3 direction)
 		{
 			int extent = 1;
 			for (int i = 1; i < 100; i++)
 			{
-				Vector3 testPos = startPos + direction * i;
+				Vector3 offset = new Vector3(direction.x * i * voxelSize.x, direction.y * i * voxelSize.y, direction.z * i * voxelSize.z);
+				Vector3 testPos = startPos + offset;
 				if (!CanMerge(start, testPos, voxelMap, processed))
 					break;
 
 				processed.Add(testPos);
 				extent++;
 			}
+
 			return extent;
 		}
 
@@ -224,6 +251,7 @@ namespace TD
 			if (voxel.colorIndex != reference.colorIndex) return false;
 			if (voxel.emissionColorIndex != reference.emissionColorIndex) return false;
 			if (!Mathf.Approximately(voxel.emissionIntensity, reference.emissionIntensity)) return false;
+
 			return true;
 		}
 

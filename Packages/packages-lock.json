@@ -7,12 +7,28 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.coplaydev.unity-mcp": {
+      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      },
+      "hash": "6c00294231b82385c72f5979429fd7747e84daad"
+    },
     "com.cqf.urpoutline": {
       "version": "https://github.com/CristianQiu/Unity-URP-Outline.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "fe3069909b2c7d1351a04ea205baa6963fccd3dd"
+    },
+    "com.mischief.markdownviewer": {
+      "version": "https://github.com/gwaredd/UnityMarkdownViewer.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d4a969bb6f29adff8830f4226cad9a81b4b0a6af"
     },
     "com.mitay-walle.rect-transform-editor": {
       "version": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
@@ -33,7 +49,14 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "b9cf736120f7bfb46dcd6e1f715ed69376a798aa"
+      "hash": "8493774b8565cefee5b3ca2a9954f84d869e3a11"
+    },
+    "com.truongnguyentungduy.hierarchy-2": {
+      "version": "https://github.com/mitay-walle/com.truongnguyentungduy.hierarchy-2.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2b24b03ff65eca16047f900539ba0ef5df3dbfdd"
     },
     "com.unify.unified-universal-blur": {
       "version": "https://github.com/lukakldiashvili/Unified-Universal-Blur.git",

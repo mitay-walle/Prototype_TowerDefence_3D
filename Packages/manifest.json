@@ -1,9 +1,12 @@
 {
   "dependencies": {
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
+    "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
     "com.mitay-walle.rect-transform-editor": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
     "com.mitay-walle.transforminspector": "https://github.com/mitay-walle/TransformInspector.git",
     "com.mitay-walle.ui-graphic-sector": "https://github.com/mitay-walle/com.mitay-walle.ui-graphic-sector.git",
+    "com.truongnguyentungduy.hierarchy-2": "https://github.com/mitay-walle/com.truongnguyentungduy.hierarchy-2.git",
     "com.unify.unified-universal-blur": "https://github.com/lukakldiashvili/Unified-Universal-Blur.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",

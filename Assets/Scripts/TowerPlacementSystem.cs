@@ -54,7 +54,8 @@ namespace TD
 			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
 			if (Physics.Raycast(ray, out var hit, 500f, groundMask))
 			{
-				ghostInstance.transform.position = hit.point;
+				Vector3 p = hit.point;
+				ghostInstance.GetComponent<Rigidbody>().position = new(Mathf.Round(p.x), p.y, Mathf.Round(p.z));
 			}
 
 			if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
@@ -83,6 +84,24 @@ namespace TD
 				MeshRenderer r = rends[i];
 				r.sharedMaterials = Enumerable.Repeat(ghostMaterial, r.sharedMaterials.Length).ToArray();
 			}
+
+			if (ghostInstance.TryGetComponent<Collider>(out var col))
+			{
+				col.isTrigger = true;
+			}
+
+			if (!ghostInstance.GetComponent<TriggerIntersectColor>())
+			{
+				ghostInstance.AddComponent<TriggerIntersectColor>();
+			}
+
+			if (!ghostInstance.GetComponent<Rigidbody>())
+			{
+				var rb = ghostInstance.AddComponent<Rigidbody>();
+				rb.useGravity = false;
+
+				//rb.isKinematic = true;
+			}
 		}
 
 		void PlaceTower(CallbackContext obj) => PlaceTower();
@@ -90,6 +109,7 @@ namespace TD
 		void PlaceTower()
 		{
 			if (!ghostInstance) return;
+			if (ghostInstance.GetComponent<TriggerIntersectColor>().IsIntersected) return;
 
 			Instantiate(currentPrefab, ghostInstance.transform.position, ghostInstance.transform.rotation);
 			CancelPlacement();

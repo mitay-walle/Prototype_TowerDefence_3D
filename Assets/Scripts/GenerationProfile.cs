@@ -50,7 +50,16 @@ namespace TD
 				materialGroups[key].Add(offsetData);
 			}
 
-			generator.BuildMeshes(materialGroups, parent, this);
+			Transform found = parent.Find(part.name);
+			if (!found)
+			{
+				GameObject partObj = new GameObject(part.name);
+				partObj.transform.SetParent(parent);
+				partObj.transform.localPosition = Vector3.zero;
+				found = partObj.transform;
+			}
+
+			generator.BuildMeshes(materialGroups, found, this);
 		}
 
 		protected abstract Color GetEmissionColor(int index);
