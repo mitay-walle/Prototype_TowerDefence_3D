@@ -131,14 +131,20 @@ namespace TD
 		private void HoverNew(ITargetable targetable)
 		{
 			currentHovered = targetable;
-			SetRenderingLayer(currentHovered.gameObject, hoveredRenderingLayer);
+			if (IsValidTargetable(currentHovered))
+			{
+				SetRenderingLayer(currentHovered.gameObject, hoveredRenderingLayer);
+			}
 		}
 
 		private void UnhoverCurrent()
 		{
 			if (currentHovered != null)
 			{
-				SetRenderingLayer(currentHovered.gameObject, defaultRenderingLayer);
+				if (IsValidTargetable(currentHovered))
+				{
+					SetRenderingLayer(currentHovered.gameObject, defaultRenderingLayer);
+				}
 				currentHovered = null;
 			}
 		}
@@ -151,27 +157,55 @@ namespace TD
 			}
 
 			currentSelected = selectable;
-			currentSelected.OnSelected();
-			SetRenderingLayer(currentSelected.gameObject, selectedRenderingLayer);
+			if (IsValidTargetable(currentSelected))
+			{
+				currentSelected.OnSelected();
+				SetRenderingLayer(currentSelected.gameObject, selectedRenderingLayer);
+
+				var tooltip = currentSelected.gameObject.GetComponent<TD.UI.WorldTooltipBridge>();
+				if (tooltip != null)
+				{
+					tooltip.ShowTooltip();
+				}
+			}
 		}
 
 		private void DeselectCurrent()
 		{
 			if (currentSelected != null)
 			{
-				currentSelected.OnDeselected();
+				if (IsValidTargetable(currentSelected))
+				{
+					currentSelected.OnDeselected();
 
-				if (currentSelected == currentHovered)
-				{
-					SetRenderingLayer(currentSelected.gameObject, hoveredRenderingLayer);
-				}
-				else
-				{
-					SetRenderingLayer(currentSelected.gameObject, defaultRenderingLayer);
+					var tooltip = currentSelected.gameObject.GetComponent<TD.UI.WorldTooltipBridge>();
+					if (tooltip != null)
+					{
+						tooltip.HideTooltip();
+					}
+
+					if (currentSelected == currentHovered)
+					{
+						SetRenderingLayer(currentSelected.gameObject, hoveredRenderingLayer);
+					}
+					else
+					{
+						SetRenderingLayer(currentSelected.gameObject, defaultRenderingLayer);
+					}
 				}
 
 				currentSelected = null;
 			}
+		}
+
+		private bool IsValidTargetable(ITargetable targetable)
+		{
+			if (targetable == null) return false;
+
+			var monoBehaviour = targetable as MonoBehaviour;
+			if (monoBehaviour == null) return false;
+
+			return monoBehaviour != null && monoBehaviour.gameObject != null;
 		}
 
 		private void SetRenderingLayer(GameObject obj, uint layer)

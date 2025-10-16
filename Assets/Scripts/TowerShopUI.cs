@@ -18,6 +18,7 @@ namespace TD
 		[SerializeField] private TowerPlacementSystem placementSystem;
 		[SerializeField] private RectTransform content;
 		[SerializeField] private GameObject towerButtonPrefab;
+		[SerializeField] private TD.UI.TowerShopTooltipHelper tooltipHelper;
 		List<Button> _buttons = new List<Button>();
 
 		[Serializable]
@@ -107,6 +108,15 @@ namespace TD
 					placementSystem.BeginPlacement(info.prefab);
 					Hide();
 				});
+
+				if (tooltipHelper != null)
+				{
+					var towerStats = info.prefab.GetComponent<Turret>()?.Stats;
+					if (towerStats != null)
+					{
+						tooltipHelper.SetupTooltip(go, towerStats, info.prefab.name);
+					}
+				}
 			}
 
 			foreach (Button btn in _buttons)

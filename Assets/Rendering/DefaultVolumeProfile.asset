@@ -466,6 +466,7 @@ MonoBehaviour:
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
   - {fileID: 4399312376966328071}
+  - {fileID: 1076806958129301188}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -567,6 +568,22 @@ MonoBehaviour:
   highlightsEnd:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &1076806958129301188
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f69b3671784a9aaa74cba86ebd5e36, type: 3}
+  m_Name: MusicVolumeComponent
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::TD.Plugins.Runtime.Audio.Music.MusicVolumeComponent
+  active: 1
+  Music:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &1666464333004379222
 MonoBehaviour:
   m_ObjectHideFlags: 3

@@ -44,6 +44,7 @@ namespace TD
         private float lifetime;
         private bool isLaunched = false;
         private bool hasHit = false;
+        private bool trackTarget = true;
 
         public void Launch(Vector3 target, float projectileDamage, float projectileSpeed, EnemyHealth enemy = null)
         {
@@ -55,6 +56,7 @@ namespace TD
             lifetime = 0;
             isLaunched = true;
             hasHit = false;
+            trackTarget = enemy != null;
 
             if (trail != null)
             {
@@ -62,7 +64,10 @@ namespace TD
             }
 
             Vector3 direction = (targetPosition - transform.position).normalized;
-            transform.forward = direction;
+            if (direction != Vector3.zero)
+            {
+                transform.forward = direction;
+            }
 
             if (mode == ProjectileMode.Instant)
             {
@@ -89,9 +94,19 @@ namespace TD
         {
             if (hasHit) return;
 
+            if (trackTarget && targetEnemy != null && targetEnemy.IsAlive)
+            {
+                targetPosition = targetEnemy.transform.position;
+            }
+
             Vector3 direction = (targetPosition - transform.position).normalized;
             float distanceThisFrame = speed * Time.deltaTime;
             float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+
+            if (direction != Vector3.zero)
+            {
+                transform.forward = direction;
+            }
 
             if (mode == ProjectileMode.SphereCastWhileFlying)
             {

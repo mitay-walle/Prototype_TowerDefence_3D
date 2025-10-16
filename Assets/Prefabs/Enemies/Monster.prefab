@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 7504905717022002577}
   - component: {fileID: 2478138159029725029}
   - component: {fileID: 9154003399166893666}
+  - component: {fileID: 7911651765443347390}
   m_Layer: 8
   m_Name: Monster
   m_TagString: Untagged
@@ -466,6 +467,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.MoveToBase
   baseSpeed: 3
   stoppingDistance: 0.5
+--- !u!114 &7911651765443347390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970266418737536391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df19663d19f92224f86f951b97aa9dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.UI.WorldTooltipBridge
+  titleKey: tooltip.enemy.title
+  descriptionKey: tooltip.enemy.description
+  tableName: UI
 --- !u!1001 &975734087223188879
 PrefabInstance:
   m_ObjectHideFlags: 0

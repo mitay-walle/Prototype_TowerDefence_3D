@@ -34,14 +34,14 @@ public static class CompilationLogger
         foreach (var msg in messages)
         {
             if (msg.type == CompilerMessageType.Error)
-                hasErrors = true;
+                hasErrors = true;/
             if (msg.type == CompilerMessageType.Warning)
                 hasWarnings = true;
         }
 
         string status = hasErrors ? "❌ ERRORS" : (hasWarnings ? "⚠️ WARNINGS" : "✓ OK");
         string assemblyName = System.IO.Path.GetFileName(assemblyPath);
-        Debug.Log($"[CompilationLogger] {status} Assembly: {assemblyName}");
+        //Debug.Log($"[CompilationLogger] {status} Assembly: {assemblyName}");
     }
 
     [MenuItem("TD/Automation/Force Recompile All")]

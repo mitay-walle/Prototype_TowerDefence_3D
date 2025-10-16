@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3167898827351816864}
   - component: {fileID: 8080495829224296188}
   - component: {fileID: 7710519124204017904}
+  - component: {fileID: 8855835174659075437}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -132,3 +133,18 @@ MonoBehaviour:
   onBaseDestroyed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8855835174659075437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667523658365072496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df19663d19f92224f86f951b97aa9dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.UI.WorldTooltipBridge
+  titleKey: tooltip.base.title
+  descriptionKey: tooltip.base.description
+  tableName: UI

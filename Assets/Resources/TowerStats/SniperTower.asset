@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: SniperTower
   description: A basic tower
-  damage: 25
-  fireRate: 0.5
-  range: 15
+  damage: 45
+  fireRate: 1.0333333
+  range: 12.666667
   projectileSpeed: 25
-  targetPriority: 1
-  predictiveAiming: 0
-  cost: 150
-  sellValue: 75
+  targetPriority: 2
+  predictiveAiming: 1
+  cost: 367
+  sellValue: 257
   nextUpgrade: {fileID: 0}
-  upgradeCost: 200
+  upgradeCost: 550

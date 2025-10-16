@@ -26,14 +26,24 @@ namespace TD
         [SerializeField] private Button restartButton;
         [SerializeField] private Button quitButton;
 
+        [SerializeField] private CanvasGroup mainHUDGroup;
+        private TowerPlacementSystem placementSystem;
+
         private void Start()
         {
+            placementSystem = FindFirstObjectByType<TowerPlacementSystem>();
+
             SetupEventListeners();
             UpdateUI();
 
             if (gameOverPanel != null)
             {
                 gameOverPanel.SetActive(false);
+            }
+
+            if (mainHUDGroup == null)
+            {
+                mainHUDGroup = GetComponent<CanvasGroup>();
             }
         }
 
@@ -89,6 +99,27 @@ namespace TD
         {
             UpdateWaveProgress();
             UpdateStartWaveButton();
+            UpdateHUDVisibility();
+        }
+
+        private void UpdateHUDVisibility()
+        {
+            if (placementSystem == null || mainHUDGroup == null) return;
+
+            bool shouldShow = !placementSystem.IsPlacing;
+
+            if (shouldShow && mainHUDGroup.alpha < 1f)
+            {
+                mainHUDGroup.alpha = Mathf.Lerp(mainHUDGroup.alpha, 1f, Time.deltaTime * 10f);
+                mainHUDGroup.interactable = true;
+                mainHUDGroup.blocksRaycasts = true;
+            }
+            else if (!shouldShow && mainHUDGroup.alpha > 0f)
+            {
+                mainHUDGroup.alpha = Mathf.Lerp(mainHUDGroup.alpha, 0f, Time.deltaTime * 10f);
+                mainHUDGroup.interactable = false;
+                mainHUDGroup.blocksRaycasts = false;
+            }
         }
 
         private void UpdateUI()

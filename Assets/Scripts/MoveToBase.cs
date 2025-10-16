@@ -104,7 +104,7 @@ namespace TD
 
         private void OnDisable()
         {
-            if (agent != null)
+            if (agent != null && agent.isOnNavMesh)
             {
                 agent.isStopped = true;
             }

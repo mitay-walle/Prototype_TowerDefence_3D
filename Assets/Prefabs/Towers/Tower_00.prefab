@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 5433899707434417951}
   - component: {fileID: 1401830542988605605}
   - component: {fileID: 6156850882460053632}
+  - component: {fileID: 6791415761048970379}
   m_Layer: 6
   m_Name: Tower_00
   m_TagString: Untagged
@@ -306,7 +307,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8, y: 2.0303228, z: 0.8}
+  m_Size: {x: 0.7, y: 2.0303228, z: 0.7}
   m_Center: {x: 0, y: 0.7568234, z: -0}
 --- !u!114 &1401830542988605605
 MonoBehaviour:
@@ -348,6 +349,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Logs: 0
+--- !u!114 &6791415761048970379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808451643644963469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df19663d19f92224f86f951b97aa9dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.UI.WorldTooltipBridge
+  titleKey: tooltip.turret.title
+  descriptionKey: tooltip.turret.description
+  tableName: UI
 --- !u!1 &8609580295079753614
 GameObject:
   m_ObjectHideFlags: 0

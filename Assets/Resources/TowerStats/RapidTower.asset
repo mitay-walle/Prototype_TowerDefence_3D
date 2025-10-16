@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: RapidTower
   description: A basic tower
-  damage: 5
-  fireRate: 3
-  range: 6
+  damage: 30
+  fireRate: 1.2666667
+  range: 10.333333
   projectileSpeed: 20
-  targetPriority: 3
+  targetPriority: 1
   predictiveAiming: 0
-  cost: 120
-  sellValue: 60
+  cost: 233
+  sellValue: 163
   nextUpgrade: {fileID: 0}
-  upgradeCost: 170
+  upgradeCost: 350

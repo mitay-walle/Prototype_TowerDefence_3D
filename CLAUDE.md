@@ -232,3 +232,9 @@ Based on recent commits, active work includes:
 - .meta файл создается с помощью ImportAsset()
 - Reflection только для доступа к unity-internal
 - {get; private set;}
+- используй TMP_Text TextMeshProUGUI вместо Text
+- UniTask вместо Coroutine
+- UGUI объекты вкладывай иерархически внутрь скриптов, которым они пренадлежат
+- используй скрипты из Plugins
+- проверяй на наличие ошибок компиляции и  сразу исправляй их
+- после редактирования кода вызывай TD/Automation/Force Recompile All

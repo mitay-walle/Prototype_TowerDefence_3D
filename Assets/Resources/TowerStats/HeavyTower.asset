@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: HeavyTower
   description: A basic tower
-  damage: 50
-  fireRate: 0.3
-  range: 10
-  projectileSpeed: 10
-  targetPriority: 2
-  predictiveAiming: 0
-  cost: 200
-  sellValue: 100
+  damage: 60
+  fireRate: 0.8
+  range: 15
+  projectileSpeed: 30
+  targetPriority: 3
+  predictiveAiming: 1
+  cost: 500
+  sellValue: 350
   nextUpgrade: {fileID: 0}
-  upgradeCost: 250
+  upgradeCost: 750
