@@ -1,5 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
+using TD.Weapons;
 
 namespace TD
 {
@@ -19,6 +20,8 @@ namespace TD
 
         [SerializeField, Min(0)] private float projectileSpeed = 20f;
 
+        [SerializeField] private MonoBehaviour weaponComponent;
+
         [SerializeField] private TargetPriority targetPriority = TargetPriority.Nearest;
 
         [SerializeField] private bool predictiveAiming = false;
@@ -37,6 +40,7 @@ namespace TD
         public float FireRate => fireRate;
         public float Range => range;
         public float ProjectileSpeed => projectileSpeed;
+        public IWeapon Weapon => weaponComponent as IWeapon;
         public TargetPriority TargetPriority => targetPriority;
         public bool PredictiveAiming => predictiveAiming;
         public int Cost => cost;

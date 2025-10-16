@@ -164,15 +164,11 @@ namespace TD
 
             foreach (var enemy in enemiesInRange)
             {
-                var moveToBase = enemy.GetComponent<MoveToBase>();
-                if (moveToBase != null)
+                float distanceToBase = Vector3.Distance(enemy.transform.position, baseTransform.position);
+                if (distanceToBase < minDistanceToBase)
                 {
-                    float distanceToBase = Vector3.Distance(enemy.transform.position, baseTransform.position);
-                    if (distanceToBase < minDistanceToBase)
-                    {
-                        minDistanceToBase = distanceToBase;
-                        farthest = enemy;
-                    }
+                    minDistanceToBase = distanceToBase;
+                    farthest = enemy;
                 }
             }
 
@@ -269,30 +265,46 @@ namespace TD
 
         private void FireFromPosition(Vector3 position)
         {
-            var projectile = ProjectilePool.Instance?.Get();
-            if (projectile != null)
+            if (stats.Weapon != null)
             {
                 Vector3 targetPosition = currentTarget.transform.position;
+                Vector3 direction = (targetPosition - position).normalized;
 
                 if (stats.PredictiveAiming)
                 {
                     targetPosition = PredictTargetPosition(currentTarget);
+                    direction = (targetPosition - position).normalized;
                 }
 
-                projectile.transform.position = position;
-                projectile.Launch(targetPosition, stats.Damage, stats.ProjectileSpeed, currentTarget);
+                stats.Weapon.Fire(position, direction, currentTarget.transform, stats.Damage);
+            }
+            else
+            {
+                var projectile = ProjectilePool.Instance?.Get();
+                if (projectile != null)
+                {
+                    Vector3 targetPosition = currentTarget.transform.position;
+
+                    if (stats.PredictiveAiming)
+                    {
+                        targetPosition = PredictTargetPosition(currentTarget);
+                    }
+
+                    projectile.transform.position = position;
+                    projectile.Launch(targetPosition, stats.Damage, stats.ProjectileSpeed, currentTarget);
+                }
             }
         }
 
         private Vector3 PredictTargetPosition(EnemyHealth target)
         {
-            var moveToBase = target.GetComponent<MoveToBase>();
-            if (moveToBase == null) return target.transform.position;
+            var movement = target.GetComponent<EnemyMovement>();
+            if (movement == null) return target.transform.position;
 
             float distance = Vector3.Distance(transform.position, target.transform.position);
             float timeToReach = distance / stats.ProjectileSpeed;
 
-            Vector3 targetVelocity = moveToBase.Speed * target.transform.forward;
+            Vector3 targetVelocity = movement.Speed * target.transform.forward;
             return target.transform.position + targetVelocity * timeToReach;
         }
 

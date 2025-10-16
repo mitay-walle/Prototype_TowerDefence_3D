@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 namespace TD
 {
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Collider))]
     public class Base : MonoBehaviour
     {
         [SerializeField] private int maxHealth = 20;
@@ -19,6 +21,19 @@ namespace TD
         private void Awake()
         {
             currentHealth = maxHealth;
+
+            var rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+            }
+
+            var col = GetComponent<Collider>();
+            if (col != null)
+            {
+                col.isTrigger = true;
+            }
         }
 
         public void Initialize(int health)

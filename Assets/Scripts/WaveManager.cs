@@ -257,11 +257,11 @@ namespace TD
                 }
             }
 
-            var moveToBase = enemyObject.GetComponent<MoveToBase>();
-            if (moveToBase != null)
+            var enemyMovement = enemyObject.GetComponent<EnemyMovement>();
+            if (enemyMovement != null)
             {
-                float scaledSpeed = moveToBase.Speed * enemySpawn.speedMultiplier;
-                moveToBase.SetSpeed(scaledSpeed);
+                float scaledSpeed = enemyMovement.Speed * enemySpawn.speedMultiplier;
+                enemyMovement.Speed = scaledSpeed;
 
                 if (detailedLogs)
                 {
