@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: UniversalBlurFeature
   m_EditorClassIdentifier: Unified.Universal.Blur::Unified.UniversalBlur.Runtime.UniversalBlurFeature
   m_Active: 1
-  iterations: 4
-  downsample: 2
-  enableMipMaps: 1
-  scale: 1
-  offset: 1
+  iterations: 7
+  downsample: 1
+  enableMipMaps: 0
+  scale: 0.5
+  offset: 3.84
   scaleBlurWith: 1
   scaleReferenceSize: 1080
   blurType: 0

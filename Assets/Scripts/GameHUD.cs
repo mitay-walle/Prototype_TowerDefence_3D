@@ -1,29 +1,40 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Sirenix.OdinInspector;
 
 namespace TD
 {
     public class GameHUD : MonoBehaviour
     {
+        [Required]
         [SerializeField] private TextMeshProUGUI currencyText;
         [SerializeField] private string currencyPrefix = "Gold: ";
 
+        [Required]
         [SerializeField] private TextMeshProUGUI waveText;
+        [Required]
         [SerializeField] private TextMeshProUGUI enemiesText;
         [SerializeField] private Slider waveProgressBar;
 
+        [Required]
         [SerializeField] private TextMeshProUGUI baseHealthText;
         [SerializeField] private Slider baseHealthBar;
         [SerializeField] private Image baseHealthFill;
         [SerializeField] private Gradient healthColorGradient;
 
+        [Required]
         [SerializeField] private Button startWaveButton;
+        [Required]
         [SerializeField] private TextMeshProUGUI startWaveButtonText;
 
+        [Required]
         [SerializeField] private GameObject gameOverPanel;
+        [Required]
         [SerializeField] private TextMeshProUGUI gameOverText;
+        [Required]
         [SerializeField] private Button restartButton;
+        [Required]
         [SerializeField] private Button quitButton;
 
         [SerializeField] private CanvasGroup mainHUDGroup;

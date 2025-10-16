@@ -441,7 +441,9 @@ MonoBehaviour:
   currentHealth: 0
   deathDelay: 0.5
   giveReward: 1
-  rewardAmount: 10
+  rewardAmount: 15
+  earlyKillBonusMultiplier: 1.5
+  earlyKillThreshold: 0.5
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []

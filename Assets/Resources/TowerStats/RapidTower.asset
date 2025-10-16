@@ -20,7 +20,7 @@ MonoBehaviour:
   projectileSpeed: 20
   targetPriority: 1
   predictiveAiming: 0
-  cost: 233
-  sellValue: 163
+  cost: 120
+  sellValue: 84
   nextUpgrade: {fileID: 0}
   upgradeCost: 350

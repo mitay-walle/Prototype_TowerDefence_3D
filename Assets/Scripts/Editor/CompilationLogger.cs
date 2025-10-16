@@ -24,6 +24,27 @@ public static class CompilationLogger
     {
         var duration = (System.DateTime.Now - compilationStartTime).TotalSeconds;
         Debug.Log($"[CompilationLogger] ✓ Compilation FINISHED ({duration:F2}s) (Time: {Time.realtimeSinceStartup:F2}s)");
+
+        EditorApplication.delayCall += () =>
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                var hud = UnityEngine.Object.FindObjectOfType<TD.GameHUD>();
+                if (hud == null)
+                {
+                    Debug.Log("[CompilationLogger] GameHUD not found, calling Setup...");
+                    var type = System.Type.GetType("TD.Editor.SetupGameHUD, Assembly-CSharp-Editor");
+                    if (type != null)
+                    {
+                        var method = type.GetMethod("Setup", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                        if (method != null)
+                        {
+                            method.Invoke(null, null);
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private static void OnAssemblyCompilationFinished(string assemblyPath, CompilerMessage[] messages)
@@ -34,7 +55,7 @@ public static class CompilationLogger
         foreach (var msg in messages)
         {
             if (msg.type == CompilerMessageType.Error)
-                hasErrors = true;/
+                hasErrors = true;
             if (msg.type == CompilerMessageType.Warning)
                 hasWarnings = true;
         }

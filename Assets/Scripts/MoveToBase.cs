@@ -94,6 +94,11 @@ namespace TD
                 targetBase.TakeDamage(1);
             }
 
+            if (health != null && health.IsAlive)
+            {
+                health.onDeath?.Invoke();
+            }
+
             Destroy(gameObject, 0.1f);
         }
 

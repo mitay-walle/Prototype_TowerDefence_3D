@@ -5,8 +5,12 @@ namespace TD
 {
 	public class SelectionSystem : MonoBehaviour
 	{
+		private const string TOOLTIP_SPHERE_RADIUS = "Radius of sphere for Spherecast selection";
+
 		public LayerMask raycastMask = ~0;
 		public float maxRayDistance = 1000f;
+		[Tooltip(TOOLTIP_SPHERE_RADIUS)]
+		public float spherecastRadius = 0.5f;
 		public RenderingLayerMask defaultRenderingLayer = 1;
 		public RenderingLayerMask hoveredRenderingLayer = 2;
 		public RenderingLayerMask selectedRenderingLayer = 4;
@@ -67,9 +71,19 @@ namespace TD
 
 		private void UpdateHover()
 		{
+			if (!IsValidTargetable(currentSelected))
+			{
+				currentSelected = null;
+			}
+
+			if (!IsValidTargetable(currentHovered))
+			{
+				currentHovered = null;
+			}
+
 			Ray ray = GetRay();
 
-			if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, raycastMask))
+			if (Physics.SphereCast(ray, spherecastRadius, out RaycastHit hit, maxRayDistance, raycastMask))
 			{
 				var targetable = hit.collider.GetComponent<ITargetable>();
 
@@ -105,7 +119,7 @@ namespace TD
 
 			Ray ray = GetRay();
 
-			if (Physics.Raycast(ray, out RaycastHit hit, maxRayDistance, raycastMask))
+			if (Physics.SphereCast(ray, spherecastRadius, out RaycastHit hit, maxRayDistance, raycastMask))
 			{
 				var selectable = hit.collider.GetComponent<ITargetable>();
 

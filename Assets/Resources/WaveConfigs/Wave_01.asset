@@ -21,6 +21,6 @@ MonoBehaviour:
     healthMultiplier: 1
     speedMultiplier: 1
   delayBeforeWave: 5
-  completionReward: 75
+  completionReward: 50
   healthScaling: 1
   countScaling: 1

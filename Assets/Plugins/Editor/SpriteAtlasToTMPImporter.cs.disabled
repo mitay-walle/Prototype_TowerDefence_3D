@@ -1,0 +1,164 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using TMPro;
+using UnityEditor;
+using UnityEditor.AssetImporters;
+using UnityEngine;
+using UnityEngine.TextCore;
+using UnityEngine.U2D;
+
+namespace TD.Plugins.Editor
+{
+	[ScriptedImporter(3, "spriteatlas")]
+	public class SpriteAtlasToTMPImporter : ScriptedImporter
+	{
+		public override void OnImportAsset(AssetImportContext ctx)
+		{
+			// Проверяем userData: какой импортёр выбран
+			string selectedImporter = this.userData ?? "[Default]";
+			if (selectedImporter != nameof(SpriteAtlasToTMPImporter))
+			{
+				// Пользователь выбрал дефолтный импорт — TMP SpriteAsset не создаём
+				return;
+			}
+
+			SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(ctx.assetPath);
+			if (atlas == null)
+			{
+				Debug.LogWarning($"SpriteAtlasToTMPImporter: failed to load atlas at '{ctx.assetPath}'");
+				return;
+			}
+
+			int spriteCount = atlas.spriteCount;
+			Sprite[] sprites = new Sprite[Mathf.Max(1, spriteCount)];
+			atlas.GetSprites(sprites);
+
+			// Пытаемся найти уже существующий TMP_SpriteAsset внутри атласа
+			TMP_SpriteAsset spriteAsset = null;
+			var allAssets = AssetDatabase.LoadAllAssetsAtPath(ctx.assetPath);
+			foreach (var obj in allAssets)
+			{
+				if (obj is TMP_SpriteAsset existingAsset)
+				{
+					spriteAsset = existingAsset;
+					break;
+				}
+			}
+
+			// Если нет — создаём новый
+			if (spriteAsset == null)
+			{
+				spriteAsset = ScriptableObject.CreateInstance<TMP_SpriteAsset>();
+				string baseName = Path.GetFileNameWithoutExtension(ctx.assetPath);
+				spriteAsset.name = "tmp_" + baseName;
+				spriteAsset.spriteCharacterTable = new List<TMP_SpriteCharacter>();
+				spriteAsset.spriteGlyphTable = new List<TMP_SpriteGlyph>();
+				ctx.AddObjectToAsset(spriteAsset.name, spriteAsset);
+				ctx.SetMainObject(spriteAsset);
+			}
+
+			Texture2D atlasTexture = (sprites[0] != null) ? sprites[0].texture : null;
+			spriteAsset.spriteSheet = atlasTexture;
+
+			const uint startPrivateUnicode = 0xE000;
+
+			// Кэш существующих символов по имени
+			Dictionary<string, TMP_SpriteCharacter> existingCharacters = new Dictionary<string, TMP_SpriteCharacter>();
+			for (int i = 0; i < spriteAsset.spriteCharacterTable.Count; i++)
+			{
+				existingCharacters[spriteAsset.spriteCharacterTable[i].name] = spriteAsset.spriteCharacterTable[i];
+			}
+
+			for (int i = 0; i < spriteCount; i++)
+			{
+				Sprite s = sprites[i];
+				if (s == null) continue;
+
+				Rect rect = s.rect;
+				var glyphRect = new GlyphRect((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+
+				if (existingCharacters.TryGetValue(s.name, out TMP_SpriteCharacter existingChar))
+				{
+					// Обновляем только UV / sprite, сохраняем metrics
+					existingChar.glyph.sprite = s;
+					existingChar.glyph.glyphRect = glyphRect;
+				}
+				else
+				{
+					// Новый спрайт
+					var metrics = new GlyphMetrics(rect.width, rect.height, 0f, rect.height, rect.width);
+					var glyph = new TMP_SpriteGlyph((uint)(startPrivateUnicode + i), metrics, glyphRect, 1.0f, 0, s);
+					var character = new TMP_SpriteCharacter(startPrivateUnicode + (uint)i, spriteAsset, glyph);
+					character.name = s.name;
+					spriteAsset.spriteCharacterTable.Add(character);
+					spriteAsset.spriteGlyphTable.Add(glyph);
+				}
+			}
+
+			spriteAsset.UpdateLookupTables();
+			EditorUtility.SetDirty(spriteAsset);
+		}
+	}
+
+	// Статический callback для добавления dropdown в header GUI
+	[InitializeOnLoad]
+	public static class SpriteAtlasImporterHeaderGUI
+	{
+		static SpriteAtlasImporterHeaderGUI()
+		{
+			ScriptedImporter.finishedDefaultHeaderGUI += OnHeaderGUI;
+		}
+
+		private static void OnHeaderGUI(ScriptedImporter importer)
+		{
+			if (importer is SpriteAtlasToTMPImporter atlasImporter)
+			{
+				// Получаем все импортёры для .spriteatlas
+				var importerTypes = new List<Type>();
+				importerTypes.Add(null); // [Default]
+				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var asm in assemblies)
+				{
+					foreach (var type in asm.GetTypes())
+					{
+						if (!type.IsAbstract && typeof(ScriptedImporter).IsAssignableFrom(type))
+						{
+							var attrs = type.GetCustomAttributes(typeof(ScriptedImporterAttribute), false);
+							foreach (ScriptedImporterAttribute attr in attrs)
+							{
+								if (attr.fileExtension == "spriteatlas")
+									importerTypes.Add(type);
+							}
+						}
+					}
+				}
+
+				// Строим список названий
+				string[] options = new string[importerTypes.Count];
+				int currentIndex = 0;
+				for (int i = 0; i < importerTypes.Count; i++)
+				{
+					if (importerTypes[i] == null)
+					{
+						options[i] = "[Default]";
+						if ((importer.userData ?? "[Default]") == "[Default]") currentIndex = i;
+					}
+					else
+					{
+						options[i] = importerTypes[i].Name;
+						if ((importer.userData ?? "[Default]") == importerTypes[i].Name) currentIndex = i;
+					}
+				}
+
+				int newIndex = EditorGUILayout.Popup("SpriteAtlas Importer", currentIndex, options);
+				string newUserData = (newIndex == 0) ? "[Default]" : options[newIndex];
+				if (newUserData != importer.userData)
+				{
+					importer.userData = newUserData;
+					EditorUtility.SetDirty(importer);
+				}
+			}
+		}
+	}
+}

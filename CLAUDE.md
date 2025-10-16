@@ -238,3 +238,6 @@ Based on recent commits, active work includes:
 - используй скрипты из Plugins
 - проверяй на наличие ошибок компиляции и  сразу исправляй их
 - после редактирования кода вызывай TD/Automation/Force Recompile All
+- вызывай MenuItem без кликов пользователя
+- EditorApplication.ExecuteMenuItem для выполнения автоматического кода
+- используй MCP чтобы вызывать ExecuteMenuItem

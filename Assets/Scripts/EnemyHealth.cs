@@ -11,6 +11,8 @@ namespace TD
         private const string TOOLTIP_REWARD_AMOUNT = "Amount of currency given on death";
         private const string TOOLTIP_CHANGE_COLOR = "Flash red color when taking damage";
         private const string TOOLTIP_COLOR_DURATION = "Duration of damage color flash effect";
+        private const string TOOLTIP_EARLY_KILL_BONUS = "Bonus multiplier for killing enemy with >50% health remaining";
+        private const string TOOLTIP_EARLY_KILL_THRESHOLD = "Health percentage threshold for early kill bonus (0.5 = 50%)";
 
         [Tooltip(TOOLTIP_MAX_HEALTH)]
         [SerializeField] private float maxHealth = 100f;
@@ -22,6 +24,10 @@ namespace TD
         [SerializeField] private bool giveReward = true;
         [Tooltip(TOOLTIP_REWARD_AMOUNT)]
         [SerializeField] private int rewardAmount = 10;
+        [Tooltip(TOOLTIP_EARLY_KILL_BONUS)]
+        [SerializeField] private float earlyKillBonusMultiplier = 1.5f;
+        [Tooltip(TOOLTIP_EARLY_KILL_THRESHOLD)]
+        [SerializeField] private float earlyKillThreshold = 0.5f;
 
         public UnityEvent<float> onHealthChanged;
         public UnityEvent onDeath;
@@ -101,7 +107,14 @@ namespace TD
 
             if (giveReward)
             {
-                onRewardGiven?.Invoke(rewardAmount);
+                int finalReward = rewardAmount;
+
+                if (HealthPercent >= earlyKillThreshold)
+                {
+                    finalReward = Mathf.RoundToInt(rewardAmount * earlyKillBonusMultiplier);
+                }
+
+                onRewardGiven?.Invoke(finalReward);
             }
 
             Destroy(gameObject, deathDelay);

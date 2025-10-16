@@ -15,6 +15,7 @@ namespace TD
 		public Material ghostMaterial;
 		private GameObject ghostInstance;
 		private GameObject currentPrefab;
+		private int currentTowerCost;
 
 		public bool IsPlacing => ghostInstance != null;
 
@@ -68,6 +69,18 @@ namespace TD
 		{
 			CancelPlacement();
 
+			var turret = prefab.GetComponent<Turret>();
+			if (turret != null && turret.Stats != null)
+			{
+				currentTowerCost = turret.Stats.Cost;
+
+				if (!ResourceManager.Instance.CanAfford(currentTowerCost))
+				{
+					Debug.LogWarning($"TowerPlacement: Cannot afford tower (cost: {currentTowerCost}, current: {ResourceManager.Instance.CurrentCurrency})");
+					return;
+				}
+			}
+
 			currentPrefab = prefab;
 			ghostInstance = Instantiate(prefab);
 			ghostInstance.GetComponent<VoxelGenerator>().Generate();
@@ -110,6 +123,16 @@ namespace TD
 		{
 			if (!ghostInstance) return;
 			if (ghostInstance.GetComponent<TriggerIntersectColor>().IsIntersected) return;
+
+			if (ResourceManager.Instance != null && currentTowerCost > 0)
+			{
+				if (!ResourceManager.Instance.TrySpend(currentTowerCost))
+				{
+					Debug.LogWarning("TowerPlacement: Cannot afford tower anymore!");
+					CancelPlacement();
+					return;
+				}
+			}
 
 			Instantiate(currentPrefab, ghostInstance.transform.position, ghostInstance.transform.rotation);
 			CancelPlacement();
