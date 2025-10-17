@@ -6,342 +6,353 @@ using Sirenix.OdinInspector;
 
 namespace TD
 {
-    public class WaveManager : MonoBehaviour
-    {
-        private const string TOOLTIP_LOOP_WAVES = "Restart from wave 1 after completing all waves with increased difficulty";
-        private const string TOOLTIP_DIFFICULTY_SCALING = "Multiplier applied to enemy stats each loop (1.5 = 150% health/count per loop)";
-        private const string TOOLTIP_RANDOMIZE_SPAWN = "Pick random spawn point for each enemy, otherwise use first spawn point";
-        private const string TOOLTIP_AUTO_START = "Automatically start next wave after completion";
-        private const string TOOLTIP_AUTO_DELAY = "Delay in seconds before auto-starting next wave";
-        private const string TOOLTIP_DETAILED_LOGS = "Show detailed spawn logs for each enemy";
+	public class WaveManager : MonoBehaviour
+	{
+		private const string TOOLTIP_LOOP_WAVES = "Restart from wave 1 after completing all waves with increased difficulty";
+		private const string TOOLTIP_DIFFICULTY_SCALING = "Multiplier applied to enemy stats each loop (1.5 = 150% health/count per loop)";
+		private const string TOOLTIP_RANDOMIZE_SPAWN = "Pick random spawn point for each enemy, otherwise use first spawn point";
+		private const string TOOLTIP_AUTO_START = "Automatically start next wave after completion";
+		private const string TOOLTIP_AUTO_DELAY = "Delay in seconds before auto-starting next wave";
+		private const string TOOLTIP_DETAILED_LOGS = "Show detailed spawn logs for each enemy";
 
-        [SerializeField] private bool Logs = true;
-        [Tooltip(TOOLTIP_DETAILED_LOGS)]
-        [SerializeField] private bool detailedLogs = false;
-        public static WaveManager Instance { get; private set; }
+		[SerializeField] private bool Logs = true;
+		[Tooltip(TOOLTIP_DETAILED_LOGS)]
+		[SerializeField] private bool detailedLogs = false;
+		public static WaveManager Instance { get; private set; }
 
-        [SerializeField] private List<WaveConfig> waves = new List<WaveConfig>();
-        [Tooltip(TOOLTIP_LOOP_WAVES)]
-        [SerializeField] private bool loopWaves = true;
-        [Tooltip(TOOLTIP_DIFFICULTY_SCALING)]
-        [SerializeField] private float difficultyScalingPerLoop = 1.5f;
+		[SerializeField] private List<WaveConfig> waves = new List<WaveConfig>();
+		[Tooltip(TOOLTIP_LOOP_WAVES)]
+		[SerializeField] private bool loopWaves = true;
+		[Tooltip(TOOLTIP_DIFFICULTY_SCALING)]
+		[SerializeField] private float difficultyScalingPerLoop = 1.5f;
 
-        [SerializeField] private Transform[] spawnPoints;
-        [Tooltip(TOOLTIP_RANDOMIZE_SPAWN)]
-        [SerializeField] private bool randomizeSpawnPoint = true;
+		[SerializeField] private Transform[] spawnPoints;
+		[Tooltip(TOOLTIP_RANDOMIZE_SPAWN)]
+		[SerializeField] private bool randomizeSpawnPoint = true;
 
-        [Tooltip(TOOLTIP_AUTO_START)]
-        [SerializeField] private bool autoStartNextWave = false;
-        [Tooltip(TOOLTIP_AUTO_DELAY)]
-        [SerializeField] private float autoStartDelay = 3f;
+		[Tooltip(TOOLTIP_AUTO_START)]
+		[SerializeField] private bool autoStartNextWave = false;
+		[Tooltip(TOOLTIP_AUTO_DELAY)]
+		[SerializeField] private float autoStartDelay = 3f;
 
-        [SerializeField] private int currentWaveIndex = -1;
-        [SerializeField] private int currentLoopCount = 0;
-        [SerializeField] private int enemiesAlive = 0;
-        [SerializeField] private int enemiesSpawned = 0;
-        [SerializeField] private int totalEnemiesInWave = 0;
+		[SerializeField] private int currentWaveIndex = -1;
+		[SerializeField] private int currentLoopCount = 0;
+		[SerializeField] private int enemiesAlive = 0;
+		[SerializeField] private int enemiesSpawned = 0;
+		[SerializeField] private int totalEnemiesInWave = 0;
 
-        [ProgressBar(0, 1, ColorGetter = "GetSpawnProgressColor")]
-        [ShowInInspector, ReadOnly]
-        private float spawnProgress = 0f;
+		[ProgressBar(0, 1, ColorGetter = "GetSpawnProgressColor")]
+		[ShowInInspector, ReadOnly]
+		private float spawnProgress = 0f;
 
-        [ShowInInspector, ReadOnly]
-        private float timeUntilNextWave = 0f;
+		[ShowInInspector, ReadOnly]
+		private float timeUntilNextWave = 0f;
 
-        [ShowInInspector, ReadOnly]
-        private string currentWaveStatus = "Idle";
+		[ShowInInspector, ReadOnly]
+		private string currentWaveStatus = "Idle";
 
-        public UnityEvent<int> onWaveStarted;
-        public UnityEvent<int> onWaveCompleted;
-        public UnityEvent<int> onEnemySpawned;
-        public UnityEvent<int> onEnemyKilled;
-        public UnityEvent onAllWavesCompleted;
+		public UnityEvent<int> onWaveStarted;
+		public UnityEvent<int> onWaveCompleted;
+		public UnityEvent<int> onEnemySpawned;
+		public UnityEvent<int> onEnemyKilled;
+		public UnityEvent onAllWavesCompleted;
 
-        private Coroutine spawnCoroutine;
-        private bool isSpawning = false;
+		private Coroutine spawnCoroutine;
+		private bool isSpawning = false;
 
-        public int CurrentWaveNumber => currentWaveIndex + 1;
-        public int TotalWaves => waves.Count;
-        public bool IsSpawning => isSpawning;
-        public bool IsWaveActive => enemiesAlive > 0 || isSpawning;
-        public int EnemiesAlive => enemiesAlive;
-        public int EnemiesSpawned => enemiesSpawned;
-        public int TotalEnemiesInWave => totalEnemiesInWave;
-        public float WaveProgress => totalEnemiesInWave > 0 ? (float)enemiesSpawned / totalEnemiesInWave : 0f;
+		public int CurrentWaveNumber => currentWaveIndex + 1;
+		public int TotalWaves => waves.Count;
+		public bool IsSpawning => isSpawning;
+		public bool IsWaveActive => enemiesAlive > 0 || isSpawning;
+		public int EnemiesAlive => enemiesAlive;
+		public int EnemiesSpawned => enemiesSpawned;
+		public int TotalEnemiesInWave => totalEnemiesInWave;
+		public float WaveProgress => totalEnemiesInWave > 0 ? (float)enemiesSpawned / totalEnemiesInWave : 0f;
 
-        private Color GetSpawnProgressColor()
-        {
-            if (spawnProgress < 0.33f) return Color.red;
-            if (spawnProgress < 0.66f) return Color.yellow;
-            return Color.green;
-        }
+		private Color GetSpawnProgressColor()
+		{
+			if (spawnProgress < 0.33f) return Color.red;
+			if (spawnProgress < 0.66f) return Color.yellow;
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
+			return Color.green;
+		}
 
-            Instance = this;
-        }
+		private void Awake()
+		{
+			if (Instance != null && Instance != this)
+			{
+				Destroy(gameObject);
+				return;
+			}
 
-        private void Start()
-        {
-            ValidateSpawnPoints();
+			Instance = this;
+		}
 
-            if (waves.Count > 0 && autoStartNextWave)
-            {
-                StartNextWave();
-            }
-        }
+		private void Start()
+		{
+			ValidateSpawnPoints();
 
-        private void ValidateSpawnPoints()
-        {
-            if (spawnPoints == null || spawnPoints.Length == 0)
-            {
-                Debug.LogWarning("WaveManager: No spawn points assigned! Searching for GameObject with tag 'SpawnPoint'");
-                GameObject[] spawnPointObjects = GameObject.FindGameObjectsWithTag("SpawnPoint");
-                spawnPoints = new Transform[spawnPointObjects.Length];
-                for (int i = 0; i < spawnPointObjects.Length; i++)
-                {
-                    spawnPoints[i] = spawnPointObjects[i].transform;
-                }
-            }
+			if (waves.Count > 0 && autoStartNextWave)
+			{
+				StartNextWave();
+			}
+		}
 
-            if (spawnPoints.Length == 0)
-            {
-                Debug.LogError("WaveManager: Still no spawn points found! Creating default at origin.");
-                GameObject spawnPoint = new GameObject("DefaultSpawnPoint");
-                spawnPoint.transform.position = Vector3.zero;
-                spawnPoints = new Transform[] { spawnPoint.transform };
-            }
-        }
+		private void ValidateSpawnPoints()
+		{
+			if (spawnPoints == null || spawnPoints.Length == 0)
+			{
+				Debug.LogWarning("WaveManager: No spawn points assigned! Searching for GameObject with tag 'SpawnPoint'");
+				GameObject[] spawnPointObjects = GameObject.FindGameObjectsWithTag("SpawnPoint");
+				spawnPoints = new Transform[spawnPointObjects.Length];
+				for (int i = 0; i < spawnPointObjects.Length; i++)
+				{
+					spawnPoints[i] = spawnPointObjects[i].transform;
+				}
+			}
 
-        public void Initialize(List<WaveConfig> waveConfigs, Transform[] spawners)
-        {
-            if (waveConfigs != null && waveConfigs.Count > 0)
-            {
-                waves = waveConfigs;
-            }
+			if (spawnPoints.Length == 0)
+			{
+				Debug.LogError("WaveManager: Still no spawn points found! Creating default at origin.");
+				GameObject spawnPoint = new GameObject("DefaultSpawnPoint");
+				spawnPoint.transform.position = Vector3.zero;
+				spawnPoints = new Transform[] { spawnPoint.transform };
+			}
+		}
 
-            if (spawners != null && spawners.Length > 0)
-            {
-                spawnPoints = spawners;
-            }
+		public void Initialize(List<WaveConfig> waveConfigs, Transform[] spawners)
+		{
+			if (waveConfigs != null && waveConfigs.Count > 0)
+			{
+				waves = waveConfigs;
+			}
 
-            if (Logs) Debug.Log($"[WaveManager] Initialized with {waves.Count} waves and {spawnPoints?.Length ?? 0} spawn points");
-        }
+			if (spawners != null && spawners.Length > 0)
+			{
+				spawnPoints = spawners;
+			}
 
-        public void StartNextWave()
-        {
-            if (isSpawning)
-            {
-                Debug.LogWarning("WaveManager: Cannot start wave while already spawning!");
-                return;
-            }
+			if (Logs) Debug.Log($"[WaveManager] Initialized with {waves.Count} waves and {spawnPoints?.Length ?? 0} spawn points");
+		}
 
-            currentWaveIndex++;
+		public void StartNextWave()
+		{
+			if (isSpawning)
+			{
+				Debug.LogWarning("WaveManager: Cannot start wave while already spawning!");
+				return;
+			}
 
-            if (currentWaveIndex >= waves.Count)
-            {
-                if (loopWaves)
-                {
-                    currentWaveIndex = 0;
-                    currentLoopCount++;
-                    if (Logs) Debug.Log($"[WaveManager] Starting loop {currentLoopCount + 1} with {difficultyScalingPerLoop}x difficulty");
-                }
-                else
-                {
-                    if (Logs) Debug.Log("[WaveManager] All waves completed!");
-                    onAllWavesCompleted?.Invoke();
-                    return;
-                }
-            }
+			currentWaveIndex++;
 
-            if (spawnCoroutine != null)
-            {
-                StopCoroutine(spawnCoroutine);
-            }
+			if (currentWaveIndex >= waves.Count)
+			{
+				if (loopWaves)
+				{
+					currentWaveIndex = 0;
+					currentLoopCount++;
+					if (Logs) Debug.Log($"[WaveManager] Starting loop {currentLoopCount + 1} with {difficultyScalingPerLoop}x difficulty");
+				}
+				else
+				{
+					return;
+				}
+			}
 
-            spawnCoroutine = StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
-        }
+			if (spawnCoroutine != null)
+			{
+				StopCoroutine(spawnCoroutine);
+			}
 
-        private IEnumerator SpawnWaveCoroutine(WaveConfig waveConfig)
-        {
-            isSpawning = true;
-            enemiesSpawned = 0;
-            totalEnemiesInWave = waveConfig.GetTotalEnemyCount();
-            spawnProgress = 0f;
-            currentWaveStatus = $"Wave {currentWaveIndex + 1} - Waiting to start";
+			spawnCoroutine = StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
+		}
 
-            if (Logs) Debug.Log($"[WaveManager] ==== Wave {currentWaveIndex + 1} Started ====");
-            if (Logs) Debug.Log($"[WaveManager] Total enemies: {totalEnemiesInWave}, Loop: {currentLoopCount + 1}, Difficulty: {Mathf.Pow(difficultyScalingPerLoop, currentLoopCount):F2}x");
+		private IEnumerator SpawnWaveCoroutine(WaveConfig waveConfig)
+		{
+			isSpawning = true;
+			enemiesSpawned = 0;
+			totalEnemiesInWave = waveConfig.GetTotalEnemyCount();
+			spawnProgress = 0f;
+			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Waiting to start";
 
-            onWaveStarted?.Invoke(currentWaveIndex + 1);
+			if (Logs) Debug.Log($"[WaveManager] ==== Wave {currentWaveIndex + 1} Started ====");
+			if (Logs)
+				Debug.Log(
+					$"[WaveManager] Total enemies: {totalEnemiesInWave}, Loop: {currentLoopCount + 1}, Difficulty: {Mathf.Pow(difficultyScalingPerLoop, currentLoopCount):F2}x");
 
-            float delayTimer = waveConfig.DelayBeforeWave;
-            while (delayTimer > 0)
-            {
-                timeUntilNextWave = delayTimer;
-                currentWaveStatus = $"Wave {currentWaveIndex + 1} - Starting in {delayTimer:F1}s";
-                delayTimer -= Time.deltaTime;
-                yield return null;
-            }
+			onWaveStarted?.Invoke(currentWaveIndex + 1);
 
-            timeUntilNextWave = 0f;
-            currentWaveStatus = $"Wave {currentWaveIndex + 1} - Spawning";
+			float delayTimer = waveConfig.DelayBeforeWave;
+			while (delayTimer > 0)
+			{
+				timeUntilNextWave = delayTimer;
+				currentWaveStatus = $"Wave {currentWaveIndex + 1} - Starting in {delayTimer:F1}s";
+				delayTimer -= Time.deltaTime;
+				yield return null;
+			}
 
-            int spawnGroupIndex = 0;
-            foreach (var enemySpawn in waveConfig.EnemySpawns)
-            {
-                int count = Mathf.RoundToInt(enemySpawn.count * waveConfig.CountScaling * Mathf.Pow(difficultyScalingPerLoop, currentLoopCount));
-                spawnGroupIndex++;
+			timeUntilNextWave = 0f;
+			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Spawning";
 
-                if (Logs) Debug.Log($"[WaveManager] Spawning group {spawnGroupIndex}: {count}x {enemySpawn.enemyPrefab?.name ?? "NULL"} (delay: {enemySpawn.spawnDelay}s)");
+			int spawnGroupIndex = 0;
+			foreach (var enemySpawn in waveConfig.EnemySpawns)
+			{
+				int count = Mathf.RoundToInt(enemySpawn.count * waveConfig.CountScaling * Mathf.Pow(difficultyScalingPerLoop, currentLoopCount));
+				spawnGroupIndex++;
 
-                for (int i = 0; i < count; i++)
-                {
-                    SpawnEnemy(enemySpawn, waveConfig, spawnGroupIndex, i + 1, count);
-                    enemiesSpawned++;
-                    spawnProgress = (float)enemiesSpawned / totalEnemiesInWave;
-                    onEnemySpawned?.Invoke(enemiesSpawned);
+				if (Logs)
+					Debug.Log(
+						$"[WaveManager] Spawning group {spawnGroupIndex}: {count}x {enemySpawn.enemyPrefab?.name ?? "NULL"} (delay: {enemySpawn.spawnDelay}s)");
 
-                    if (detailedLogs) Debug.Log($"[WaveManager] Spawned enemy {enemiesSpawned}/{totalEnemiesInWave} ({spawnProgress * 100:F1}%)");
+				for (int i = 0; i < count; i++)
+				{
+					SpawnEnemy(enemySpawn, waveConfig, spawnGroupIndex, i + 1, count);
+					enemiesSpawned++;
+					spawnProgress = (float)enemiesSpawned / totalEnemiesInWave;
+					onEnemySpawned?.Invoke(enemiesSpawned);
 
-                    yield return new WaitForSeconds(enemySpawn.spawnDelay);
-                }
-            }
+					if (detailedLogs) Debug.Log($"[WaveManager] Spawned enemy {enemiesSpawned}/{totalEnemiesInWave} ({spawnProgress * 100:F1}%)");
 
-            isSpawning = false;
-            spawnProgress = 1f;
-            currentWaveStatus = $"Wave {currentWaveIndex + 1} - Fighting ({enemiesAlive} enemies alive)";
+					yield return new WaitForSeconds(enemySpawn.spawnDelay);
+				}
+			}
 
-            if (Logs) Debug.Log($"[WaveManager] All enemies spawned. Waiting for {enemiesAlive} enemies to be defeated...");
+			isSpawning = false;
+			spawnProgress = 1f;
+			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Fighting ({enemiesAlive} enemies alive)";
 
-            while (enemiesAlive > 0)
-            {
-                currentWaveStatus = $"Wave {currentWaveIndex + 1} - Fighting ({enemiesAlive} enemies alive)";
-                yield return null;
-            }
+			if (Logs) Debug.Log($"[WaveManager] All enemies spawned. Waiting for {enemiesAlive} enemies to be defeated...");
 
-            currentWaveStatus = $"Wave {currentWaveIndex + 1} - Completed!";
-            OnWaveCompleted(waveConfig);
-        }
+			while (enemiesAlive > 0)
+			{
+				currentWaveStatus = $"Wave {currentWaveIndex + 1} - Fighting ({enemiesAlive} enemies alive)";
+				yield return null;
+			}
 
-        private void SpawnEnemy(EnemySpawnData enemySpawn, WaveConfig waveConfig, int groupIndex, int enemyIndexInGroup, int groupTotal)
-        {
-            if (enemySpawn.enemyPrefab == null)
-            {
-                Debug.LogError("[WaveManager] Enemy prefab is null!");
-                return;
-            }
+			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Completed!";
+			OnWaveCompleted(waveConfig);
+		}
 
-            Transform spawnPoint = GetSpawnPoint();
-            GameObject enemyObject = Instantiate(enemySpawn.enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+		private void SpawnEnemy(EnemySpawnData enemySpawn, WaveConfig waveConfig, int groupIndex, int enemyIndexInGroup, int groupTotal)
+		{
+			if (enemySpawn.enemyPrefab == null)
+			{
+				Debug.LogError("[WaveManager] Enemy prefab is null!");
+				return;
+			}
 
-            var enemyHealth = enemyObject.GetComponent<EnemyHealth>();
-            if (enemyHealth != null)
-            {
-                float scaledHealth = enemyHealth.MaxHealth * enemySpawn.healthMultiplier * waveConfig.HealthScaling *
-                                    Mathf.Pow(difficultyScalingPerLoop, currentLoopCount);
-                enemyHealth.Initialize(scaledHealth);
+			Transform spawnPoint = GetSpawnPoint();
+			GameObject enemyObject = Instantiate(enemySpawn.enemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-                enemyHealth.onDeath.AddListener(() => OnEnemyKilled());
-                enemyHealth.onRewardGiven.AddListener((reward) => OnEnemyRewardGiven(reward));
+			var enemyHealth = enemyObject.GetComponent<EnemyHealth>();
+			if (enemyHealth != null)
+			{
+				float scaledHealth = enemyHealth.MaxHealth * enemySpawn.healthMultiplier * waveConfig.HealthScaling *
+				                     Mathf.Pow(difficultyScalingPerLoop, currentLoopCount);
 
-                if (detailedLogs)
-                {
-                    Debug.Log($"[WaveManager]   → Enemy [{groupIndex}.{enemyIndexInGroup}/{groupTotal}]: {enemyObject.name} | HP: {scaledHealth:F0} | Spawn: {spawnPoint.name}");
-                }
-            }
+				enemyHealth.Initialize(scaledHealth);
 
-            var enemyMovement = enemyObject.GetComponent<EnemyMovement>();
-            if (enemyMovement != null)
-            {
-                float scaledSpeed = enemyMovement.Speed * enemySpawn.speedMultiplier;
-                enemyMovement.Speed = scaledSpeed;
+				enemyHealth.onDeath.AddListener(() => OnEnemyKilled());
+				enemyHealth.onRewardGiven.AddListener((reward) => OnEnemyRewardGiven(reward));
 
-                if (detailedLogs)
-                {
-                    Debug.Log($"[WaveManager]   → Speed: {scaledSpeed:F2} units/sec");
-                }
-            }
+				if (detailedLogs)
+				{
+					Debug.Log(
+						$"[WaveManager]   → Enemy [{groupIndex}.{enemyIndexInGroup}/{groupTotal}]: {enemyObject.name} | HP: {scaledHealth:F0} | Spawn: {spawnPoint.name}");
+				}
+			}
 
-            enemiesAlive++;
-        }
+			var enemyMovement = enemyObject.GetComponent<EnemyMovement>();
+			if (enemyMovement != null)
+			{
+				float scaledSpeed = enemyMovement.Speed * enemySpawn.speedMultiplier;
+				enemyMovement.Speed = scaledSpeed;
 
-        private Transform GetSpawnPoint()
-        {
-            if (randomizeSpawnPoint)
-            {
-                return spawnPoints[Random.Range(0, spawnPoints.Length)];
-            }
-            else
-            {
-                return spawnPoints[0];
-            }
-        }
+				if (detailedLogs)
+				{
+					Debug.Log($"[WaveManager]   → Speed: {scaledSpeed:F2} units/sec");
+				}
+			}
 
-        private void OnEnemyKilled()
-        {
-            enemiesAlive--;
-            onEnemyKilled?.Invoke(enemiesAlive);
-        }
+			enemiesAlive++;
+		}
 
-        private void OnEnemyRewardGiven(int reward)
-        {
-            ResourceManager.Instance?.AddCurrency(reward);
-        }
+		private Transform GetSpawnPoint()
+		{
+			if (randomizeSpawnPoint)
+			{
+				return spawnPoints[Random.Range(0, spawnPoints.Length)];
+			}
+			else
+			{
+				return spawnPoints[0];
+			}
+		}
 
-        private void OnWaveCompleted(WaveConfig waveConfig)
-        {
-            if (Logs) Debug.Log($"[WaveManager] Wave {currentWaveIndex + 1} completed! Reward: {waveConfig.CompletionReward}");
+		private void OnEnemyKilled()
+		{
+			enemiesAlive--;
+			onEnemyKilled?.Invoke(enemiesAlive);
+		}
 
-            ResourceManager.Instance?.AddCurrency(waveConfig.CompletionReward);
-            ResourceManager.Instance?.GivePassiveIncome();
+		private void OnEnemyRewardGiven(int reward)
+		{
+			ResourceManager.Instance?.AddCurrency(reward);
+		}
 
-            onWaveCompleted?.Invoke(currentWaveIndex + 1);
+		private void OnWaveCompleted(WaveConfig waveConfig)
+		{
+			if (Logs) Debug.Log($"[WaveManager] Wave {currentWaveIndex + 1} completed! Reward: {waveConfig.CompletionReward}");
 
-            if (autoStartNextWave)
-            {
-                Invoke(nameof(StartNextWave), autoStartDelay);
-            }
-        }
+			ResourceManager.Instance?.AddCurrency(waveConfig.CompletionReward);
+			ResourceManager.Instance?.GivePassiveIncome();
 
-        public void ForceStopWave()
-        {
-            if (spawnCoroutine != null)
-            {
-                StopCoroutine(spawnCoroutine);
-                spawnCoroutine = null;
-            }
+			onWaveCompleted?.Invoke(currentWaveIndex + 1);
 
-            isSpawning = false;
+			if (currentWaveIndex + 1 >= waves.Count)
+			{
+				if (Logs) Debug.Log("[WaveManager] All waves completed!");
+				onAllWavesCompleted?.Invoke();
+			}
 
-            // Destroy all enemies
-            var enemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
-            foreach (var enemy in enemies)
-            {
-                Destroy(enemy.gameObject);
-            }
+			if (autoStartNextWave)
+			{
+				Invoke(nameof(StartNextWave), autoStartDelay);
+			}
+		}
 
-            enemiesAlive = 0;
-        }
+		public void ForceStopWave()
+		{
+			if (spawnCoroutine != null)
+			{
+				StopCoroutine(spawnCoroutine);
+				spawnCoroutine = null;
+			}
 
-        private void OnDestroy()
-        {
-            if (Instance == this)
-            {
-                Instance = null;
-            }
+			isSpawning = false;
 
-            onWaveStarted?.RemoveAllListeners();
-            onWaveCompleted?.RemoveAllListeners();
-            onEnemySpawned?.RemoveAllListeners();
-            onEnemyKilled?.RemoveAllListeners();
-            onAllWavesCompleted?.RemoveAllListeners();
-        }
-    }
+			// Destroy all enemies
+			var enemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
+			foreach (var enemy in enemies)
+			{
+				Destroy(enemy.gameObject);
+			}
+
+			enemiesAlive = 0;
+		}
+
+		private void OnDestroy()
+		{
+			if (Instance == this)
+			{
+				Instance = null;
+			}
+
+			onWaveStarted?.RemoveAllListeners();
+			onWaveCompleted?.RemoveAllListeners();
+			onEnemySpawned?.RemoveAllListeners();
+			onEnemyKilled?.RemoveAllListeners();
+			onAllWavesCompleted?.RemoveAllListeners();
+		}
+	}
 }

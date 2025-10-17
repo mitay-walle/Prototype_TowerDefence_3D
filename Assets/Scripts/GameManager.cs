@@ -67,6 +67,10 @@ namespace TD
 			{
 				WaveManager.Instance.onAllWavesCompleted.AddListener(OnAllWavesCompleted);
 			}
+			else
+			{
+				Debug.LogError("WaveManager is null");
+			}
 		}
 
 		public void StartGame()
