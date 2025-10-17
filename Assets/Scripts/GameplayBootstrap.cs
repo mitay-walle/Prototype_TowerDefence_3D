@@ -60,6 +60,7 @@ namespace TD
 			// Step 4: Initialize Pools
 			yield return StartCoroutine(InitializePools());
 
+			FindAnyObjectByType<GameHUD>().Initialize();
 			// Step 5: Finalize
 			FinalizeBootstrap();
 
@@ -167,7 +168,6 @@ namespace TD
 
 			playerBase.name = "PlayerBase";
 			playerBase.transform.position = position + Vector3.up * 0.5f;
-
 			if (logs) Debug.Log($"[GameplayBootstrap] Base placed at {position}");
 		}
 

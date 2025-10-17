@@ -46,7 +46,7 @@ namespace TD
         private TowerPlacementSystem placementSystem;
         private List<ConsoleMessage> consoleMessages = new List<ConsoleMessage>();
 
-        private void Start()
+        public void Initialize()
         {
             placementSystem = FindFirstObjectByType<TowerPlacementSystem>();
 
@@ -88,8 +88,12 @@ namespace TD
             if (playerBase != null)
             {
                 playerBase.onHealthChanged.AddListener(OnBaseHealthChanged);
+                OnBaseHealthChanged(playerBase.CurrentHealth);
             }
-
+            else
+            {
+                Debug.LogError("Base not found");
+            }
             // Game Manager
             if (GameManager.Instance != null)
             {
