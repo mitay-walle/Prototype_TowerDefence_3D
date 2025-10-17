@@ -61,6 +61,7 @@ namespace TD
 			yield return StartCoroutine(InitializePools());
 
 			FindAnyObjectByType<GameHUD>().Initialize();
+			FindAnyObjectByType<GameManager>().Initialize();
 			// Step 5: Finalize
 			FinalizeBootstrap();
 

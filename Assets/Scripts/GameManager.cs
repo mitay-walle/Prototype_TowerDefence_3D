@@ -41,7 +41,7 @@ namespace TD
 			Instance = this;
 		}
 
-		private void Start()
+		public void Initialize()
 		{
 			SetupEventListeners();
 
