@@ -28,6 +28,11 @@ namespace TD
 		{
 			if (materialGroups.Count == 0) return;
 
+			if (voxelMaterial == null)
+			{
+				voxelMaterial = Resources.Load<Material>("Materials/Default-Voxel-Lit");
+			}
+			
 			Transform found = parent.Find("Combined");
 			GameObject combined = null;
 

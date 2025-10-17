@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TD.Plugins.Runtime;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -30,8 +31,8 @@ namespace TD
 		public float voronoiCellSize = 15f;
 		public int voronoiPointCount = 15;
 
-		public int terrainLayer = 0;
-		public int roadLayer = 0;
+		[Layer] public int terrainLayer = 0;
+		[Layer] public int roadLayer = 0;
 
 		public List<Color> colorPalette = new List<Color>();
 		public List<Color> emissionPalette = new List<Color>();
@@ -172,48 +173,214 @@ private void GenerateRoadPaths()
 			}
 		}
 
-		List<Vector2Int> pathEndpoints = new List<Vector2Int>();
-		List<Vector2Int> connectedPoints = new List<Vector2Int> { basePosition };
-
+		var pathQueue = new System.Collections.Generic.Queue<(Vector2Int start, float direction, int depth)>();
 		for (int i = 0; i < pathCount; i++)
 		{
 			float angleBase = 360f / pathCount * i;
 			float angle = (angleBase + Random.Range(-30f, 30f)) * Mathf.Deg2Rad;
+			pathQueue.Enqueue((basePosition, angle, 0));
+		}
 
-			PathType pathType = ChoosePathType();
-			Vector2Int endpoint = basePosition;
+		while (pathQueue.Count > 0)
+		{
+			var (start, direction, depth) = pathQueue.Dequeue();
+			if (depth > 2) continue;
 
-			switch (pathType)
+			GenerateRandomWalkPath(start, direction, pathQueue, depth);
+		}
+
+		EnsureRoadConnectivity();
+		SimplifyRoadEdges();
+	}
+
+		private void GenerateRandomWalkPath(Vector2Int start,
+		                                    float initialDirection,
+		                                    System.Collections.Generic.Queue<(Vector2Int, float, int)> pathQueue,
+		                                    int depth)
+		{
+			var current = start;
+			var previous = start;
+			var direction = initialDirection;
+			int distance = 0;
+
+			while (IsInsideMap(current) && distance < mapSize * 2)
 			{
-				case PathType.Straight:
-					endpoint = GenerateStraightPath(basePosition, angle);
-					break;
+				AddRoadCell(current);
+				FillDiagonalGaps(current, previous);
 
-				case PathType.Loop:
-					GenerateLoopPath(basePosition, angle);
-					endpoint = basePosition;
-					break;
+				int midpoint = mapSize;
+				if (distance == midpoint && depth < 2)
+				{
+					for (int b = 0; b < 2; b++)
+					{
+						float branchAngle = direction + Random.Range(-0.7f, 0.7f);
+						pathQueue.Enqueue((current, branchAngle, depth + 1));
+					}
+				}
 
-				case PathType.SCurve:
-					GenerateSCurvePath(basePosition, angle);
-					endpoint = basePosition;
-					break;
+				if (distance % 15 == 0 && Random.value < 0.4f)
+				{
+					if (Random.value < 0.5f)
+						GenerateRectangularRing(current);
+					else
+						GenerateDiamondRing(current);
+				}
 
-				case PathType.Branch:
-					endpoint = GenerateStraightPath(basePosition, angle);
+				if (distance % 20 == 0 && Random.value < 0.3f)
+				{
+					GenerateSmallLabyrinth(current);
+				}
+
+				previous = current;
+
+				var neighbors = GetRandomNeighbor(current, direction);
+				if (neighbors != current)
+				{
+					direction += Random.Range(-0.2f, 0.2f);
+					current = neighbors;
+					distance++;
+				}
+				else
 					break;
 			}
 
-			if (IsInsideMap(endpoint) && endpoint != basePosition)
+			roadEdges.Add(current);
+		}
+
+		private Vector2Int GetRandomNeighbor(Vector2Int current, float preferredDirection)
+		{
+			var neighbors = new Vector2Int[]
 			{
-				pathEndpoints.Add(endpoint);
-				connectedPoints.Add(endpoint);
+				new Vector2Int(current.x + 1, current.y),
+				new Vector2Int(current.x - 1, current.y),
+				new Vector2Int(current.x, current.y + 1),
+				new Vector2Int(current.x, current.y - 1)
+			};
+
+			Vector2Int best = current;
+			float bestScore = -1f;
+
+			foreach (var neighbor in neighbors)
+			{
+				if (!IsInsideMap(neighbor)) continue;
+
+				var direction = ((Vector2)neighbor - (Vector2)current).normalized;
+				var dirAngle = Mathf.Atan2(direction.y, direction.x);
+				var score = Mathf.Cos(dirAngle - preferredDirection) + Random.Range(-0.3f, 0.3f);
+
+				if (score > bestScore)
+				{
+					bestScore = score;
+					best = neighbor;
+				}
+			}
+
+			return best;
+		}
+
+		private void GenerateRectangularRing(Vector2Int center)
+		{
+			int size = Random.Range(4, 8);
+			for (int x = -size; x <= size; x++)
+			{
+				for (int z = -size; z <= size; z++)
+				{
+					if ((x == -size || x == size || z == -size || z == size))
+					{
+						Vector2Int pos = new Vector2Int(center.x + x, center.y + z);
+						if (IsInsideMap(pos))
+							AddRoadCell(pos);
+					}
+				}
 			}
 		}
 
-		ConnectDisconnectedSegments(connectedPoints);
-		EnsureRoadContinuity();
-	}
+		private void GenerateDiamondRing(Vector2Int center)
+		{
+			int radius = Random.Range(3, 6);
+			for (int x = -radius; x <= radius; x++)
+			{
+				for (int z = -radius; z <= radius; z++)
+				{
+					if (Mathf.Abs(x) + Mathf.Abs(z) == radius)
+					{
+						Vector2Int pos = new Vector2Int(center.x + x, center.y + z);
+						if (IsInsideMap(pos))
+							AddRoadCell(pos);
+					}
+				}
+			}
+		}
+
+		private void GenerateSmallLabyrinth(Vector2Int center)
+		{
+			int size = 5;
+			var maze = new bool[size, size];
+
+			for (int x = 0; x < size; x++)
+			{
+				for (int z = 0; z < size; z++)
+				{
+					maze[x, z] = Random.value < 0.4f;
+				}
+			}
+
+			for (int x = 0; x < size; x++)
+			{
+				for (int z = 0; z < size; z++)
+				{
+					if (maze[x, z])
+					{
+						Vector2Int pos = new Vector2Int(center.x + x - size / 2, center.y + z - size / 2);
+						if (IsInsideMap(pos))
+							AddRoadCell(pos);
+					}
+				}
+			}
+		}
+
+		private void EnsureAllPathsConnected(List<Vector2Int> endpoints)
+		{
+			foreach (var endpoint in endpoints)
+			{
+				if (!IsRoadConnected(basePosition, endpoint))
+				{
+					ConnectTwoPoints(basePosition, endpoint);
+				}
+			}
+		}
+
+		private void EnsureRoadConnectivity()
+		{
+			var cellsToRemove = new HashSet<Vector2Int>();
+
+			foreach (var cell in roadCells)
+			{
+				var xzNeighbors = new Vector2Int[]
+				{
+					new Vector2Int(cell.x + 1, cell.y),
+					new Vector2Int(cell.x - 1, cell.y),
+					new Vector2Int(cell.x, cell.y + 1),
+					new Vector2Int(cell.x, cell.y - 1)
+				};
+
+				bool hasNeighbor = false;
+				foreach (var neighbor in xzNeighbors)
+				{
+					if (roadCells.Contains(neighbor))
+					{
+						hasNeighbor = true;
+						break;
+					}
+				}
+
+				if (!hasNeighbor)
+					cellsToRemove.Add(cell);
+			}
+
+			foreach (var cell in cellsToRemove)
+				roadCells.Remove(cell);
+		}
 
 		private PathType ChoosePathType()
 		{
@@ -343,131 +510,132 @@ private void GenerateRoadPaths()
 			}
 		}
 
-private void ConnectDisconnectedSegments(List<Vector2Int> connectedPoints)
-	{
-		if (connectedPoints.Count <= 1) return;
-
-		HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-		foreach (var point in connectedPoints)
+		private void ConnectDisconnectedSegments(List<Vector2Int> connectedPoints)
 		{
-			visited.Add(point);
-		}
+			if (connectedPoints.Count <= 1) return;
 
-		for (int i = 1; i < connectedPoints.Count; i++)
-		{
-			if (!IsRoadConnected(connectedPoints[i - 1], connectedPoints[i]))
+			HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+			foreach (var point in connectedPoints)
 			{
-				ConnectTwoPoints(connectedPoints[i - 1], connectedPoints[i]);
+				visited.Add(point);
 			}
-		}
-	}
 
-private bool IsRoadConnected(Vector2Int from, Vector2Int to)
-	{
-		if (roadCells.Contains(from) && roadCells.Contains(to))
-		{
-			var visited = new HashSet<Vector2Int>();
-			return BfsPathExists(from, to, visited);
-		}
-		return false;
-	}
-
-	private bool BfsPathExists(Vector2Int from, Vector2Int to, HashSet<Vector2Int> visited)
-	{
-		var queue = new System.Collections.Generic.Queue<Vector2Int>();
-		queue.Enqueue(from);
-		visited.Add(from);
-
-		while (queue.Count > 0)
-		{
-			var current = queue.Dequeue();
-			if (current == to) return true;
-
-			var neighbors = new Vector2Int[] {
-				new Vector2Int(current.x + 1, current.y),
-				new Vector2Int(current.x - 1, current.y),
-				new Vector2Int(current.x, current.y + 1),
-				new Vector2Int(current.x, current.y - 1)
-			};
-
-			foreach (var neighbor in neighbors)
+			for (int i = 1; i < connectedPoints.Count; i++)
 			{
-				if (!visited.Contains(neighbor) && roadCells.Contains(neighbor))
+				if (!IsRoadConnected(connectedPoints[i - 1], connectedPoints[i]))
 				{
-					visited.Add(neighbor);
-					queue.Enqueue(neighbor);
+					ConnectTwoPoints(connectedPoints[i - 1], connectedPoints[i]);
 				}
 			}
 		}
 
-		return false;
-	}
-
-	private void ConnectTwoPoints(Vector2Int from, Vector2Int to)
-	{
-		Vector2Int current = from;
-		int dx = Math.Sign(to.x - from.x);
-		int dz = Math.Sign(to.y - from.y);
-
-		while (current != to)
+		private bool IsRoadConnected(Vector2Int from, Vector2Int to)
 		{
-			AddRoadCell(current);
-
-			if (Random.value < 0.5f && current.x != to.x)
-				current.x += dx;
-			else if (current.y != to.y)
-				current.y += dz;
-			else if (current.x != to.x)
-				current.x += dx;
-		}
-
-		AddRoadCell(to);
-	}
-
-	private void EnsureRoadContinuity()
-	{
-		var cellsToAdd = new List<Vector2Int>();
-
-		foreach (var cell in roadCells)
-		{
-			var neighbors = new Vector2Int[] {
-				new Vector2Int(cell.x + 1, cell.y),
-				new Vector2Int(cell.x - 1, cell.y),
-				new Vector2Int(cell.x, cell.y + 1),
-				new Vector2Int(cell.x, cell.y - 1),
-				new Vector2Int(cell.x + 1, cell.y + 1),
-				new Vector2Int(cell.x - 1, cell.y - 1),
-				new Vector2Int(cell.x + 1, cell.y - 1),
-				new Vector2Int(cell.x - 1, cell.y + 1)
-			};
-
-			int adjacentCount = 0;
-			foreach (var neighbor in neighbors)
+			if (roadCells.Contains(from) && roadCells.Contains(to))
 			{
-				if (roadCells.Contains(neighbor))
-					adjacentCount++;
+				var visited = new HashSet<Vector2Int>();
+				return BfsPathExists(from, to, visited);
 			}
 
-			if (adjacentCount == 1 && Random.value < 0.3f)
+			return false;
+		}
+
+		private bool BfsPathExists(Vector2Int from, Vector2Int to, HashSet<Vector2Int> visited)
+		{
+			var queue = new System.Collections.Generic.Queue<Vector2Int>();
+			queue.Enqueue(from);
+			visited.Add(from);
+
+			while (queue.Count > 0)
 			{
+				var current = queue.Dequeue();
+				if (current == to) return true;
+
+				var neighbors = new Vector2Int[]
+				{
+					new Vector2Int(current.x + 1, current.y),
+					new Vector2Int(current.x - 1, current.y),
+					new Vector2Int(current.x, current.y + 1),
+					new Vector2Int(current.x, current.y - 1)
+				};
+
 				foreach (var neighbor in neighbors)
 				{
-					if (!roadCells.Contains(neighbor) && IsInsideMap(neighbor))
+					if (!visited.Contains(neighbor) && roadCells.Contains(neighbor))
 					{
-						cellsToAdd.Add(neighbor);
-						break;
+						visited.Add(neighbor);
+						queue.Enqueue(neighbor);
 					}
 				}
 			}
+
+			return false;
 		}
 
-		foreach (var cell in cellsToAdd)
+		private void ConnectTwoPoints(Vector2Int from, Vector2Int to)
 		{
-			AddRoadCell(cell);
+			Vector2Int current = from;
+			int dx = Math.Sign(to.x - from.x);
+			int dz = Math.Sign(to.y - from.y);
+
+			while (current != to)
+			{
+				AddRoadCell(current);
+
+				if (Random.value < 0.5f && current.x != to.x)
+					current.x += dx;
+				else if (current.y != to.y)
+					current.y += dz;
+				else if (current.x != to.x)
+					current.x += dx;
+			}
+
+			AddRoadCell(to);
 		}
-	}
 
+		private void EnsureRoadContinuity()
+		{
+			var cellsToAdd = new List<Vector2Int>();
 
+			foreach (var cell in roadCells)
+			{
+				var neighbors = new Vector2Int[]
+				{
+					new Vector2Int(cell.x + 1, cell.y),
+					new Vector2Int(cell.x - 1, cell.y),
+					new Vector2Int(cell.x, cell.y + 1),
+					new Vector2Int(cell.x, cell.y - 1),
+					new Vector2Int(cell.x + 1, cell.y + 1),
+					new Vector2Int(cell.x - 1, cell.y - 1),
+					new Vector2Int(cell.x + 1, cell.y - 1),
+					new Vector2Int(cell.x - 1, cell.y + 1)
+				};
+
+				int adjacentCount = 0;
+				foreach (var neighbor in neighbors)
+				{
+					if (roadCells.Contains(neighbor))
+						adjacentCount++;
+				}
+
+				if (adjacentCount == 1 && Random.value < 0.3f)
+				{
+					foreach (var neighbor in neighbors)
+					{
+						if (!roadCells.Contains(neighbor) && IsInsideMap(neighbor))
+						{
+							cellsToAdd.Add(neighbor);
+							break;
+						}
+					}
+				}
+			}
+
+			foreach (var cell in cellsToAdd)
+			{
+				AddRoadCell(cell);
+			}
+		}
 
 		private void AddRoadCell(Vector2Int pos)
 		{
@@ -690,6 +858,41 @@ private bool IsRoadConnected(Vector2Int from, Vector2Int to)
 				return _cachedRoadOuterWorldPositions;
 			}
 		}
+
+private void SimplifyRoadEdges()
+	{
+		if (roadEdges.Count <= 2) return;
+
+		var simplified = new List<Vector2Int>();
+		simplified.Add(roadEdges[0]);
+
+		float minDistanceThreshold = 5f;
+		float angleThreshold = 30f * Mathf.Deg2Rad;
+
+		for (int i = 1; i < roadEdges.Count - 1; i++)
+		{
+			Vector2Int prev = roadEdges[i - 1];
+			Vector2Int curr = roadEdges[i];
+			Vector2Int next = roadEdges[i + 1];
+
+			Vector2 dir1 = ((Vector2)curr - (Vector2)prev).normalized;
+			Vector2 dir2 = ((Vector2)next - (Vector2)curr).normalized;
+
+			float angle = Mathf.Abs(Mathf.Atan2(dir1.x * dir2.y - dir1.y * dir2.x, Vector2.Dot(dir1, dir2)));
+			float distToPrev = Vector2.Distance(prev, curr);
+			float distToNext = Vector2.Distance(curr, next);
+
+			if (angle < angleThreshold || (distToPrev < minDistanceThreshold && distToNext < minDistanceThreshold))
+				continue;
+
+			simplified.Add(curr);
+		}
+
+		simplified.Add(roadEdges[roadEdges.Count - 1]);
+		roadEdges = simplified;
+		_cachedRoadOuterCells = null;
+		_cachedRoadOuterWorldPositions = null;
+	}
 
 		private List<Vector2Int> _cachedRoadOuterCells;
 		private List<Vector3> _cachedRoadOuterWorldPositions;

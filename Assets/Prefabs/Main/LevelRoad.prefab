@@ -261,7 +261,7 @@ MonoBehaviour:
         _lastSeed: 1712616176
         mapSize: 60
         roadWidth: 1
-        pathCount: 3
+        pathCount: 1
         heightScale: 8
         noiseScale: 0.08
         loopChance: 0.3
