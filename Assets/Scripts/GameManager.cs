@@ -13,7 +13,7 @@ namespace TD
 		public static GameManager Instance { get; private set; }
 
 		[SerializeField] private GameState currentState = GameState.Menu;
-		[SerializeField] private Base playerBase;
+		private Base playerBase;
 		[SerializeField] SerializedDictionary<GameState, GameObject> _stateGameObjecs = new();
 		[Tooltip(TOOLTIP_GAME_OVER_DELAY)]
 		[SerializeField] private float gameOverDelay = 2f;
@@ -53,9 +53,14 @@ namespace TD
 
 		private void SetupEventListeners()
 		{
+			playerBase = FindAnyObjectByType<Base>();
 			if (playerBase != null)
 			{
 				playerBase.onBaseDestroyed.AddListener(OnBaseDestroyed);
+			}
+			else
+			{
+				Debug.LogError("Base is null");
 			}
 
 			if (WaveManager.Instance != null)
@@ -103,6 +108,7 @@ namespace TD
 
 		private void OnBaseDestroyed()
 		{
+			if (Logs) Debug.Log("On Base Destroyed");
 			Invoke(nameof(GameOver), gameOverDelay);
 		}
 
@@ -113,6 +119,7 @@ namespace TD
 
 		private void GameOver()
 		{
+			if (Logs) Debug.Log("GameOver");
 			ChangeState(GameState.GameOver);
 			onGameOver?.Invoke();
 			Time.timeScale = 0f;

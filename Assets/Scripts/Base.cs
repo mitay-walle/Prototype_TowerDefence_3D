@@ -10,6 +10,7 @@ namespace TD
         [SerializeField] private int maxHealth = 20;
         [SerializeField] private int currentHealth;
 
+        public bool Logs = true;
         public UnityEvent<int> onHealthChanged;
         public UnityEvent onBaseDestroyed;
 
@@ -45,16 +46,21 @@ namespace TD
 
         public void TakeDamage(int damage)
         {
-            if (IsDestroyed) return;
+            if (IsDestroyed)
+            {
+                if (Logs) Debug.LogWarning($"[Base] TakeDamage failed. IsDestroyed: {IsDestroyed}");
+                return;
+            }
 
             currentHealth = Mathf.Max(0, currentHealth - damage);
             onHealthChanged?.Invoke(currentHealth);
-
+            if (Logs) Debug.Log($"[Base] TakeDamage {currentHealth} currentHealth");
             if (IsDestroyed)
             {
                 OnBaseDestroyed();
             }
         }
+
 
         public void Repair(int amount)
         {
@@ -66,6 +72,7 @@ namespace TD
 
         private void OnBaseDestroyed()
         {
+            if (Logs) Debug.Log("[Base] OnBaseDestroyed");
             onBaseDestroyed?.Invoke();
         }
 

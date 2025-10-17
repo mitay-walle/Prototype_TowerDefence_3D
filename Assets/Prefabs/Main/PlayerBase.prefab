@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8080495829224296188}
   - component: {fileID: 7710519124204017904}
   - component: {fileID: 8855835174659075437}
+  - component: {fileID: 5615089670566923833}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -127,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.Base
   maxHealth: 20
   currentHealth: 0
+  Logs: 0
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -148,3 +150,30 @@ MonoBehaviour:
   titleKey: tooltip.base.title
   descriptionKey: tooltip.base.description
   tableName: UI
+--- !u!54 &5615089670566923833
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667523658365072496}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
