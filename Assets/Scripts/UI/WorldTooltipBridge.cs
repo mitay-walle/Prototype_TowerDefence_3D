@@ -108,7 +108,7 @@ namespace TD.UI
 		{
 			LocalizedString description = new LocalizedString(tableName, descriptionKey);
 
-			var turret = GetComponent<Turret>();
+			var turret = GetComponent<Tower>();
 			if (turret != null && turret.Stats != null)
 			{
 				description.Arguments = new object[]

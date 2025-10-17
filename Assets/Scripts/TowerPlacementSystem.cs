@@ -69,7 +69,7 @@ namespace TD
 		{
 			CancelPlacement();
 
-			var turret = prefab.GetComponent<Turret>();
+			var turret = prefab.GetComponent<Tower>();
 			if (turret != null && turret.Stats != null)
 			{
 				currentTowerCost = turret.Stats.Cost;

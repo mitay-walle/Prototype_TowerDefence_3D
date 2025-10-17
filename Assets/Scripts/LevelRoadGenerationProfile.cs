@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace TD
 {
@@ -158,65 +161,59 @@ namespace TD
 			}
 		}
 
-		private void GenerateRoadPaths()
+private void GenerateRoadPaths()
+	{
+		int baseSize = 6;
+		for (int x = -baseSize / 2; x <= baseSize / 2; x++)
 		{
-			int baseSize = 6;
-			for (int x = -baseSize / 2; x <= baseSize / 2; x++)
+			for (int z = -baseSize / 2; z <= baseSize / 2; z++)
 			{
-				for (int z = -baseSize / 2; z <= baseSize / 2; z++)
-				{
-					roadCells.Add(new Vector2Int(basePosition.x + x, basePosition.y + z));
-				}
-			}
-
-			List<Vector2Int> intersectionPoints = new List<Vector2Int>();
-
-			for (int i = 0; i < pathCount; i++)
-			{
-				float angleBase = 360f / pathCount * i;
-				float angle = (angleBase + Random.Range(-30f, 30f)) * Mathf.Deg2Rad;
-
-				PathType pathType = ChoosePathType();
-
-				switch (pathType)
-				{
-					case PathType.Straight:
-						GenerateStraightPath(basePosition, angle);
-						break;
-
-					case PathType.Loop:
-						GenerateLoopPath(basePosition, angle);
-						break;
-
-					case PathType.SCurve:
-						GenerateSCurvePath(basePosition, angle);
-						break;
-
-					case PathType.Branch:
-						Vector2Int branchPoint = GenerateStraightPath(basePosition, angle);
-						if (IsInsideMap(branchPoint))
-						{
-							intersectionPoints.Add(branchPoint);
-						}
-
-						break;
-				}
-			}
-
-			// Создаем ответвления от перекрестков
-			foreach (var point in intersectionPoints)
-			{
-				if (Random.value < intersectionChance)
-				{
-					int branches = Random.Range(1, 3);
-					for (int b = 0; b < branches; b++)
-					{
-						float branchAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-						GenerateStraightPath(point, branchAngle, Random.Range(10, 20));
-					}
-				}
+				roadCells.Add(new Vector2Int(basePosition.x + x, basePosition.y + z));
 			}
 		}
+
+		List<Vector2Int> pathEndpoints = new List<Vector2Int>();
+		List<Vector2Int> connectedPoints = new List<Vector2Int> { basePosition };
+
+		for (int i = 0; i < pathCount; i++)
+		{
+			float angleBase = 360f / pathCount * i;
+			float angle = (angleBase + Random.Range(-30f, 30f)) * Mathf.Deg2Rad;
+
+			PathType pathType = ChoosePathType();
+			Vector2Int endpoint = basePosition;
+
+			switch (pathType)
+			{
+				case PathType.Straight:
+					endpoint = GenerateStraightPath(basePosition, angle);
+					break;
+
+				case PathType.Loop:
+					GenerateLoopPath(basePosition, angle);
+					endpoint = basePosition;
+					break;
+
+				case PathType.SCurve:
+					GenerateSCurvePath(basePosition, angle);
+					endpoint = basePosition;
+					break;
+
+				case PathType.Branch:
+					endpoint = GenerateStraightPath(basePosition, angle);
+					break;
+			}
+
+			if (IsInsideMap(endpoint) && endpoint != basePosition)
+			{
+				pathEndpoints.Add(endpoint);
+				connectedPoints.Add(endpoint);
+			}
+		}
+
+		ConnectDisconnectedSegments(connectedPoints);
+		EnsureRoadContinuity();
+	}
 
 		private PathType ChoosePathType()
 		{
@@ -345,6 +342,132 @@ namespace TD
 				AddRoadCell(new Vector2Int(previous.x, previous.y + dz));
 			}
 		}
+
+private void ConnectDisconnectedSegments(List<Vector2Int> connectedPoints)
+	{
+		if (connectedPoints.Count <= 1) return;
+
+		HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+		foreach (var point in connectedPoints)
+		{
+			visited.Add(point);
+		}
+
+		for (int i = 1; i < connectedPoints.Count; i++)
+		{
+			if (!IsRoadConnected(connectedPoints[i - 1], connectedPoints[i]))
+			{
+				ConnectTwoPoints(connectedPoints[i - 1], connectedPoints[i]);
+			}
+		}
+	}
+
+private bool IsRoadConnected(Vector2Int from, Vector2Int to)
+	{
+		if (roadCells.Contains(from) && roadCells.Contains(to))
+		{
+			var visited = new HashSet<Vector2Int>();
+			return BfsPathExists(from, to, visited);
+		}
+		return false;
+	}
+
+	private bool BfsPathExists(Vector2Int from, Vector2Int to, HashSet<Vector2Int> visited)
+	{
+		var queue = new System.Collections.Generic.Queue<Vector2Int>();
+		queue.Enqueue(from);
+		visited.Add(from);
+
+		while (queue.Count > 0)
+		{
+			var current = queue.Dequeue();
+			if (current == to) return true;
+
+			var neighbors = new Vector2Int[] {
+				new Vector2Int(current.x + 1, current.y),
+				new Vector2Int(current.x - 1, current.y),
+				new Vector2Int(current.x, current.y + 1),
+				new Vector2Int(current.x, current.y - 1)
+			};
+
+			foreach (var neighbor in neighbors)
+			{
+				if (!visited.Contains(neighbor) && roadCells.Contains(neighbor))
+				{
+					visited.Add(neighbor);
+					queue.Enqueue(neighbor);
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private void ConnectTwoPoints(Vector2Int from, Vector2Int to)
+	{
+		Vector2Int current = from;
+		int dx = Math.Sign(to.x - from.x);
+		int dz = Math.Sign(to.y - from.y);
+
+		while (current != to)
+		{
+			AddRoadCell(current);
+
+			if (Random.value < 0.5f && current.x != to.x)
+				current.x += dx;
+			else if (current.y != to.y)
+				current.y += dz;
+			else if (current.x != to.x)
+				current.x += dx;
+		}
+
+		AddRoadCell(to);
+	}
+
+	private void EnsureRoadContinuity()
+	{
+		var cellsToAdd = new List<Vector2Int>();
+
+		foreach (var cell in roadCells)
+		{
+			var neighbors = new Vector2Int[] {
+				new Vector2Int(cell.x + 1, cell.y),
+				new Vector2Int(cell.x - 1, cell.y),
+				new Vector2Int(cell.x, cell.y + 1),
+				new Vector2Int(cell.x, cell.y - 1),
+				new Vector2Int(cell.x + 1, cell.y + 1),
+				new Vector2Int(cell.x - 1, cell.y - 1),
+				new Vector2Int(cell.x + 1, cell.y - 1),
+				new Vector2Int(cell.x - 1, cell.y + 1)
+			};
+
+			int adjacentCount = 0;
+			foreach (var neighbor in neighbors)
+			{
+				if (roadCells.Contains(neighbor))
+					adjacentCount++;
+			}
+
+			if (adjacentCount == 1 && Random.value < 0.3f)
+			{
+				foreach (var neighbor in neighbors)
+				{
+					if (!roadCells.Contains(neighbor) && IsInsideMap(neighbor))
+					{
+						cellsToAdd.Add(neighbor);
+						break;
+					}
+				}
+			}
+		}
+
+		foreach (var cell in cellsToAdd)
+		{
+			AddRoadCell(cell);
+		}
+	}
+
+
 
 		private void AddRoadCell(Vector2Int pos)
 		{

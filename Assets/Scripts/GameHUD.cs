@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Sirenix.OdinInspector;
+using System.Collections.Generic;
 
 namespace TD
 {
@@ -38,7 +39,12 @@ namespace TD
         [SerializeField] private Button quitButton;
 
         [SerializeField] private CanvasGroup mainHUDGroup;
+        [SerializeField] private TextMeshProUGUI consoleMessagesText;
+        [SerializeField] private int maxConsoleLines = 5;
+        [SerializeField] private float messageDisplayDuration = 5f;
+
         private TowerPlacementSystem placementSystem;
+        private List<ConsoleMessage> consoleMessages = new List<ConsoleMessage>();
 
         private void Start()
         {
@@ -56,6 +62,8 @@ namespace TD
             {
                 mainHUDGroup = GetComponent<CanvasGroup>();
             }
+
+            Application.logMessageReceived += OnLogMessage;
         }
 
         private void SetupEventListeners()
@@ -111,6 +119,57 @@ namespace TD
             UpdateWaveProgress();
             UpdateStartWaveButton();
             UpdateHUDVisibility();
+            UpdateConsoleMessages();
+        }
+
+private void UpdateConsoleMessages()
+        {
+            if (consoleMessages.Count == 0)
+            {
+                if (consoleMessagesText != null)
+                    consoleMessagesText.text = "";
+                return;
+            }
+
+            for (int i = consoleMessages.Count - 1; i >= 0; i--)
+            {
+                consoleMessages[i].timeRemaining -= Time.deltaTime;
+                if (consoleMessages[i].timeRemaining <= 0)
+                {
+                    consoleMessages.RemoveAt(i);
+                }
+            }
+
+            UpdateConsoleDisplay();
+        }
+
+        private void UpdateConsoleDisplay()
+        {
+            if (consoleMessagesText == null) return;
+
+            int linesToShow = Mathf.Min(consoleMessages.Count, maxConsoleLines);
+            int startIndex = consoleMessages.Count - linesToShow;
+
+            var displayText = new System.Text.StringBuilder();
+            for (int i = startIndex; i < consoleMessages.Count; i++)
+            {
+                displayText.AppendLine(consoleMessages[i].text);
+            }
+
+            consoleMessagesText.text = displayText.ToString().TrimEnd();
+        }
+
+        private void OnLogMessage(string condition, string stackTrace, LogType type)
+        {
+            if (type == LogType.Log)
+            {
+                AddConsoleMessage(condition);
+            }
+        }
+
+        private void AddConsoleMessage(string message)
+        {
+            consoleMessages.Add(new ConsoleMessage(message, messageDisplayDuration));
         }
 
         private void UpdateHUDVisibility()
@@ -276,6 +335,8 @@ namespace TD
 
         private void OnDestroy()
         {
+            Application.logMessageReceived -= OnLogMessage;
+
             if (ResourceManager.Instance != null)
             {
                 ResourceManager.Instance.onCurrencyChanged.RemoveListener(OnCurrencyChanged);

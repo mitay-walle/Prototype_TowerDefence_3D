@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: HeavyTower
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: HeavyTower
-  description: A basic tower
+  description: Extremely powerful with longest range - the ultimate defensive weapon
   damage: 60
   fireRate: 0.8
   range: 15
   projectileSpeed: 30
   targetPriority: 3
   predictiveAiming: 1
-  cost: 200
-  sellValue: 140
+  cost: 250
+  sellValue: 175
   nextUpgrade: {fileID: 0}
-  upgradeCost: 750
+  upgradeCost: 350

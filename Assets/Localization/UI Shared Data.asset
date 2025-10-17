@@ -19,6 +19,46 @@ MonoBehaviour:
     m_Key: Start Wave
     m_Metadata:
       m_Items: []
+  - m_Id: 681283936259
+    m_Key: tooltip.turret.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681279741952
+    m_Key: tooltip.turret.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681279741953
+    m_Key: tooltip.enemy.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681279741954
+    m_Key: tooltip.enemy.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681279741955
+    m_Key: tooltip.base.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681283936256
+    m_Key: tooltip.base.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681267159040
+    m_Key: tooltip.tower.shop.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681283936260
+    m_Key: tooltip.tower.shop.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681283936257
+    m_Key: tooltip.object.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 681283936258
+    m_Key: tooltip.object.description
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

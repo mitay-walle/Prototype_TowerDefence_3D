@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicTower
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: BasicTower
-  description: A basic tower
+  description: Solid all-around tower with balanced stats - reliable and affordable
   damage: 15
   fireRate: 1.5
   range: 8

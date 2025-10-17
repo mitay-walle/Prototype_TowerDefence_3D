@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: SniperTower
+  m_Name: CryoTower
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: SniperTower
-  description: Precision weapon with long range - eliminates strong enemies from afar
-  damage: 45
-  fireRate: 1.0333333
-  range: 12.666667
-  projectileSpeed: 25
-  targetPriority: 2
-  predictiveAiming: 1
-  cost: 170
-  sellValue: 119
+  towerName: CryoTower
+  description: Slows enemies with icy projectiles while dealing moderate damage
+  damage: 20
+  fireRate: 1.4
+  range: 10
+  projectileSpeed: 16
+  targetPriority: 1
+  predictiveAiming: 0
+  cost: 160
+  sellValue: 112
   nextUpgrade: {fileID: 0}
-  upgradeCost: 240
+  upgradeCost: 220

@@ -10668,9 +10668,13 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 8919e271e586fad46b60bc09273d90eb, type: 2}
     - target: {fileID: 6808451643644963469, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: m_Name
-      value: Turret (4)
+      value: Tower_04
       objectReference: {fileID: 0}
     - target: {fileID: 7253278227055791285, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

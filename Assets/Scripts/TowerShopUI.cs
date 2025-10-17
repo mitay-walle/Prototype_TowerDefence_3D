@@ -75,64 +75,91 @@ namespace TD
 			gameObject.SetActive(false);
 		}
 
-		void FillUI()
+void FillUI()
+	{
+		_buttons.Clear();
+
+		if (towers == null || towers.Count == 0)
 		{
-			// foreach (Transform c in content)
-			// {
-			// 	Destroy(c.gameObject);
-			// }
-			_buttons.Clear();
-
-			previewGen.GeneratePreviews();
-
-			foreach (var info in towers)
-			{
-				var go = Instantiate(towerButtonPrefab, content);
-				go.name = info.prefab.name;
-
-				var img = go.transform.Find("Icon").GetComponent<RawImage>();
-				var txt = go.transform.Find("Price").GetComponent<TMP_Text>();
-
-				if (previewGen.previews.TryGetValue(info.prefab, out var tex))
-				{
-					img.texture = tex;
-				}
-
-				txt.text = "$" + info.price;
-
-				Button btn = go.GetComponent<Button>();
-				_buttons.Add(btn);
-
-				btn.onClick.AddListener(() =>
-				{
-					placementSystem.BeginPlacement(info.prefab);
-					Hide();
-				});
-
-				if (tooltipHelper != null)
-				{
-					var towerStats = info.prefab.GetComponent<Turret>()?.Stats;
-					if (towerStats != null)
-					{
-						tooltipHelper.SetupTooltip(go, towerStats, info.prefab.name);
-					}
-				}
-			}
-
-			foreach (Button btn in _buttons)
-			{
-				var navigation = btn.navigation;
-
-				// navigation.selectOnLeft = btn.FindSelectableOnLeft();
-				// navigation.selectOnRight = btn.FindSelectableOnRight();
-				// navigation.selectOnUp = btn.FindSelectableOnUp();
-				// navigation.selectOnDown = btn.FindSelectableOnDown();
-				// navigation.mode = Navigation.Mode.Explicit;
-				navigation.wrapAround = false;
-				btn.navigation = navigation;
-			}
-
-			Canvas.ForceUpdateCanvases();
+			LoadTowersFromResources();
 		}
+
+		if (previewGen != null)
+		{
+			previewGen.GeneratePreviews();
+		}
+
+		foreach (var info in towers)
+		{
+			var go = Instantiate(towerButtonPrefab, content);
+			go.name = info.prefab.name;
+
+			var img = go.transform.Find("Icon").GetComponent<RawImage>();
+			var txt = go.transform.Find("Price").GetComponent<TMP_Text>();
+
+			if (previewGen != null && previewGen.previews.TryGetValue(info.prefab, out var tex))
+			{
+				img.texture = tex;
+			}
+
+			var towerStats = info.prefab.GetComponent<Tower>()?.Stats;
+			int actualPrice = towerStats != null ? towerStats.Cost : info.price;
+			txt.text = $"${actualPrice}";
+
+			Button btn = go.GetComponent<Button>();
+			_buttons.Add(btn);
+
+			btn.onClick.AddListener(() =>
+			{
+				placementSystem.BeginPlacement(info.prefab);
+				Hide();
+			});
+
+			if (tooltipHelper != null)
+			{
+				if (towerStats != null)
+				{
+					tooltipHelper.SetupTooltip(go, towerStats, info.prefab.name);
+				}
+			}
+		}
+
+		foreach (Button btn in _buttons)
+		{
+			var navigation = btn.navigation;
+			navigation.wrapAround = false;
+			btn.navigation = navigation;
+		}
+
+		Canvas.ForceUpdateCanvases();
+	}
+
+	private void LoadTowersFromResources()
+	{
+		if (towers == null)
+			towers = new List<TowerInfo>();
+		else
+			towers.Clear();
+
+		var stats = Resources.LoadAll<TowerStats>("TowerStats");
+		var prefabs = Resources.LoadAll<GameObject>("Towers");
+
+		foreach (var stat in stats)
+		{
+			var prefab = System.Array.Find(prefabs, p => p.name == stat.TowerName);
+			if (prefab != null)
+			{
+				towers.Add(new TowerInfo { prefab = prefab, price = stat.Cost });
+			}
+			else
+			{
+				var anyPrefab = prefabs.Length > 0 ? prefabs[0] : null;
+				if (anyPrefab != null)
+				{
+					towers.Add(new TowerInfo { prefab = anyPrefab, price = stat.Cost });
+				}
+			}
+		}
+	}
 	}
 }

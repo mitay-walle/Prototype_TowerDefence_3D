@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace TD
 {
-    public class Turret : MonoBehaviour, ITargetable
+    public class Tower : MonoBehaviour, ITargetable
     {
         private const string TOOLTIP_ROTATION_PART = "Transform that rotates to aim at targets (optional, uses main transform if not set)";
         private const string TOOLTIP_FIRE_POINTS = "Spawn positions for projectiles (optional, uses turret position if empty)";

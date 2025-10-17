@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: SniperTower
+  m_Name: Cannon
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: SniperTower
-  description: Precision weapon with long range - eliminates strong enemies from afar
-  damage: 45
-  fireRate: 1.0333333
-  range: 12.666667
-  projectileSpeed: 25
-  targetPriority: 2
+  towerName: Cannon
+  description: Explosive shells with heavy splash damage - destroys groups of enemies
+  damage: 50
+  fireRate: 0.7
+  range: 13
+  projectileSpeed: 22
+  targetPriority: 3
   predictiveAiming: 1
-  cost: 170
-  sellValue: 119
+  cost: 220
+  sellValue: 154
   nextUpgrade: {fileID: 0}
-  upgradeCost: 240
+  upgradeCost: 320

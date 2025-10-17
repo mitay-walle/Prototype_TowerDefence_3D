@@ -12780,9 +12780,13 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b5d358e59d6d3d4aab653358fec9d76, type: 2}
     - target: {fileID: 6808451643644963469, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: m_Name
-      value: Turret (5)
+      value: Tower_05
       objectReference: {fileID: 0}
     - target: {fileID: 7253278227055791285, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -12815,6 +12819,10 @@ PrefabInstance:
     - target: {fileID: 8913440904606053794, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: 'm_Materials.Array.data[3]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128969808475604325, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

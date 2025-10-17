@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: RapidTower
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
   towerName: RapidTower
-  description: A basic tower
+  description: Very fast fire rate with respectable damage - cuts through waves efficiently
   damage: 30
   fireRate: 1.2666667
   range: 10.333333
   projectileSpeed: 20
   targetPriority: 1
   predictiveAiming: 0
-  cost: 120
-  sellValue: 84
+  cost: 110
+  sellValue: 77
   nextUpgrade: {fileID: 0}
-  upgradeCost: 350
+  upgradeCost: 160
