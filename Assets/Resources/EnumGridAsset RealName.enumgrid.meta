@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: aef637af7d04b7c4e99fc2df6355b2cb
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: '{"entries":[{"character":9608,"color":{"r":0.20000000298023225,"g":0.20000000298023225,"b":0.20000000298023225,"a":1.0}},{"character":9617,"color":{"r":0.800000011920929,"g":0.800000011920929,"b":0.800000011920929,"a":1.0}},{"character":9678,"color":{"r":1.0,"g":0.8500000238418579,"b":0.20000000298023225,"a":1.0}},{"character":83,"color":{"r":0.949999988079071,"g":0.3499999940395355,"b":0.3499999940395355,"a":1.0}},{"character":46,"color":{"r":0.11999999731779099,"g":0.11999999731779099,"b":0.11999999731779099,"a":1.0}},{"character":84,"color":{"r":0.06323109567165375,"g":1.0,"b":0.04339611530303955,"a":1.0}}]}'
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 7a0c4392135145247884100747fdbe3c, type: 3}
