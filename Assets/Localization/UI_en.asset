@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681267159040
-    m_Localized: Tower
+    m_Localized: '{0}'
     m_Metadata:
       m_Items: []
   - m_Id: 681279741952

@@ -20,7 +20,7 @@ Shader "URP/MatCap Unlit"
     {
         Tags
         {
-            "RenderPipeline"="UniversalRenderPipeline"
+            "RenderPipeline"="UniversalPipeline"
             "Queue"="Transparent"
             "RenderType"="Transparent"
             "IgnoreProjector"="True"

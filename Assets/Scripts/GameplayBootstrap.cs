@@ -94,11 +94,7 @@ namespace TD
 				}
 
 				// Access profile through reflection or make it public
-				var profile = voxelGen.profile as LevelRoadGenerationProfile;
-				if (profile != null)
-				{
-					profile.seed = levelSeed;
-				}
+				voxelGen.seed = levelSeed;
 
 				voxelGen.Generate();
 

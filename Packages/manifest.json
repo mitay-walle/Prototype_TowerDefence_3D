@@ -2,6 +2,7 @@
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
+    "com.matthewminer.consolation": "https://github.com/mminer/consolation.git",
     "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
     "com.mitay-walle.rect-transform-editor": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
     "com.mitay-walle.transforminspector": "https://github.com/mitay-walle/TransformInspector.git",

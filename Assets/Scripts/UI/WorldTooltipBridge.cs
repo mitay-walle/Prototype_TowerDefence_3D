@@ -27,6 +27,11 @@ namespace TD.UI
 			mainCamera = Camera.main;
 			FindTooltipSystem();
 			CreateProxyRect();
+			if (TryGetComponent<ITooltip>(out var tooltip))
+			{
+				titleKey = tooltip.Title;
+				descriptionKey = tooltip.Title;
+			}
 		}
 
 		private void FindTooltipSystem()
@@ -93,12 +98,7 @@ namespace TD.UI
 			}
 
 			RectTransform canvasRect = tooltipCanvas.transform as RectTransform;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(
-				canvasRect,
-				screenPosition,
-				tooltipCanvas.worldCamera,
-				out Vector2 localPoint
-			);
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, tooltipCanvas.worldCamera, out Vector2 localPoint);
 
 			proxyRect.anchoredPosition = localPoint;
 			proxyRect.gameObject.SetActive(true);

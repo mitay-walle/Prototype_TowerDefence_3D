@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Plugins.GUI.Information;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -76,21 +77,30 @@ namespace TD
 
 				if (!ResourceManager.Instance.CanAfford(currentTowerCost))
 				{
-					Debug.LogWarning($"TowerPlacement: Cannot afford tower (cost: {currentTowerCost}, current: {ResourceManager.Instance.CurrentCurrency})");
+					Debug.LogWarning(
+						$"TowerPlacement: Cannot afford tower (cost: {currentTowerCost}, current: {ResourceManager.Instance.CurrentCurrency})");
+
 					return;
 				}
 			}
 
 			currentPrefab = prefab;
 			ghostInstance = Instantiate(prefab);
+			FindAnyObjectByType<AutoPositionalTooltip>()?.Hide();
 			ghostInstance.GetComponent<VoxelGenerator>().Generate();
-			Destroy(ghostInstance.GetComponent<ITargetable>() as Component);
+
 			ghostInstance.name = prefab.name + "_Ghost";
-			ApplyGhostMaterials(ghostInstance);
+			MakeDummyGraphicOnlyPrefab(ghostInstance);
 		}
 
-		void ApplyGhostMaterials(GameObject go)
+		void MakeDummyGraphicOnlyPrefab(GameObject go)
 		{
+			var behs = ghostInstance.GetComponents<MonoBehaviour>();
+			foreach (MonoBehaviour beh in behs)
+			{
+				Destroy(beh);
+			}
+
 			MeshRenderer[] rends = go.GetComponentsInChildren<MeshRenderer>();
 			for (var i = 0; i < rends.Length; i++)
 			{

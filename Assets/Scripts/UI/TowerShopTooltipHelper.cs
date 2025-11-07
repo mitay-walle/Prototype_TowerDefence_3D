@@ -10,29 +10,16 @@ namespace TD.UI
 
 		[Tooltip(TOOLTIP_TABLE)]
 		[SerializeField] private string tableName = "UI";
-		[SerializeField] private AutoPositionalTooltip tooltipSystem;
 
 		public void SetupTooltip(GameObject button, TowerStats stats, string towerName)
 		{
-			if (tooltipSystem == null)
-			{
-				tooltipSystem = FindFirstObjectByType<AutoPositionalTooltip>();
-			}
-
-			if (tooltipSystem == null)
-			{
-				Debug.LogWarning("[TowerShopTooltipHelper] AutoPositionalTooltip not found in scene!");
-				return;
-			}
-
 			var hoverTooltip = button.GetComponent<HoverShowTooltip>();
 			if (hoverTooltip == null)
 			{
 				hoverTooltip = button.AddComponent<HoverShowTooltip>();
 			}
 
-			LocalizedString title = new LocalizedString(tableName, "tooltip.tower.shop.title");
-			title.Arguments = new object[] { towerName };
+			LocalizedString title = new LocalizedString(tableName, stats.TowerName);
 
 			LocalizedString description = new LocalizedString(tableName, "tooltip.tower.shop.description");
 			description.Arguments = new object[]
@@ -46,9 +33,8 @@ namespace TD.UI
 				stats.SellValue
 			};
 
-			typeof(HoverShowTooltip).GetField("title", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(hoverTooltip, title);
-			typeof(HoverShowTooltip).GetField("message", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(hoverTooltip, description);
-			typeof(HoverShowTooltip).GetField("tooltip", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(hoverTooltip, tooltipSystem);
+			hoverTooltip.title = title;
+			hoverTooltip.message = description;
 		}
 	}
 }
