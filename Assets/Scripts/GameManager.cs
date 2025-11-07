@@ -26,7 +26,7 @@ namespace TD
 		public UnityEvent onVictory;
 
 		public GameState CurrentState => currentState;
-		public bool IsPlaying => currentState == GameState.Playing;
+		public bool IsPlaying => currentState == GameState.WaveActive;
 		public bool IsPaused => currentState == GameState.Paused;
 		public bool IsGameOver => currentState == GameState.GameOver || currentState == GameState.Victory;
 
@@ -66,6 +66,8 @@ namespace TD
 			if (WaveManager.Instance != null)
 			{
 				WaveManager.Instance.onAllWavesCompleted.AddListener(OnAllWavesCompleted);
+				WaveManager.Instance.onWaveCompleted.AddListener(OnWaveCompleted);
+				WaveManager.Instance.onWaveStarted.AddListener(OnWaveStarted);
 			}
 			else
 			{
@@ -73,16 +75,26 @@ namespace TD
 			}
 		}
 
+		void OnWaveStarted(int waveIndex)
+		{
+			ChangeState(GameState.WaveActive);
+		}
+
+		void OnWaveCompleted(int waveIndex)
+		{
+			ChangeState(GameState.WavePreparing);
+		}
+
 		public void StartGame()
 		{
-			ChangeState(GameState.Playing);
+			ChangeState(GameState.WavePreparing);
 			onGameStarted?.Invoke();
 			Time.timeScale = 1f;
 		}
 
 		public void PauseGame()
 		{
-			if (currentState != GameState.Playing) return;
+			if (currentState != GameState.WaveActive) return;
 
 			ChangeState(GameState.Paused);
 			onGamePaused?.Invoke();
@@ -93,7 +105,7 @@ namespace TD
 		{
 			if (currentState != GameState.Paused) return;
 
-			ChangeState(GameState.Playing);
+			ChangeState(GameState.WaveActive);
 			onGameResumed?.Invoke();
 			Time.timeScale = 1f;
 		}
@@ -192,14 +204,5 @@ namespace TD
 			onGameOver?.RemoveAllListeners();
 			onVictory?.RemoveAllListeners();
 		}
-	}
-
-	public enum GameState
-	{
-		Menu,
-		Playing,
-		Paused,
-		GameOver,
-		Victory
 	}
 }
