@@ -9,7 +9,7 @@ namespace Plugins.Utilities
 	{
 		[field: ShowInInspector] public DisablerList DisablerList { get; private set; } = new();
 		public bool IsEnalbed => DisablerList.NoEntries;
-		[SerializeField] protected bool Logs;
+		public bool Logs;
 		[FoldoutGroup("Events")] public UnityEvent<bool> Changed;
 		[FoldoutGroup("Events")] public UnityEvent Enabled;
 		[FoldoutGroup("Events")] public UnityEvent Disabled;

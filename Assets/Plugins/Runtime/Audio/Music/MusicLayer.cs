@@ -16,12 +16,14 @@ namespace TD.Plugins.Runtime.Audio.Music
 			_player ??= GetComponent<PlayRandomSound>();
 			if (DisablerList.NoEntries)
 			{
+				if (FindAnyObjectByType<Music>().Logs) Debug.Log($"'{name}' play");
 				_player._source.ignoreListenerPause = true; 
 				_player.Play();
 				_player.FadeIn(_fade, _volume);
 			}
 			else
 			{
+				if (FindAnyObjectByType<Music>().Logs) Debug.Log($"'{name}' fade stop");
 				_player.FadeOutStop();
 			}
 			base.OnChanged();
