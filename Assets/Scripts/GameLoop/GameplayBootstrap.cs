@@ -1,8 +1,8 @@
 using System.Collections;
+using Sirenix.OdinInspector;
 using TD.Towers;
 using TD.UI;
 using TD.Voxels;
-using TD.Weapons;
 using Unity.AI.Navigation;
 using UnityEngine;
 
@@ -19,26 +19,17 @@ namespace TD.GameLoop
 	/// </summary>
 	public class GameplayBootstrap : MonoBehaviour
 	{
+		[SerializeField] private bool logs = true;
 		[Header("Level Generation")]
 		[SerializeField] private GameObject levelRoadPrefab;
 		[SerializeField] private int levelSeed = 0;
 		[SerializeField] private bool randomSeed = true;
 
 		[Header("Gameplay Objects")]
-		[SerializeField] private GameObject basePrefab;
-		[SerializeField] private GameObject spawnerPrefab;
-
-		[Header("Pools")]
-		[SerializeField] private ProjectilePool projectilePool;
-		[SerializeField] private GameObject projectilePrefab;
-		[SerializeField] private int initialProjectilePoolSize = 50;
-		[SerializeField] private int maxProjectilePoolSize = 200;
-
-		[Header("Debug")]
-		[SerializeField] private bool logs = true;
+		[SerializeField, AssetsOnly] private GameObject basePrefab;
+		[SerializeField, SceneObjectsOnly] private GameObject playerBase;
 
 		private GameObject generatedLevel;
-		private GameObject playerBase;
 		private Transform[] spawnPoints;
 		private NavMeshSurface navMeshSurface;
 
@@ -60,11 +51,9 @@ namespace TD.GameLoop
 			// Step 3: Place Base and Spawners
 			yield return StartCoroutine(PlaceGameplayObjects());
 
-			// Step 4: Initialize Pools
-			yield return StartCoroutine(InitializePools());
-
 			FindAnyObjectByType<GameHUD>().Initialize();
 			FindAnyObjectByType<GameManager>().Initialize();
+
 			// Step 5: Finalize
 			FinalizeBootstrap();
 
@@ -154,19 +143,21 @@ namespace TD.GameLoop
 
 		private void PlaceBase(Vector3 position)
 		{
-			if (basePrefab == null)
+			if (!playerBase)
 			{
-				Debug.LogWarning("[GameplayBootstrap] Base prefab not assigned, creating default cube");
-				playerBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				playerBase.transform.localScale = new Vector3(5, 3, 5);
-				playerBase.AddComponent<Base>();
-			}
-			else
-			{
-				playerBase = Instantiate(basePrefab);
+				if (basePrefab == null)
+				{
+					Debug.LogWarning("[GameplayBootstrap] Base prefab not assigned, creating default cube");
+					playerBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					playerBase.transform.localScale = new Vector3(5, 3, 5);
+					playerBase.AddComponent<Base>();
+				}
+				else
+				{
+					playerBase = Instantiate(basePrefab);
+				}
 			}
 
-			playerBase.name = "PlayerBase";
 			playerBase.transform.position = position + Vector3.up * 0.5f;
 			if (logs) Debug.Log($"[GameplayBootstrap] Base placed at {position}");
 		}
@@ -201,29 +192,6 @@ namespace TD.GameLoop
 				waveManager.Initialize(null, spawnPoints);
 				if (logs) Debug.Log($"[GameplayBootstrap] Assigned {spawnPoints.Length} spawn points to WaveManager");
 			}
-		}
-
-		private IEnumerator InitializePools()
-		{
-			if (logs) Debug.Log("[GameplayBootstrap] Step 4/5: Initializing pools...");
-
-			if (projectilePool == null)
-			{
-				GameObject poolGO = new GameObject("ProjectilePool");
-				projectilePool = poolGO.AddComponent<ProjectilePool>();
-			}
-
-			if (projectilePrefab != null)
-			{
-				Projectile prefabProjectile = projectilePrefab.GetComponent<Projectile>();
-				if (prefabProjectile != null)
-				{
-					projectilePool.Initialize(prefabProjectile, initialProjectilePoolSize, maxProjectilePoolSize);
-					if (logs) Debug.Log($"[GameplayBootstrap] Projectile pool initialized ({initialProjectilePoolSize}/{maxProjectilePoolSize})");
-				}
-			}
-
-			yield return null;
 		}
 
 		private void FinalizeBootstrap()

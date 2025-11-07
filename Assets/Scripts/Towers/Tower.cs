@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TD.Interactions;
 using TD.Monsters;
 using TD.UI;
@@ -16,7 +17,8 @@ namespace TD.Towers
 		private const string TOOLTIP_ROTATION_SPEED = "Degrees per second for turret rotation";
 		private const string TOOLTIP_SHOW_RANGE = "Show range sphere in Scene view when selected";
 
-		[SerializeField] private TowerStats stats;
+		[SerializeField, Required] private TowerStats stats;
+		[SerializeField, Required] private Projectile projectilePrefab;
 
 		[Tooltip(TOOLTIP_ROTATION_PART)]
 		[SerializeField] private Transform turretRotationPart;
@@ -44,6 +46,8 @@ namespace TD.Towers
 		public EnemyHealth CurrentTarget => currentTarget;
 		public int UpgradeLevel => upgradeLevel;
 		public bool HasTarget => currentTarget != null && currentTarget.IsAlive;
+		private Collider[] colliders = new Collider[500];
+		int foundCount;
 
 		private void Start()
 		{
@@ -73,9 +77,10 @@ namespace TD.Towers
 		{
 			enemiesInRange.Clear();
 
-			Collider[] colliders = Physics.OverlapSphere(transform.position, stats.Range);
-			foreach (var col in colliders)
+			int inRangeCount = Physics.OverlapSphereNonAlloc(transform.position, stats.Range, colliders);
+			for (var i = 0; i < inRangeCount; i++)
 			{
+				Collider col = colliders[i];
 				var enemy = col.GetComponent<EnemyHealth>();
 				if (enemy != null && enemy.IsAlive)
 				{
@@ -282,7 +287,7 @@ namespace TD.Towers
 			}
 			else
 			{
-				var projectile = ProjectilePool.Instance?.Get();
+				Projectile projectile = GameObjectPool.Instance.Get(projectilePrefab);
 				if (projectile != null)
 				{
 					Vector3 targetPosition = currentTarget.transform.position;

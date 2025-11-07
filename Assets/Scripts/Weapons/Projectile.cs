@@ -218,7 +218,7 @@ namespace TD.Weapons
         private void ReturnToPool()
         {
             isLaunched = false;
-            ProjectilePool.Instance?.Return(this);
+            GameObjectPool.Instance.Return(gameObject);
         }
 
         private void OnDrawGizmosSelected()

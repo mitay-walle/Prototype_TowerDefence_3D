@@ -161,20 +161,6 @@ public class GameSetupHelper : OdinEditorWindow
 			var waveGO = new GameObject("WaveManager");
 			waveGO.AddComponent<WaveManager>();
 		}
-
-		if (FindObjectOfType<ProjectilePool>() == null)
-		{
-			var poolGO = new GameObject("ProjectilePool");
-			var pool = poolGO.AddComponent<ProjectilePool>();
-
-			var projectilePrefab = AssetDatabase.LoadAssetAtPath<Projectile>("Assets/Prefabs/Projectiles/Projectile.prefab");
-			if (projectilePrefab != null)
-			{
-				var serializedObject = new SerializedObject(pool);
-				serializedObject.FindProperty("projectilePrefab").objectReferenceValue = projectilePrefab;
-				serializedObject.ApplyModifiedProperties();
-			}
-		}
 	}
 
 	private void CreateUI()

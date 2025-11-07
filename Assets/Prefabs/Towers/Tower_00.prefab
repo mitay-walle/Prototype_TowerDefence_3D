@@ -458,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.Turret
   stats: {fileID: 11400000, guid: 7a6596a7c58403a4a8453d0965bb8117, type: 2}
+  projectilePrefab: {fileID: 6077644098176679513, guid: 5a7db0080f704c54daaad1f043c01af0, type: 3}
   turretRotationPart: {fileID: 4524784918887899802}
   firePoints:
   - {fileID: 2604770748206252731}
