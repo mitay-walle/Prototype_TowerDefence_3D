@@ -20,10 +20,8 @@ namespace TD.GameLoop
 	public class GameplayBootstrap : MonoBehaviour
 	{
 		[SerializeField] private bool logs = true;
-		[SerializeField] private bool randomSeed = true;
-		[SerializeField, Required, SceneObjectsOnly] private GameObject generatedLevel;
+		[SerializeField, Required, SceneObjectsOnly] private LevelGenerator LevelGenerator;
 		[SerializeField, SceneObjectsOnly] private GameObject playerBase;
-		[SerializeField] private int levelSeed = 0;
 
 		private Transform[] spawnPoints;
 		private GameObject basePrefab;
@@ -60,30 +58,7 @@ namespace TD.GameLoop
 		{
 			if (logs) Debug.Log("[GameplayBootstrap] Step 1/5: Generating level...");
 
-			generatedLevel.transform.position = Vector3.zero;
-			generatedLevel.transform.rotation = Quaternion.identity;
-			generatedLevel.name = "LevelRoad (Generated)";
-
-			// Find VoxelGenerator and generate
-			VoxelGenerator voxelGen = generatedLevel.GetComponentInChildren<VoxelGenerator>();
-			if (voxelGen != null)
-			{
-				if (randomSeed)
-				{
-					levelSeed = Random.Range(0, 999999);
-				}
-
-				// Access profile through reflection or make it public
-				voxelGen.seed = levelSeed;
-
-				voxelGen.Generate();
-
-				if (logs) Debug.Log($"[GameplayBootstrap] Level generated with seed: {levelSeed}");
-			}
-			else
-			{
-				Debug.LogWarning("[GameplayBootstrap] VoxelGenerator not found in LevelRoad prefab");
-			}
+			LevelGenerator.GenerateLevel();
 
 			yield return new WaitForSeconds(0.5f); // Wait for generation to complete
 		}
@@ -194,9 +169,9 @@ namespace TD.GameLoop
 
 		private LevelRoadGenerationProfile GetLevelProfile()
 		{
-			if (generatedLevel == null) return null;
+			if (LevelGenerator == null) return null;
 
-			VoxelGenerator voxelGen = generatedLevel.GetComponentInChildren<VoxelGenerator>();
+			VoxelGenerator voxelGen = LevelGenerator.GetComponentInChildren<VoxelGenerator>();
 			if (voxelGen != null)
 			{
 				return voxelGen.profile as LevelRoadGenerationProfile;

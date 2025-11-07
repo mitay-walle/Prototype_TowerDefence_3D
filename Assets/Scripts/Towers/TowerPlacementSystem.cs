@@ -14,7 +14,8 @@ namespace TD.Towers
 	{
 		[SerializeField] private InputActionReference _submit;
 		[SerializeField] private InputActionReference _cancel;
-		public LayerMask groundMask;
+		[SerializeField] private LayerMask groundMask = -1;
+		[SerializeField] private LayerMask intersectMask = -1;
 		public Material ghostMaterial;
 		private GameObject ghostInstance;
 		private GameObject currentPrefab;
@@ -55,11 +56,18 @@ namespace TD.Towers
 				return;
 			}
 
+			Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+			if (mousePosition == Vector2.zero) return;
+
 			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
 			if (Physics.Raycast(ray, out var hit, 500f, groundMask))
 			{
 				Vector3 p = hit.point;
-				ghostInstance.GetComponent<Rigidbody>().position = new(Mathf.Round(p.x), p.y, Mathf.Round(p.z));
+				p = new Vector3(Mathf.Round(p.x), p.y + 1, Mathf.Round(p.z));
+				Physics.Raycast(new Ray(p, Vector3.down), out var hit2, 100, groundMask);
+				p = hit2.point;
+				ghostInstance.GetComponent<Rigidbody>().position = p;
 			}
 
 			if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
@@ -117,7 +125,7 @@ namespace TD.Towers
 
 			if (!ghostInstance.GetComponent<TriggerIntersectColor>())
 			{
-				ghostInstance.AddComponent<TriggerIntersectColor>();
+				ghostInstance.AddComponent<TriggerIntersectColor>().layerMask = intersectMask;
 			}
 
 			if (!ghostInstance.GetComponent<Rigidbody>())
