@@ -30,6 +30,7 @@ namespace TD.Towers
 		[Tooltip(TOOLTIP_SHOW_RANGE)]
 		[SerializeField] private bool showRange = true;
 		[SerializeField] private Color rangeColor = new Color(1, 0, 0, 0.3f);
+		public TowerStatsVisual TowerStatsVisual;
 
 		public UnityEvent<EnemyHealth> onTargetAcquired;
 		public UnityEvent onTargetLost;
@@ -339,12 +340,13 @@ namespace TD.Towers
 
 		public void OnSelected()
 		{
-			// Visual feedback when selected (handled by SelectionSystem)
+			TowerStatsVisual.Show(Stats);
+			if (Logs) Debug.Log($"[Turret] {name} OnSelected");
 		}
 
 		public void OnDeselected()
 		{
-			// Visual feedback when deselected (handled by SelectionSystem)
+			TowerStatsVisual.Hide();
 		}
 
 		private void OnDrawGizmosSelected()

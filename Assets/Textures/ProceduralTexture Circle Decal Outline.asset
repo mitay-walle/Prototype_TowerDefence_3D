@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!28 &-8699467371391949432
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ProceduralTexture Circle Decal Outline
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 4
+  m_Width: 1
+  m_Height: 64
+  m_CompleteImageSize: 256
+  m_MipsStripped: 0
+  m_TextureFormat: 4
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IsPreProcessed: 0
+  m_IgnoreMipmapLimit: 1
+  m_MipmapLimitGroupName: 
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_VTOnly: 0
+  m_AlphaIsTransparency: 1
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_LightmapFormat: 0
+  m_ColorSpace: 1
+  m_PlatformBlob: 
+  image data: 256
+  _typelessdata: ff5c6000ff5d6106ff5e620cff5f6312ff606417ff61651cff626521ff626625ff636729ff64672dff646830ff656833ff656936ff666938ff666a3bff666a3dff676a3fff676b41ff676b43ff686b45ff686b46ff686c48ff686c4aff696c4bff696c4bff696d4cff6a6d4dff6a6d4dff6a6e4eff6b6e4fff6b6e50ff6b6f51ff6c6f52ff6c7053ff6d7054ff6d7156ff6e7157ff6f7259ff6f735bff70735cff71745eff727561ff737663ff747766ff757868ff76796bff777a6eff797c72ff7a7d75ff7c7f79ff7d807dff7f8281ff818486ff83868bff858890ff989abeffb3b5fbffd2d354fff0f100fffefe00fffefe00fffefe00fffefe00fffefe00
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aaf43eb4dd5dff47910124e3ed71643, type: 3}
+  m_Name: ProceduralTexture Circle Decal Outline
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::GameJam.Plugins.Procedural.ProceduralTexture
+  _texture: {fileID: -8699467371391949432}
+  _immediate: 1
+  _isSquare: 0
+  _resolution: 1
+  _resolutionY: 64
+  _background: {r: 0, g: 0, b: 0, a: 0}
+  _layers:
+  - rid: 6577126018844721362
+  references:
+    version: 2
+    RefIds:
+    - rid: 6577126018844721362
+      type: {class: ProceduralTexture/Gradient, ns: GameJam.Plugins.Procedural, asm: Assembly-CSharp-firstpass}
+      data:
+        _skip: 0
+        _alpha: 1
+        _blend: 0
+        _offset: {x: 0, y: 0}
+        _uv: 1
+        _source: 0
+        _channel: 0
+        _gradient:
+          serializedVersion: 2
+          key0: {r: 1, g: 0.3607843, b: 0.37583542, a: 0}
+          key1: {r: 1, g: 1, b: 1, a: 0.2901961}
+          key2: {r: 0, g: 0, b: 0, a: 1}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 65535
+          ctime2: 0
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 5012
+          atime2: 34772
+          atime3: 53430
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: -1
+          m_NumColorKeys: 2
+          m_NumAlphaKeys: 4
+        _gamma:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0.0012283325
+            value: 0
+            inSlope: 0.45317778
+            outSlope: 0.45317778
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.08289778
+          - serializedVersion: 3
+            time: 0.8459153
+            value: 0.25332925
+            inSlope: 0.84666514
+            outSlope: 7.1073346
+            tangentMode: 1
+            weightedMode: 0
+            inWeight: 0.08230846
+            outWeight: 0.15079413
+          - serializedVersion: 3
+            time: 0.91397846
+            value: 0.9967346
+            inSlope: 10.92229
+            outSlope: 10.92229
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4

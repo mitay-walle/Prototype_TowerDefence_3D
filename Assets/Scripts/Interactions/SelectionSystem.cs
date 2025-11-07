@@ -176,7 +176,7 @@ namespace TD.Interactions
 				currentSelected.OnSelected();
 				SetRenderingLayer(currentSelected.gameObject, selectedRenderingLayer);
 
-				var tooltip = currentSelected.gameObject.GetComponent<TD.UI.WorldTooltipBridge>();
+				var tooltip = currentSelected.gameObject.GetComponent<TD.UI.TooltipWorldBridge>();
 				if (tooltip != null)
 				{
 					tooltip.ShowTooltip();
@@ -192,7 +192,7 @@ namespace TD.Interactions
 				{
 					currentSelected.OnDeselected();
 
-					var tooltip = currentSelected.gameObject.GetComponent<TD.UI.WorldTooltipBridge>();
+					var tooltip = currentSelected.gameObject.GetComponent<TD.UI.TooltipWorldBridge>();
 					if (tooltip != null)
 					{
 						tooltip.HideTooltip();

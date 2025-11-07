@@ -12,6 +12,7 @@ namespace TD.UI
 	{
 		[Title("Screens")]
 		[SerializeField, Required] private GameObject gameOverPanel;
+		[SerializeField, Required] private TowerShopUI TowerShopUI;
 		
 		[Title("Other")]
 		[SerializeField, Required] private TextMeshProUGUI currencyText;
@@ -54,6 +55,7 @@ namespace TD.UI
 			}
 
 			Application.logMessageReceived += OnLogMessage;
+			TowerShopUI.Initialize();
 		}
 
 		private void SetupEventListeners()

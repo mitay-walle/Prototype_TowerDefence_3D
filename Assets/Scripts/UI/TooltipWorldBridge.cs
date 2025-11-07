@@ -6,17 +6,10 @@ using UnityEngine.Localization;
 
 namespace TD.UI
 {
-	public class WorldTooltipBridge : MonoBehaviour
+	public class TooltipWorldBridge : MonoBehaviour
 	{
-		private const string TOOLTIP_TITLE_KEY = "Localization key for tooltip title";
-		private const string TOOLTIP_DESC_KEY = "Localization key for tooltip description (use {0}, {1} for dynamic values)";
-		private const string TOOLTIP_TABLE = "Table name for localization strings";
-
-		[Tooltip(TOOLTIP_TITLE_KEY)]
 		[SerializeField] private string titleKey = "tooltip.object.title";
-		[Tooltip(TOOLTIP_DESC_KEY)]
 		[SerializeField] private string descriptionKey = "tooltip.object.description";
-		[Tooltip(TOOLTIP_TABLE)]
 		[SerializeField] private string tableName = "UI";
 
 		private AutoPositionalTooltip tooltipSystem;
@@ -62,10 +55,8 @@ namespace TD.UI
 			if (tooltipSystem == null || proxyRect == null) return;
 
 			UpdateProxyPosition();
-
 			LocalizedString title = new LocalizedString(tableName, titleKey);
 			LocalizedString description = GetLocalizedDescription();
-
 			proxyRect.gameObject.SetActive(true);
 			tooltipSystem.Show(proxyRect, title, description);
 		}
@@ -110,17 +101,17 @@ namespace TD.UI
 		{
 			LocalizedString description = new LocalizedString(tableName, descriptionKey);
 
-			var turret = GetComponent<Tower>();
-			if (turret != null && turret.Stats != null)
+			var tower = GetComponent<Tower>();
+			if (tower != null && tower.Stats != null)
 			{
 				description.Arguments = new object[]
 				{
-					turret.Stats.Damage,
-					turret.Stats.FireRate,
-					turret.Stats.Range,
-					turret.Stats.TargetPriority.ToString(),
-					turret.CurrentTarget != null ? turret.CurrentTarget.name : "-",
-					turret.CanUpgrade() ? turret.Stats.UpgradeCost.ToString() : "-"
+					tower.Stats.Damage,
+					tower.Stats.FireRate,
+					tower.Stats.Range,
+					tower.Stats.TargetPriority.ToString(),
+					tower.CurrentTarget != null ? tower.CurrentTarget.name : "-",
+					tower.CanUpgrade() ? tower.Stats.UpgradeCost.ToString() : "-"
 				};
 			}
 

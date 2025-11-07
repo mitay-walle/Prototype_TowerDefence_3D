@@ -1,4 +1,5 @@
 using System.Linq;
+using DG.Tweening;
 using TD.GameLoop;
 using TD.Interactions;
 using TD.UI.Information;
@@ -96,12 +97,14 @@ namespace TD.Towers
 
 			currentPrefab = prefab;
 			ghostInstance = Instantiate(prefab);
-			ghostInstance.transform.rotation = Quaternion.identity;
+			ghostInstance.transform.eulerAngles = new(0, -90);
 			FindAnyObjectByType<AutoPositionalTooltip>()?.Hide();
 			ghostInstance.GetComponent<VoxelGenerator>().Generate();
 
 			ghostInstance.name = prefab.name + "_Ghost";
 			MakeDummyGraphicOnlyPrefab(ghostInstance);
+			ghostInstance.transform.DOPunchScale(Vector3.one, .5f);
+			ghostInstance.transform.DORotate(default, .5f);
 		}
 
 		void MakeDummyGraphicOnlyPrefab(GameObject go)
@@ -136,6 +139,8 @@ namespace TD.Towers
 
 				//rb.isKinematic = true;
 			}
+
+			ghostInstance.GetComponent<Tower>().TowerStatsVisual.Show(ghostInstance.GetComponent<Tower>().Stats);
 		}
 
 		void PlaceTower(CallbackContext obj) => PlaceTower();
