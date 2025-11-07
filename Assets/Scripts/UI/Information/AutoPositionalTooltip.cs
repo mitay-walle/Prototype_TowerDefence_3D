@@ -1,3 +1,4 @@
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
@@ -33,6 +34,10 @@ namespace TD.UI.Information
 		private void Update()
 		{
 			PositionTooltip(lastTarget);
+			if (lastTarget != null && !lastTarget.gameObject.activeInHierarchy)
+			{
+				Hide();
+			}
 		}
 
 		public void Show(RectTransform target, LocalizedString title, LocalizedString message)

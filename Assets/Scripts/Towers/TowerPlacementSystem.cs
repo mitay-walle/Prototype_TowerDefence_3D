@@ -96,6 +96,7 @@ namespace TD.Towers
 
 			currentPrefab = prefab;
 			ghostInstance = Instantiate(prefab);
+			ghostInstance.transform.rotation = Quaternion.identity;
 			FindAnyObjectByType<AutoPositionalTooltip>()?.Hide();
 			ghostInstance.GetComponent<VoxelGenerator>().Generate();
 
