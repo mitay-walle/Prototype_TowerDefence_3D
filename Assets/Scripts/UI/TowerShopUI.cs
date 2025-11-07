@@ -148,7 +148,10 @@ namespace TD.Towers
 
 			foreach (var stat in stats)
 			{
-				var prefab = System.Array.Find(prefabs, p => p.name == stat.TowerName);
+				if (stat.grade != 0) continue;
+
+				GameObject prefab = Array.Find(prefabs, p => p.GetComponent<Tower>().Stats == stat);
+
 				if (prefab != null)
 				{
 					towers.Add(new TowerInfo { prefab = prefab, price = stat.Cost });

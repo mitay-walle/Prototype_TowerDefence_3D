@@ -8,9 +8,10 @@ namespace TD.UI
 {
 	public class TooltipWorldBridge : MonoBehaviour
 	{
-		[SerializeField] private string titleKey = "tooltip.object.title";
-		[SerializeField] private string descriptionKey = "tooltip.object.description";
-		[SerializeField] private string tableName = "UI";
+		private const string tableName = "UI";
+
+		[SerializeField] private LocalizedString title = new(tableName, "tooltip.object.title");
+		[SerializeField] private LocalizedString description = new(tableName, "tooltip.object.description");
 
 		private AutoPositionalTooltip tooltipSystem;
 		private RectTransform proxyRect;
@@ -22,11 +23,6 @@ namespace TD.UI
 			mainCamera = Camera.main;
 			FindTooltipSystem();
 			CreateProxyRect();
-			if (TryGetComponent<ITooltip>(out var tooltip))
-			{
-				titleKey = tooltip.Title;
-				descriptionKey = tooltip.Title;
-			}
 		}
 
 		private void FindTooltipSystem()
@@ -55,8 +51,12 @@ namespace TD.UI
 			if (tooltipSystem == null || proxyRect == null) return;
 
 			UpdateProxyPosition();
-			LocalizedString title = new LocalizedString(tableName, titleKey);
-			LocalizedString description = GetLocalizedDescription();
+			if (TryGetComponent<ITooltip>(out var tooltip))
+			{
+				title = tooltip.Title ?? title;
+				description = tooltip.Description;
+			}
+
 			proxyRect.gameObject.SetActive(true);
 			tooltipSystem.Show(proxyRect, title, description);
 		}
@@ -99,8 +99,6 @@ namespace TD.UI
 
 		private LocalizedString GetLocalizedDescription()
 		{
-			LocalizedString description = new LocalizedString(tableName, descriptionKey);
-
 			var tower = GetComponent<Tower>();
 			if (tower != null && tower.Stats != null)
 			{

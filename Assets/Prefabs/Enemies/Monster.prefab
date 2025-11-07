@@ -454,9 +454,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df19663d19f92224f86f951b97aa9dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.UI.WorldTooltipBridge
-  titleKey: tooltip.enemy.title
-  descriptionKey: tooltip.enemy.description
-  tableName: UI
+  title:
+    m_TableReference:
+      m_TableCollectionName: GUID:b84ca543df66a8846bcc3107b1ef02bc
+    m_TableEntryReference:
+      m_KeyId: 681279741953
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:b84ca543df66a8846bcc3107b1ef02bc
+    m_TableEntryReference:
+      m_KeyId: 681279741954
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &8450686693926021744
 GameObject:
   m_ObjectHideFlags: 0

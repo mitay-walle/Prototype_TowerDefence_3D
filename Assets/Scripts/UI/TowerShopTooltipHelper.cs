@@ -20,8 +20,6 @@ namespace TD.UI
 				hoverTooltip = button.AddComponent<HoverShowTooltip>();
 			}
 
-			LocalizedString title = new LocalizedString(tableName, stats.TowerName);
-
 			LocalizedString description = new LocalizedString(tableName, "tooltip.tower.shop.description");
 			description.Arguments = new object[]
 			{
@@ -34,7 +32,7 @@ namespace TD.UI
 				stats.SellValue
 			};
 
-			hoverTooltip.title = title;
+			hoverTooltip.title = stats.TowerName;
 			hoverTooltip.message = description;
 		}
 	}

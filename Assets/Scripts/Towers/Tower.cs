@@ -370,19 +370,18 @@ namespace TD.Towers
 			onFire?.RemoveAllListeners();
 		}
 
-		public string Title => Stats.TowerName;
-		public string Message => new LocalizedString("UI", "tooltip.tower.shop.description")
+		public LocalizedString Title => Stats.TowerName;
+		public LocalizedString Description => new LocalizedString("UI", "tooltip.tower.description")
 		{
 			Arguments = new object[]
 			{
-				stats.Damage,
-				stats.FireRate,
-				stats.Range,
-				stats.ProjectileSpeed,
-				stats.TargetPriority.ToString(),
-				stats.Cost,
-				stats.SellValue
-			}
-		}.GetLocalizedString();
+				Stats.Damage,
+				Stats.FireRate,
+				Stats.Range,
+				Stats.TargetPriority.ToString(),
+				CurrentTarget != null ? CurrentTarget.name : "-",
+				CanUpgrade() ? Stats.UpgradeCost.ToString() : "-"
+			},
+		};
 	}
 }

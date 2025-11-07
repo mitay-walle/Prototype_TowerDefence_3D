@@ -1,8 +1,10 @@
-﻿namespace TD.UI
+﻿using UnityEngine.Localization;
+
+namespace TD.UI
 {
 	public interface ITooltip
 	{
-		string Title { get; }
-		string Message { get; }
+		LocalizedString Title { get; }
+		LocalizedString Description { get; }
 	}
 }

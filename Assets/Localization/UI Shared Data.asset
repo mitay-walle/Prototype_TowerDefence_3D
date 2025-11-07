@@ -20,11 +20,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681283936259
-    m_Key: tooltip.turret.title
+    m_Key: tooltip.tower.title
     m_Metadata:
       m_Items: []
   - m_Id: 681279741952
-    m_Key: tooltip.turret.description
+    m_Key: tooltip.tower.description
     m_Metadata:
       m_Items: []
   - m_Id: 681279741953

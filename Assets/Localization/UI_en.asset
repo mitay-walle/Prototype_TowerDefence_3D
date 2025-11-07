@@ -16,7 +16,8 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: b84ca543df66a8846bcc3107b1ef02bc, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 7300525384985477567
   m_TableData:
   - m_Id: 9683591168
     m_Localized: Start Wave
@@ -45,7 +46,8 @@ MonoBehaviour:
       <color=yellow>Upgrade:
       ${5}</color>'
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 7300525384985477567
   - m_Id: 681279741953
     m_Localized: Enemy
     m_Metadata:
@@ -53,7 +55,8 @@ MonoBehaviour:
   - m_Id: 681279741954
     m_Localized: <b>Health:</b> {0:F0}/{1:F0}
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 7300525384985477567
   - m_Id: 681279741955
     m_Localized: Base
     m_Metadata:
@@ -61,7 +64,8 @@ MonoBehaviour:
   - m_Id: 681283936256
     m_Localized: <b>Health:</b> {0}/{1}
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 7300525384985477567
   - m_Id: 681283936257
     m_Localized: Object
     m_Metadata:
@@ -94,7 +98,17 @@ MonoBehaviour:
       <b>Sell:</b>
       ${6}'
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 7300525384985477567
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7300525384985477567
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 681279741954
+        - id: 681279741952
+        - id: 681283936256
+        - id: 681283936260
