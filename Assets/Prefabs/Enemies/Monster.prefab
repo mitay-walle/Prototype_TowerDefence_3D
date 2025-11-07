@@ -496,6 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6230b52b9cf3de544a8ad72f0185f16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurretVoxelGenerator
+  generateOnAwake: 1
   voxelMaterial: {fileID: 2100000, guid: 54aaa7295302173489cc938c688338c8, type: 2}
   voxelSize: 0.02
   emissionScale: 1.02

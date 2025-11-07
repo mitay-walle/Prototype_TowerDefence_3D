@@ -20,17 +20,13 @@ namespace TD.GameLoop
 	public class GameplayBootstrap : MonoBehaviour
 	{
 		[SerializeField] private bool logs = true;
-		[Header("Level Generation")]
-		[SerializeField] private GameObject levelRoadPrefab;
-		[SerializeField] private int levelSeed = 0;
 		[SerializeField] private bool randomSeed = true;
-
-		[Header("Gameplay Objects")]
-		[SerializeField, AssetsOnly] private GameObject basePrefab;
+		[SerializeField, Required, SceneObjectsOnly] private GameObject generatedLevel;
 		[SerializeField, SceneObjectsOnly] private GameObject playerBase;
+		[SerializeField] private int levelSeed = 0;
 
-		private GameObject generatedLevel;
 		private Transform[] spawnPoints;
+		private GameObject basePrefab;
 		private NavMeshSurface navMeshSurface;
 
 		private void Start()
@@ -64,14 +60,6 @@ namespace TD.GameLoop
 		{
 			if (logs) Debug.Log("[GameplayBootstrap] Step 1/5: Generating level...");
 
-			if (levelRoadPrefab == null)
-			{
-				Debug.LogError("[GameplayBootstrap] LevelRoad prefab not assigned!");
-				yield break;
-			}
-
-			// Instantiate LevelRoad prefab
-			generatedLevel = Instantiate(levelRoadPrefab);
 			generatedLevel.transform.position = Vector3.zero;
 			generatedLevel.transform.rotation = Quaternion.identity;
 			generatedLevel.name = "LevelRoad (Generated)";

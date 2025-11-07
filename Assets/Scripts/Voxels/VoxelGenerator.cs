@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using TD.Towers;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +7,7 @@ namespace TD.Voxels
 {
 	public class VoxelGenerator : MonoBehaviour
 	{
+		[SerializeField] private bool generateOnAwake = true;
 		public Material voxelMaterial;
 		public float voxelSize = 0.1f;
 		public float emissionScale = 1.02f;
@@ -17,7 +17,10 @@ namespace TD.Voxels
 		[SerializeReference]
 		public GenerationProfile profile = new TurretGenerationProfile();
 
-		void Awake() => Generate();
+		void Awake()
+		{
+			if (generateOnAwake) Generate();
+		}
 
 		private void Next()
 		{
@@ -33,7 +36,7 @@ namespace TD.Voxels
 			{
 				voxelMaterial = Resources.Load<Material>("Materials/Default-Voxel-Lit");
 			}
-			
+
 			Transform found = parent.Find("Combined");
 			GameObject combined = null;
 
