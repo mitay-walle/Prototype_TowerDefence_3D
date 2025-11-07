@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
-using UnityEngine.AI;
-using TD;
+using TD.GameLoop;
+using TD.Towers;
+using TD.UI;
+using TD.Weapons;
 
 public class GameSetupHelper : OdinEditorWindow
 {

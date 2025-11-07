@@ -14,8 +14,9 @@ namespace TD.Plugins.Runtime.Audio.Music
 		protected override void OnChanged()
 		{
 			_player ??= GetComponent<PlayRandomSound>();
-			if (DisablerList.IsEnabled)
+			if (DisablerList.NoEntries)
 			{
+				_player._source.ignoreListenerPause = true; 
 				_player.Play();
 				_player.FadeIn(_fade, _volume);
 			}

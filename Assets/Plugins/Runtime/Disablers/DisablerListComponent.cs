@@ -4,7 +4,7 @@
 	{
 		protected override void OnChanged()
 		{
-			enabled = DisablerList.IsEnabled;
+			enabled = DisablerList.NoEntries;
 		}
 	}
 }

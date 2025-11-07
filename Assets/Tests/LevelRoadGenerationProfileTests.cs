@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using NUnit.Framework;
 using UnityEngine;
-using TD;
+using TD.Voxels;
 
 namespace TD.Tests
 {

@@ -1,6 +1,7 @@
+using TD.Towers;
+using TD.UI.Information;
 using UnityEngine;
 using UnityEngine.Localization;
-using Plugins.GUI.Information;
 
 namespace TD.UI
 {

@@ -1,12 +1,12 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using UnityEngine.Localization;
+using System;
 using Plugins.TransformOperations;
 using Sirenix.OdinInspector;
-using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Localization;
+using UnityEngine.UI;
 
-namespace Plugins.GUI.Information
+namespace TD.UI.Information
 {
 	public class BlockWaitClick : MonoBehaviour
 	{

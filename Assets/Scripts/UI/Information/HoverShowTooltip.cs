@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization;
 
-namespace Plugins.GUI.Information
+namespace TD.UI.Information
 {
 	public class HoverShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{

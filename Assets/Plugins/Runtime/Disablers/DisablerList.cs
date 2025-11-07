@@ -8,7 +8,8 @@ namespace Plugins.Utilities
 	[InlineProperty, HideReferenceObjectPicker]
 	public class DisablerList
 	{
-		[ShowInInspector, HideLabel, HorizontalGroup(Width = 15)] public bool IsEnabled => Disablers.Count == 0;
+		public bool HasEntries => Disablers.Count > 0;
+		[ShowInInspector, HideLabel, HorizontalGroup(Width = 15)] public bool NoEntries => Disablers.Count == 0;
 		[ShowInInspector, HideLabel, HorizontalGroup] public ObservableList<object> Disablers = new();
 
 		public DisablerList() { }
@@ -18,7 +19,7 @@ namespace Plugins.Utilities
 			Disablers.ItemAdded += Changed;
 			Disablers.ItemRemoved += Changed;
 
-			void Changed(ObservableList<object> sender, ListChangedEventArgs<object> listChangedEventArgs) => action?.Invoke(IsEnabled);
+			void Changed(ObservableList<object> sender, ListChangedEventArgs<object> listChangedEventArgs) => action?.Invoke(NoEntries);
 		}
 
 		public DisablerList(Behaviour component)
@@ -26,7 +27,7 @@ namespace Plugins.Utilities
 			Disablers.ItemAdded += Changed;
 			Disablers.ItemRemoved += Changed;
 
-			void Changed(ObservableList<object> sender, ListChangedEventArgs<object> listChangedEventArgs) => component.enabled = IsEnabled;
+			void Changed(ObservableList<object> sender, ListChangedEventArgs<object> listChangedEventArgs) => component.enabled = NoEntries;
 		}
 
 		public void Add(object source)

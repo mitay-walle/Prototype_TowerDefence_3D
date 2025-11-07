@@ -3,7 +3,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
-namespace Plugins.GUI.Information
+namespace TD.UI.Information
 {
 	public class AutoPositionalTooltip : MonoBehaviour
 	{

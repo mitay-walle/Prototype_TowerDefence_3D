@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Localization;
 
-namespace Plugins.GUI.Information
+namespace TD.UI.Information
 {
 	[CreateAssetMenu(fileName = "New BlockWaitClick Data", menuName = "Onboarding/BlockWaitClick Data")]
 	public class BlockWaitClickData : ScriptableObject

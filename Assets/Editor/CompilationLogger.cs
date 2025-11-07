@@ -1,3 +1,4 @@
+using TD.UI;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
@@ -29,7 +30,7 @@ public static class CompilationLogger
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                var hud = UnityEngine.Object.FindObjectOfType<TD.GameHUD>();
+                var hud = UnityEngine.Object.FindObjectOfType<GameHUD>();
                 if (hud == null)
                 {
                     Debug.Log("[CompilationLogger] GameHUD not found, calling Setup...");

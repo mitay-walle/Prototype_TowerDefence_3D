@@ -1,4 +1,4 @@
-namespace TD
+namespace TD.UI
 {
     public class ConsoleMessage
     {

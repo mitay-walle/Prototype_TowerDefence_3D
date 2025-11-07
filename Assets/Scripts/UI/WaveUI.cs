@@ -1,8 +1,9 @@
+using TD.GameLoop;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TD
+namespace TD.UI
 {
 	public class WaveUI : MonoBehaviour
 	{

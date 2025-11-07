@@ -8,7 +8,7 @@ namespace Plugins.Utilities
 	public class DisablerListBehaviour : MonoBehaviour
 	{
 		[field: ShowInInspector] public DisablerList DisablerList { get; private set; } = new();
-		public bool IsEnalbed => DisablerList.IsEnabled;
+		public bool IsEnalbed => DisablerList.NoEntries;
 		[SerializeField] protected bool Logs;
 		[FoldoutGroup("Events")] public UnityEvent<bool> Changed;
 		[FoldoutGroup("Events")] public UnityEvent Enabled;
