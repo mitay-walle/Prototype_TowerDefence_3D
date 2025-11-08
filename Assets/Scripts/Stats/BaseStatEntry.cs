@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace TD.Stats
 {
-	[Serializable, InlineProperty]
+	[Serializable, InlineProperty, HideReferenceObjectPicker]
 	public sealed class BaseStatEntry
 	{
-		[HorizontalGroup(Width = .25f, LabelWidth = 15)] public float BaseValue = 1f;
-		[HorizontalGroup(LabelWidth = 15)] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
-		[HorizontalGroup(Width = .25f), HideLabel, NonSerialized, ShowInInspector] private float TestValue = 1f;
-		[HorizontalGroup(Width = .1f), SerializeField] private bool RoundToInt;
+		[HorizontalGroup(Width = .25f, LabelWidth = 15), HideLabel] public float BaseValue = 1f;
+		[HorizontalGroup(LabelWidth = 15), HideReferenceObjectPicker, HideLabel] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
+		[HorizontalGroup(Width = .25f), HideLabel, NonSerialized, ShowInInspector, ReadOnly] private float TestValue = 1f;
+		[HorizontalGroup(Width = .15f), SerializeField, HideInInlineEditors,LabelText("R")] private bool RoundToInt;
 		public BaseStatEntry() { }
 
 		public BaseStatEntry(float baseValue, AnimationCurve growth = null)

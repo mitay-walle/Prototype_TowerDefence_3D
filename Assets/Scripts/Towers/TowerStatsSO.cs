@@ -8,20 +8,21 @@ using UnityEngine;
 
 namespace TD.Towers
 {
+	[Icon(Tower.EDITOR_ICON_PATH)]
 	[CreateAssetMenu(fileName = "New Tower Stats", menuName = "Tower Defence/Tower Stats")]
 	public sealed class TowerStatsSO : StatsSO
 	{
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry Damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry FireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry Range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
+		[TableColumnWidth(0),VerticalGroup("Stats")] public int Cost = 25;
+		
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry Damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry FireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry Range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
 
-		public int Cost = 25;
-
-		//[InlineEditor, Required]
+		[HideInInlineEditors]
 		public TowerBalanceProfileSO BalanceProfile;
 
 		public BaseStatEntry this[TowerStat type] => type switch
@@ -83,8 +84,9 @@ namespace TD.Towers
 		private static ProfilerMarker MarkerGUI = new ProfilerMarker("TowerStatsSO.OnInspectorGUI");
 		private static ProfilerMarker MarkerGraph = new ProfilerMarker("TowerStatsSO.DrawGlobalGraph");
 
+		[VerticalGroup("Statistcs")]
 		[OnInspectorGUI]
-		private void OnInspectorGUI()
+		private void Statistics()
 		{
 			using (MarkerGUI.Auto())
 			{
@@ -111,57 +113,57 @@ namespace TD.Towers
 
 				GUILayout.Space(10);
 			}
-
-			using (MarkerGraph.Auto())
-			{
-				DrawGlobalGraph();
-			}
 		}
 
-		private void DrawGlobalGraph()
+		[OnInspectorGUI]
+		private void Graphs()
 		{
-			var p = BalanceProfile;
-			int grades = Mathf.Max(1, p.GlobalMaxGrade);
-
-			// пересчёт глобальных максимумов
-			for (int i = 0; i <= grades; i++)
+			using (MarkerGraph.Auto())
 			{
-				p.MaxDpsReference = Mathf.Max(p.MaxDpsReference, CalculateDPSScore(i));
-				p.MaxEfficiencyReference = Mathf.Max(p.MaxEfficiencyReference, CalculateEfficiency(i));
+				var p = BalanceProfile;
+				int grades = Mathf.Max(1, p.GlobalMaxGrade);
+
+				// пересчёт глобальных максимумов
+				for (int i = 0; i <= grades; i++)
+				{
+					p.MaxDpsReference = Mathf.Max(p.MaxDpsReference, CalculateDPSScore(i));
+					p.MaxEfficiencyReference = Mathf.Max(p.MaxEfficiencyReference, CalculateEfficiency(i));
+				}
+
+				const float padding = 8f;
+				float graphWidth = EditorGUIUtility.currentViewWidth - 60f;
+				float graphHeight = 100f;
+
+				Rect rect = GUILayoutUtility.GetRect(graphWidth, graphHeight);
+				EditorGUI.DrawRect(rect, new Color(0.12f, 0.12f, 0.12f, 1f));
+
+				Handles.color = Color.green;
+				Vector3 prev = Vector3.zero;
+				for (int i = 0; i <= grades; i++)
+				{
+					float val = CalculateDPSScore(i);
+					float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
+					float y = rect.yMax - padding - (val / p.MaxDpsReference * (rect.height - padding * 2));
+					Vector3 curr = new(x, y);
+					if (i > 0) Handles.DrawLine(prev, curr);
+					prev = curr;
+				}
+
+				Handles.color = Color.cyan;
+				prev = Vector3.zero;
+				for (int i = 0; i <= grades; i++)
+				{
+					float val = CalculateEfficiency(i);
+					float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
+					float y = rect.yMax - padding - (val / p.MaxEfficiencyReference * (rect.height - padding * 2));
+					Vector3 curr = new(x, y);
+					if (i > 0) Handles.DrawLine(prev, curr);
+					prev = curr;
+				}
+
+				EditorGUI.LabelField(new Rect(rect.x + 6, rect.y + 4, 200, 18), "Green: DPS | Cyan: Efficiency (normalized)",
+					EditorStyles.miniBoldLabel);
 			}
-
-			const float padding = 8f;
-			float graphWidth = EditorGUIUtility.currentViewWidth - 60f;
-			float graphHeight = 100f;
-
-			Rect rect = GUILayoutUtility.GetRect(graphWidth, graphHeight);
-			EditorGUI.DrawRect(rect, new Color(0.12f, 0.12f, 0.12f, 1f));
-
-			Handles.color = Color.green;
-			Vector3 prev = Vector3.zero;
-			for (int i = 0; i <= grades; i++)
-			{
-				float val = CalculateDPSScore(i);
-				float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
-				float y = rect.yMax - padding - (val / p.MaxDpsReference * (rect.height - padding * 2));
-				Vector3 curr = new(x, y);
-				if (i > 0) Handles.DrawLine(prev, curr);
-				prev = curr;
-			}
-
-			Handles.color = Color.cyan;
-			prev = Vector3.zero;
-			for (int i = 0; i <= grades; i++)
-			{
-				float val = CalculateEfficiency(i);
-				float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
-				float y = rect.yMax - padding - (val / p.MaxEfficiencyReference * (rect.height - padding * 2));
-				Vector3 curr = new(x, y);
-				if (i > 0) Handles.DrawLine(prev, curr);
-				prev = curr;
-			}
-
-			EditorGUI.LabelField(new Rect(rect.x + 6, rect.y + 4, 200, 18), "Green: DPS | Cyan: Efficiency (normalized)", EditorStyles.miniBoldLabel);
 		}
 #endif
 	  #endregion

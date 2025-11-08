@@ -14,8 +14,10 @@ using UnityEngine.Localization;
 
 namespace TD.Towers
 {
+	[Icon(EDITOR_ICON_PATH)]
 	public class Tower : MonoBehaviour, ITargetable, ITooltipValues
 	{
+		public const string EDITOR_ICON_PATH = "Assets/Scripts/Towers/Editor/Tower.png";
 		private const string TOOLTIP_ROTATION_PART = "Transform that rotates to aim at targets (optional, uses main transform if not set)";
 		private const string TOOLTIP_FIRE_POINTS = "Spawn positions for projectiles (optional, uses turret position if empty)";
 		private const string TOOLTIP_ROTATION_SPEED = "Degrees per second for turret rotation";

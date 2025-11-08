@@ -1,8 +1,9 @@
-﻿using Sirenix.OdinInspector;
-using TD.Towers;
+﻿using TD.Towers;
+using UnityEngine;
 
 namespace TD.Stats
 {
+	[Icon(Tower.EDITOR_ICON_PATH)]
 	public class TowerStats : ComponentStats<TowerStatsSO>
 	{
 		public Stat Damage = new Stat();

@@ -12,5 +12,11 @@ namespace TD.Towers.Editor
 			var window = GetWindow<TowerStatsGridWindow>("MyScriptableObject Grid");
 			window.position = new Rect(100, 100, 1200, 800);
 		}
+
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			titleContent = new GUIContent("Tower Stats", AssetDatabase.LoadAssetAtPath<Texture2D>(Tower.EDITOR_ICON_PATH));
+		}
 	}
 }

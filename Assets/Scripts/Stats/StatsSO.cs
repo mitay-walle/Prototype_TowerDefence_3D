@@ -7,8 +7,9 @@ namespace TD.Stats
 {
 	public abstract class StatsSO : ScriptableObject
 	{
-		public int maxGrade = 10;
+		[TableColumnWidth(0), VerticalGroup("Stats")] public int maxGrade = 10;
 		[ShowInInspector, PropertyRange(1, nameof(maxGrade)), OnValueChanged("TestGradeCalculation")]
+		[VerticalGroup("Statistcs")]
 		protected int TestGrade = 5;
 
 		[SerializeReference] public List<UpgradeRule> upgradeRules = new();

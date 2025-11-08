@@ -15,6 +15,7 @@ MonoBehaviour:
   maxGrade: 40
   upgradeRules:
   - rid: 7300525397335605574
+  Cost: 33
   Damage:
     BaseValue: 5
     Growth:
@@ -204,7 +205,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RoundToInt: 1
-  Cost: 33
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
   maxGrade: 15
   upgradeRules: []
+  Cost: 40
   Damage:
     BaseValue: 10
     Growth:
@@ -203,7 +204,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RoundToInt: 1
-  Cost: 40
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2
