@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TD.Stats
@@ -7,10 +8,10 @@ namespace TD.Stats
 	[CreateAssetMenu(fileName = "New Tower Stats", menuName = "Tower Defence/Tower Stats")]
 	public sealed class TowerStatsSO : StatsSO
 	{
-		public BaseStatEntry damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
-		public BaseStatEntry fireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
-		public BaseStatEntry range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
-		public BaseStatEntry critChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry fireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
+		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry critChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
 
 		public BaseStatEntry this[StatType type] => type switch
 		{

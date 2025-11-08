@@ -90,6 +90,7 @@ namespace TD.Stats
 			}
 		}
 
+		[Button]
 		private void RecalculateStats()
 		{
 			damage?.Calculate();
@@ -98,23 +99,29 @@ namespace TD.Stats
 			critChance?.Calculate();
 		}
 
+		[Button]
 		public void UpgradeGrade()
 		{
 			if (currentGrade < statsSO.maxGrade)
 			{
 				currentGrade++;
-				OnGradeUpgraded?.Invoke(currentGrade);
+				statsSO.ApplyUpgrade(currentGrade, this);
 				RecalculateStats();
+				OnGradeUpgraded?.Invoke(currentGrade);
 			}
 		}
 
-		[Button("Show Current Stats")]
-		private void DebugStats()
+		public void SetConfig(StatsSO newStats)
 		{
-			Debug.Log($"=== Tower Stats (Grade {currentGrade}) ===\n{damage}\n{fireRate}\n{range}\n{critChance}");
+			if (newStats == null || newStats is TowerStatsSO)
+			{
+				statsSO = newStats as TowerStatsSO;
+				RecalculateStats();
+			}
+			else
+			{
+				Debug.LogError("wrong config type", newStats);
+			}
 		}
-
-		public override string ToString() => $"Grade {currentGrade}/{statsSO?.maxGrade}: " +
-		                                     $"DMG={damage.Value:F1} FR={fireRate.Value:F1} RNG={range.Value:F1} CRIT={critChance.Value:F2}";
 	}
 }

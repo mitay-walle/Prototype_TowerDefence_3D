@@ -1,24 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using Sirenix.OdinInspector;
 
 namespace TD.Stats
 {
-	[CreateAssetMenu(fileName = "New Stat Modifier", menuName = "Tower Defence/Stat Modifier")]
-	public class StatModifier : ScriptableObject
+	[Serializable]
+	public abstract class StatModifier
 	{
-		[SerializeReference]
-		public IModifier modifier = new BasicModifier();
-
-		[Range(0, 100)]
+		[PropertyRange(0, 100)]
 		public int priority = 50;
 
-		public float Apply(float currentValue, float baseValue, float sumBeforeMultipliers)
-		{
-			return modifier?.Calculate(currentValue, baseValue, sumBeforeMultipliers) ?? currentValue;
-		}
-
-		public void OnAdd(IStats towerStats) => modifier?.OnAdd(towerStats);
-		public void OnRemove(IStats towerStats) => modifier?.OnRemove(towerStats);
-
-		public override string ToString() => $"{modifier} (Priority: {priority})";
+		public abstract bool IsMultplicative { get; }
+		public abstract float Calculate(float currentValue, float baseValue, float sumBeforeMultipliers);
+		public virtual void OnAdd(IStats stats) { }
+		public virtual void OnRemove(IStats stats) { }
 	}
 }

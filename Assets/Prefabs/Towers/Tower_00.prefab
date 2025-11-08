@@ -5427,7 +5427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8f5e46a5be343679af780335a14bd5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.StatsTower
-  statsSO: {fileID: 0}
+  statsSO: {fileID: 11400000, guid: 79500bd72082b654db4173aaa2ad9976, type: 2}
   <currentGrade>k__BackingField: 0
   logs: 0
 --- !u!1 &8073250677251828587

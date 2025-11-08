@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a7dd9bcb20241cb85bef6b0c784c8af, type: 3}
-  m_Name: TowerStatsSO 00 Basic
+  m_Name: TowerStatsSO 01 Tesla
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
-  maxGrade: 10
-  upgradeRules:
-  - rid: 7300525394819285084
+  maxGrade: 15
+  upgradeRules: []
   damage:
-    BaseValue: 5
+    BaseValue: 12
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -121,10 +120,4 @@ MonoBehaviour:
       m_RotationOrder: 4
   references:
     version: 2
-    RefIds:
-    - rid: 7300525394819285084
-      type: {class: UpgradeRuleChangeStats, ns: TD.Stats, asm: Assembly-CSharp}
-      data:
-        startGrade: 9
-        repeatEvery: 0
-        newStats: {fileID: 11400000, guid: bb76c5b713842b146ab0fde0846fba89, type: 2}
+    RefIds: []

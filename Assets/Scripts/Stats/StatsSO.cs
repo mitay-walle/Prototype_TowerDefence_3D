@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace TD.Stats
 {
-	[OnValueChanged("OnStatsChanged", true)]
 	public abstract class StatsSO : ScriptableObject
 	{
 		public int maxGrade = 10;
 		[ShowInInspector, PropertyRange(1, nameof(maxGrade)), OnValueChanged("TestGradeCalculation")]
 		private int TestGrade = 5;
+
+		[SerializeReference] public List<UpgradeRule> upgradeRules = new();
 
 		public event Action OnStatsChangedEvent;
 
@@ -20,9 +21,19 @@ namespace TD.Stats
 
 		private void TestGradeCalculation()
 		{
+			ApplyUpgrade(TestGrade, null);
+
 			foreach (BaseStatEntry entry in GetStats())
 			{
-				entry.SetTestGrowValue(TestGrade,this);
+				entry.SetTestGrowValue(TestGrade, this);
+			}
+		}
+
+		public void ApplyUpgrade(int grade, IStats stats)
+		{
+			foreach (var rule in upgradeRules)
+			{
+				rule.TryApply(grade, stats);
 			}
 		}
 	}

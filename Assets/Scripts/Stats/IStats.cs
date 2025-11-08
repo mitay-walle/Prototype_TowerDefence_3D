@@ -8,5 +8,6 @@ namespace TD.Stats
 		int currentGrade { get; }
 		public StatsSO config { get; }
 		Func<bool> LogsFunc { get; }
+		void SetConfig(StatsSO newStats);
 	}
 }

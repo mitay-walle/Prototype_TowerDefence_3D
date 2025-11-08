@@ -31,8 +31,8 @@ namespace TD.Stats
 		public void Init(IStats stats, BaseStatEntry baseStatEntry)
 		{
 			cachedTowerStats = stats;
-			this.baseValueGetter = baseStatEntry.GetFunc(stats);
-			this.logsGetter = stats.LogsFunc;
+			baseValueGetter = baseStatEntry.GetFunc(stats);
+			logsGetter = stats.LogsFunc;
 			Calculate();
 		}
 
@@ -66,9 +66,9 @@ namespace TD.Stats
 			// Аддитивные модификаторы
 			foreach (var mod in modifiers)
 			{
-				if (!mod.modifier.IsMultplicative)
+				if (!mod.IsMultplicative)
 				{
-					currentValue = mod.Apply(currentValue, baseValue, sumBeforeMultipliers);
+					currentValue = mod.Calculate(currentValue, baseValue, sumBeforeMultipliers);
 				}
 			}
 
@@ -77,9 +77,9 @@ namespace TD.Stats
 			// Остальные модификаторы
 			foreach (var mod in modifiers)
 			{
-				if (mod.modifier.IsMultplicative)
+				if (mod.IsMultplicative)
 				{
-					currentValue = mod.Apply(currentValue, baseValue, sumBeforeMultipliers);
+					currentValue = mod.Calculate(currentValue, baseValue, sumBeforeMultipliers);
 				}
 			}
 

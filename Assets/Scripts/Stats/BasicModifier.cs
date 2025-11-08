@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TD.Stats
 {
 	[Serializable]
-	public class BasicModifier : IModifier
+	public class BasicModifier : StatModifier
 	{
 		public enum ModifierType
 		{
@@ -22,7 +22,7 @@ namespace TD.Stats
 		public float minValue;
 		public float maxValue = 100;
 
-		public bool IsMultplicative => type switch
+		public override bool IsMultplicative => type switch
 		{
 			ModifierType.Add => false,
 			ModifierType.MultiplySum => true,
@@ -34,7 +34,7 @@ namespace TD.Stats
 			_ => throw new ArgumentOutOfRangeException()
 		};
 
-		public virtual float Calculate(float currentValue, float baseValue, float sumBeforeMultipliers)
+		public override float Calculate(float currentValue, float baseValue, float sumBeforeMultipliers)
 		{
 			return type switch
 			{
@@ -48,9 +48,6 @@ namespace TD.Stats
 				_ => currentValue
 			};
 		}
-
-		public virtual void OnAdd(IStats towerStats) { }
-		public virtual void OnRemove(IStats towerStats) { }
 
 		public override string ToString() => $"{type}: {value:F2}";
 	}
