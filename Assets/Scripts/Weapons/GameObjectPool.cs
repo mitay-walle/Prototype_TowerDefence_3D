@@ -1,15 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace TD.Weapons
 {
-	public class PrefabSource : MonoBehaviour
-	{
-		public GameObject SourcePrefab;
-	}
-
 	public class GameObjectPool
 	{
 		public static GameObjectPool Instance { get; private set; } = new();

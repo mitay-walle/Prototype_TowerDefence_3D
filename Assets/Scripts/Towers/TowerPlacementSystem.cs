@@ -7,6 +7,7 @@ using TD.Voxels;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace TD.Towers
@@ -84,7 +85,7 @@ namespace TD.Towers
 			var turret = prefab.GetComponent<Tower>();
 			if (turret != null && turret.Stats != null)
 			{
-				currentTowerCost = turret.Stats.Cost;
+				currentTowerCost = turret.Cost;
 
 				if (!ResourceManager.Instance.CanAfford(currentTowerCost))
 				{
@@ -112,6 +113,12 @@ namespace TD.Towers
 			var behs = ghostInstance.GetComponents<MonoBehaviour>();
 			foreach (MonoBehaviour beh in behs)
 			{
+				if (beh is Tower)
+				{
+					beh.enabled = false;
+					continue;
+				}
+
 				Destroy(beh);
 			}
 
@@ -140,7 +147,7 @@ namespace TD.Towers
 				//rb.isKinematic = true;
 			}
 
-			ghostInstance.GetComponent<Tower>().TowerStatsVisual.Show(ghostInstance.GetComponent<Tower>().Stats);
+			ghostInstance.GetComponent<Tower>().TowerStatsVisual.Show(currentPrefab.GetComponent<Tower>().Stats);
 		}
 
 		void PlaceTower(CallbackContext obj) => PlaceTower();

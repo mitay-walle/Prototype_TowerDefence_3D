@@ -8,10 +8,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 719208067700551869, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1724461785092567337, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: seed
       value: 474105542
@@ -14020,53 +14016,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4478596717585867858, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.3000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 4709668277784987642, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: stats
-      value: 
-      objectReference: {fileID: 11400000, guid: d8151bab348049648ae154c5e7f546d3, type: 2}
     - target: {fileID: 6808451643644963469, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: m_Name
       value: Tower_02
-      objectReference: {fileID: 0}
-    - target: {fileID: 7253278227055791285, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7253278227055791285, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7253278227055791285, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[2]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8913440904606053794, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8913440904606053794, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8913440904606053794, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8913440904606053794, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: 'm_Materials.Array.data[2]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 9128969808475604325, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

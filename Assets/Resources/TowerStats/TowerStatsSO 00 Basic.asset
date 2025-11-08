@@ -15,8 +15,9 @@ MonoBehaviour:
   maxGrade: 10
   upgradeRules:
   - rid: 7300525394819285084
-  damage:
-    BaseValue: 5
+  - rid: 7300525394819285091
+  Damage:
+    BaseValue: 10
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -24,7 +25,7 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -32,8 +33,8 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 2
-        inSlope: 0.1
-        outSlope: 0.1
+        inSlope: 1
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -41,7 +42,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  fireRate:
+  FireDelay:
     BaseValue: 1
     Growth:
       serializedVersion: 2
@@ -50,7 +51,7 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0
+        outSlope: 0.5
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -58,8 +59,8 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 1.5
-        inSlope: 0.05
-        outSlope: 0.05
+        inSlope: 0.5
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -67,7 +68,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  range:
+  Range:
     BaseValue: 5
     Growth:
       serializedVersion: 2
@@ -76,7 +77,7 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -84,8 +85,8 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 2
-        inSlope: 0.05
-        outSlope: 0.05
+        inSlope: 1
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -93,7 +94,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  critChance:
+  CritChance:
     BaseValue: 0.1
     Growth:
       serializedVersion: 2
@@ -102,7 +103,7 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0
+        outSlope: 0.20000005
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -110,8 +111,34 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 1
         value: 1.2
-        inSlope: 0.020000005
-        outSlope: 0.020000005
+        inSlope: 0.20000005
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  ProjectileSpeed:
+    BaseValue: 0.1
+    Growth:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0.20000005
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1.2
+        inSlope: 0.20000005
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -127,4 +154,12 @@ MonoBehaviour:
       data:
         startGrade: 9
         repeatEvery: 0
+        repeatMax: 0
         newStats: {fileID: 11400000, guid: bb76c5b713842b146ab0fde0846fba89, type: 2}
+    - rid: 7300525394819285091
+      type: {class: UpgradeRuleAdditionalGrade, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        startGrade: 2
+        repeatEvery: 0
+        repeatMax: 0
+        additionalGrade: 1

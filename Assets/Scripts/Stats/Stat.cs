@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Unity.Collections;
 using UnityEngine;
 
 namespace TD.Stats
 {
-	[Serializable]
+	[Serializable, InlineProperty]
 	public class Stat
 	{
 		public struct Info
@@ -18,8 +20,8 @@ namespace TD.Stats
 
 		private Func<float> baseValueGetter;
 		private Func<bool> logsGetter;
-		private List<StatModifier> modifiers = new List<StatModifier>();
-		private float cachedValue;
+		[ShowInInspector, Sirenix.OdinInspector.ReadOnly] private List<StatModifier> modifiers = new List<StatModifier>();
+		[ShowInInspector, Sirenix.OdinInspector.ReadOnly, HideLabel] private float cachedValue;
 		private IStats cachedTowerStats;
 
 		public event Action<Info> OnChanged;
@@ -98,6 +100,11 @@ namespace TD.Stats
 			}
 
 			OnChanged?.Invoke(info);
+		}
+
+		public static implicit operator float(Stat v)
+		{
+			return v.Value;
 		}
 
 		public override string ToString() => $"Value: {Value:F2} (Base: {BaseValue:F2}, Mods: {ModifierCount})";

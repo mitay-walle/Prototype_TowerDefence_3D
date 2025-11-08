@@ -5,14 +5,11 @@ using UnityEngine.Localization;
 
 namespace TD.UI
 {
-	public class TowerShopTooltipHelper : MonoBehaviour
+	public static class TowerShopTooltipHelper
 	{
-		private const string TOOLTIP_TABLE = "Table name for localization strings";
+		private const string tableName = "UI";
 
-		[Tooltip(TOOLTIP_TABLE)]
-		[SerializeField] private string tableName = "UI";
-
-		public void SetupTooltip(GameObject button, TowerStats stats, string towerName)
+		public  static void SetupTooltip(GameObject button, Tower tower, string towerName)
 		{
 			var hoverTooltip = button.GetComponent<HoverShowTooltip>();
 			if (hoverTooltip == null)
@@ -23,16 +20,16 @@ namespace TD.UI
 			LocalizedString description = new LocalizedString(tableName, "tooltip.tower.shop.description");
 			description.Arguments = new object[]
 			{
-				stats.Damage,
-				stats.FireRate,
-				stats.Range,
-				stats.ProjectileSpeed,
-				stats.TargetPriority.ToString(),
-				stats.Cost,
-				stats.SellValue
+				tower.Stats.statsSO.Damage.BaseValue,
+				tower.Stats.statsSO.FireDelay.BaseValue,
+				tower.Stats.statsSO.Range.BaseValue,
+				tower.Stats.statsSO.ProjectileSpeed.BaseValue,
+				tower.TargetPriority.ToString(),
+				tower.Cost,
+				tower.SellValue
 			};
 
-			hoverTooltip.title = stats.TowerName;
+			hoverTooltip.title = tower.Title;
 			hoverTooltip.message = description;
 		}
 	}

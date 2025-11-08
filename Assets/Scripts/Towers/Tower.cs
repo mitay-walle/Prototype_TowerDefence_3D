@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Interactions;
 using TD.Monsters;
+using TD.Stats;
 using TD.UI;
 using TD.Weapons;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace TD.Towers
 
 		[SerializeField, Required] private TowerStats stats;
 		[SerializeField, Required] private Projectile projectilePrefab;
+		public int Cost;
+		public int SellValue;
 
 		[Tooltip(TOOLTIP_ROTATION_PART)]
 		[SerializeField] private Transform turretRotationPart;
@@ -31,6 +34,10 @@ namespace TD.Towers
 		[SerializeField] private bool showRange = true;
 		[SerializeField] private Color rangeColor = new Color(1, 0, 0, 0.3f);
 		public TowerStatsVisual TowerStatsVisual;
+		[SerializeField] public TargetPriority TargetPriority = TargetPriority.Nearest;
+		[SerializeField] private MonoBehaviour weaponComponent;
+		public IWeapon Weapon => weaponComponent as IWeapon;
+		[SerializeField] private bool predictiveAiming = false;
 
 		public UnityEvent<EnemyHealth> onTargetAcquired;
 		public UnityEvent onTargetLost;
@@ -41,11 +48,9 @@ namespace TD.Towers
 		private EnemyHealth currentTarget;
 		private float fireTimer;
 		private List<EnemyHealth> enemiesInRange = new List<EnemyHealth>();
-		private int upgradeLevel = 0;
 
 		public TowerStats Stats => stats;
 		public EnemyHealth CurrentTarget => currentTarget;
-		public int UpgradeLevel => upgradeLevel;
 		public bool HasTarget => currentTarget != null && currentTarget.IsAlive;
 		private Collider[] colliders = new Collider[500];
 		int foundCount;
@@ -121,7 +126,7 @@ namespace TD.Towers
 
 			EnemyHealth target = null;
 
-			switch (stats.TargetPriority)
+			switch (TargetPriority)
 			{
 				case TargetPriority.Nearest:
 					target = GetNearestEnemy();
@@ -144,7 +149,7 @@ namespace TD.Towers
 					break;
 			}
 
-			if (Logs && target != null) Debug.Log($"[Turret] {name} selected target: {target.name} using {stats.TargetPriority} priority");
+			if (Logs && target != null) Debug.Log($"[Turret] {name} selected target: {target.name} using {TargetPriority} priority");
 			return target;
 		}
 
@@ -273,18 +278,18 @@ namespace TD.Towers
 
 		private void FireFromPosition(Vector3 position)
 		{
-			if (stats.Weapon != null)
+			if (Weapon != null)
 			{
 				Vector3 targetPosition = currentTarget.transform.position;
 				Vector3 direction = (targetPosition - position).normalized;
 
-				if (stats.PredictiveAiming)
+				if (predictiveAiming)
 				{
 					targetPosition = PredictTargetPosition(currentTarget);
 					direction = (targetPosition - position).normalized;
 				}
 
-				stats.Weapon.Fire(position, direction, currentTarget.transform, stats.Damage);
+				Weapon.Fire(position, direction, currentTarget.transform, stats.Damage);
 			}
 			else
 			{
@@ -293,7 +298,7 @@ namespace TD.Towers
 				{
 					Vector3 targetPosition = currentTarget.transform.position;
 
-					if (stats.PredictiveAiming)
+					if (predictiveAiming)
 					{
 						targetPosition = PredictTargetPosition(currentTarget);
 					}
@@ -331,10 +336,7 @@ namespace TD.Towers
 		{
 			if (!CanUpgrade()) return false;
 
-			stats = stats.NextUpgrade;
-			upgradeLevel++;
-
-			if (Logs) Debug.Log($"[Turret] {name} upgraded to level {upgradeLevel}");
+			stats.UpgradeGrade();
 			return true;
 		}
 
@@ -370,15 +372,15 @@ namespace TD.Towers
 			onFire?.RemoveAllListeners();
 		}
 
-		public LocalizedString Title => Stats.TowerName;
+		public LocalizedString Title => null;
 		public LocalizedString Description => new LocalizedString("UI", "tooltip.tower.description")
 		{
 			Arguments = new object[]
 			{
 				Stats.Damage,
-				Stats.FireRate,
+				Stats.FireDelay,
 				Stats.Range,
-				Stats.TargetPriority.ToString(),
+				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
 				CanUpgrade() ? Stats.UpgradeCost.ToString() : "-"
 			},

@@ -33,7 +33,7 @@ namespace TD.Stats
 	[Serializable]
 	public class UpgradeRuleStatModifier : UpgradeRule
 	{
-		public StatType targetStat;
+		public TowerStat targetStat;
 
 		public override string ToString() => $"TargetStat: {targetStat}, Modifier: {modifier}";
 
@@ -47,7 +47,7 @@ namespace TD.Stats
 				return;
 			}
 
-			if (stats is StatsTower statsTower)
+			if (stats is TowerStats statsTower)
 			{
 				statsTower[targetStat].AddModifier(modifier);
 			}
@@ -86,7 +86,7 @@ namespace TD.Stats
 				return;
 			}
 
-			if (stats is StatsTower statsTower)
+			if (stats is TowerStats statsTower)
 			{
 				for (int i = 0; i < additionalGrade; i++)
 				{

@@ -105,9 +105,9 @@ namespace TD.UI
 				description.Arguments = new object[]
 				{
 					tower.Stats.Damage,
-					tower.Stats.FireRate,
+					tower.Stats.FireDelay,
 					tower.Stats.Range,
-					tower.Stats.TargetPriority.ToString(),
+					tower.TargetPriority.ToString(),
 					tower.CurrentTarget != null ? tower.CurrentTarget.name : "-",
 					tower.CanUpgrade() ? tower.Stats.UpgradeCost.ToString() : "-"
 				};

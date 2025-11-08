@@ -5350,8 +5350,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02465acfb0c43f146ada819121c7623f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.Turret
-  stats: {fileID: 11400000, guid: 7a6596a7c58403a4a8453d0965bb8117, type: 2}
+  stats: {fileID: 7386382002788943994}
   projectilePrefab: {fileID: 6077644098176679513, guid: 5a7db0080f704c54daaad1f043c01af0, type: 3}
+  Cost: 0
+  SellValue: 0
   turretRotationPart: {fileID: 4524784918887899802}
   firePoints:
   - {fileID: 2604770748206252731}
@@ -5360,6 +5362,9 @@ MonoBehaviour:
   rangeColor: {r: 1, g: 0, b: 0, a: 0.3}
   TowerStatsVisual:
     _range: {fileID: 8762942500554904522}
+  TargetPriority: 0
+  weaponComponent: {fileID: 0}
+  predictiveAiming: 0
   onTargetAcquired:
     m_PersistentCalls:
       m_Calls: []

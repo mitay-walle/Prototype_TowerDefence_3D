@@ -1,4 +1,5 @@
 ﻿using System;
+using TD.Stats;
 using UnityEngine;
 
 namespace TD.Towers
@@ -10,7 +11,7 @@ namespace TD.Towers
 
 		public void Show(TowerStats stats)
 		{
-			_range.transform.localScale = Vector3.one * stats.Range *2;
+			_range.transform.localScale = Vector3.one * stats.Range * 2;
 			_range.SetActive(true);
 		}
 

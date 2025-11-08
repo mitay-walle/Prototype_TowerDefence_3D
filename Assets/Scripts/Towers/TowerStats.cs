@@ -1,86 +1,18 @@
-using Sirenix.OdinInspector;
-using TD.Weapons;
-using UnityEngine;
-using UnityEngine.Localization;
+﻿using Sirenix.OdinInspector;
 
-namespace TD.Towers
+namespace TD.Stats
 {
-	[CreateAssetMenu(fileName = "TowerStats", menuName = "TD/Tower Stats", order = 0)]
-	public class TowerStats : ScriptableObject
+	public class TowerStats : ComponentStats<TowerStatsSO>
 	{
-		[SerializeField] public int grade;
-		[SerializeField, Min(0)] private float damage = 10f;
+		public Stat Damage = new Stat();
+		public Stat FireDelay = new Stat();
+		public Stat Range = new Stat();
+		public Stat CritChance = new Stat();
+		public Stat ProjectileSpeed = new Stat();
 
-		[SerializeField, Min(0)] private float fireRate = 1f;
+		public Stat this[TowerStat type] => StatUtility.Indexer(this, type);
 
-		[SerializeField, Min(0)] private float range = 10f;
-
-		[SerializeField, Min(0)] private float projectileSpeed = 20f;
-
-		[SerializeField] private MonoBehaviour weaponComponent;
-
-		[SerializeField] private TargetPriority targetPriority = TargetPriority.Nearest;
-
-		[SerializeField] private bool predictiveAiming = false;
-
-		[SerializeField, Min(0)] private int cost = 100;
-
-		[SerializeField, Min(0)] private int sellValue = 50;
-
-		[SerializeField] private TowerStats nextUpgrade;
-
-		[SerializeField, Min(0)] private int upgradeCost = 150;
-
-		public LocalizedString TowerName;
-		public LocalizedString Description;
-		public float Damage => damage;
-		public float FireRate => fireRate;
-		public float Range => range;
-		public float ProjectileSpeed => projectileSpeed;
-		public IWeapon Weapon => weaponComponent as IWeapon;
-		public TargetPriority TargetPriority => targetPriority;
-		public bool PredictiveAiming => predictiveAiming;
-		public int Cost => cost;
-		public int SellValue => sellValue;
-		public TowerStats NextUpgrade => nextUpgrade;
-		public int UpgradeCost => upgradeCost;
-		public bool CanUpgrade => nextUpgrade != null;
-		public float FireDelay => 1f / fireRate;
-
-		[Button("Create Upgrade Level")]
-		private void CreateUpgradeLevel()
-		{
-            #if UNITY_EDITOR
-			var upgrade = Instantiate(this);
-			upgrade.grade++;
-			upgrade.damage = damage * 1.5f;
-			upgrade.fireRate = fireRate * 1.2f;
-			upgrade.range = range * 1.1f;
-			upgrade.projectileSpeed = projectileSpeed * 1.1f;
-			upgrade.targetPriority = targetPriority;
-			upgrade.predictiveAiming = predictiveAiming;
-			upgrade.cost = cost;
-			upgrade.sellValue = Mathf.RoundToInt(cost * 0.7f + upgradeCost * 0.5f);
-			upgrade.upgradeCost = Mathf.RoundToInt(upgradeCost * 1.5f);
-
-			string path = UnityEditor.AssetDatabase.GetAssetPath(this);
-			string directory = System.IO.Path.GetDirectoryName(path);
-			string fileName = System.IO.Path.GetFileNameWithoutExtension(path) + "_Upgrade";
-			string newPath = System.IO.Path.Combine(directory, fileName + ".asset");
-
-			UnityEditor.AssetDatabase.CreateAsset(upgrade, newPath);
-			nextUpgrade = upgrade;
-			UnityEditor.EditorUtility.SetDirty(this);
-			UnityEditor.AssetDatabase.SaveAssets();
-            #endif
-		}
-	}
-
-	public enum TargetPriority
-	{
-		Nearest, // Closest enemy
-		Farthest, // Enemy closest to base
-		Strongest, // Highest HP
-		Weakest // Lowest HP
+		protected override void InitializeStats() => StatUtility.Initialize(this);
+		[Button] protected override void RecalculateStats() => StatUtility.Calculate(this);
 	}
 }

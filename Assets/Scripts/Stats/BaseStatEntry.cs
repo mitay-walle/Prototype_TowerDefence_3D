@@ -20,7 +20,17 @@ namespace TD.Stats
 		}
 
 		float GetValue(int grade, StatsSO stats) => BaseValue * Growth.Evaluate(grade * 1f / stats.maxGrade);
-		public Func<float> GetFunc(IStats stats) => () => GetValue(stats.currentGrade, stats.config);
+
+		public Func<float> GetFunc(IStats stats) => () =>
+		{
+			if (stats.LogsFunc())
+			{
+				Debug.Log($"BaseValue {BaseValue} GetValue {GetValue(stats.currentGrade, stats.config)}");
+			}
+
+			return GetValue(stats.currentGrade, stats.config);
+		};
+
 		public override string ToString() => $"Base: {BaseValue:F2}, Growth: {Growth.keys.Length} keys";
 
 		public void SetTestGrowValue(int testGrade, StatsSO statsSo)
