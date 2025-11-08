@@ -9,7 +9,7 @@ namespace TD.UI
 	{
 		private const string tableName = "UI";
 
-		public  static void SetupTooltip(GameObject button, Tower tower, string towerName)
+		public static void SetupTooltip(GameObject button, Tower tower, string towerName)
 		{
 			var hoverTooltip = button.GetComponent<HoverShowTooltip>();
 			if (hoverTooltip == null)
@@ -25,7 +25,7 @@ namespace TD.UI
 				tower.Stats.statsSO.Range.BaseValue,
 				tower.Stats.statsSO.ProjectileSpeed.BaseValue,
 				tower.TargetPriority.ToString(),
-				tower.Cost,
+				tower.Stats.statsSO.Cost,
 				tower.SellValue
 			};
 

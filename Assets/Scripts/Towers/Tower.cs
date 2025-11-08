@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TD.GameLoop;
 using TD.Interactions;
 using TD.Monsters;
 using TD.Plugins.Timing;
@@ -22,7 +23,6 @@ namespace TD.Towers
 
 		[SerializeField, Required] private TowerStats stats;
 		[SerializeField, Required] private Projectile projectilePrefab;
-		public int Cost;
 		public int SellValue;
 
 		[Tooltip(TOOLTIP_ROTATION_PART)]
@@ -56,6 +56,7 @@ namespace TD.Towers
 		public bool HasTarget => currentTarget != null && currentTarget.IsAlive;
 		private Collider[] colliders = new Collider[500];
 		int foundCount;
+		public bool IsTargetingDirty { get; set; }
 
 		private void Start()
 		{
@@ -335,9 +336,18 @@ namespace TD.Towers
 		{
 			if (!CanUpgrade()) return;
 
+			int currentTowerCost = Stats.UpgradeCost;
+			if (ResourceManager.Instance != null && currentTowerCost > 0)
+			{
+				if (!ResourceManager.Instance.TrySpend(currentTowerCost))
+				{
+					Debug.Log("TowerUpgrade: Cannot afford upgrade tower");
+					return;
+				}
+			}
+
 			stats.UpgradeGrade();
-			var tooltip = GetComponent<TooltipWorldBridge>();
-			tooltip.RefreshTooltipIfNeed();
+			IsTargetingDirty = true;
 		}
 
 		public void OnSelected()
@@ -350,6 +360,7 @@ namespace TD.Towers
 		{
 			TowerStatsVisual.Hide();
 		}
+
 
 		private void OnDrawGizmosSelected()
 		{

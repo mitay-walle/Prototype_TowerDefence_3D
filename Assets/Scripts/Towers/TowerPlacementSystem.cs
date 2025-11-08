@@ -7,7 +7,6 @@ using TD.Voxels;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace TD.Towers
@@ -21,7 +20,6 @@ namespace TD.Towers
 		public Material ghostMaterial;
 		private GameObject ghostInstance;
 		private GameObject currentPrefab;
-		private int currentTowerCost;
 
 		public bool IsPlacing => ghostInstance != null;
 
@@ -85,7 +83,7 @@ namespace TD.Towers
 			var turret = prefab.GetComponent<Tower>();
 			if (turret != null && turret.Stats != null)
 			{
-				currentTowerCost = turret.Cost;
+				int currentTowerCost = turret.Stats.statsSO.Cost;
 
 				if (!ResourceManager.Instance.CanAfford(currentTowerCost))
 				{
@@ -157,6 +155,7 @@ namespace TD.Towers
 			if (!ghostInstance) return;
 			if (ghostInstance.GetComponent<TriggerIntersectColor>().IsIntersected) return;
 
+			int currentTowerCost = ghostInstance.GetComponent<Tower>().Stats.statsSO.Cost;
 			if (ResourceManager.Instance != null && currentTowerCost > 0)
 			{
 				if (!ResourceManager.Instance.TrySpend(currentTowerCost))

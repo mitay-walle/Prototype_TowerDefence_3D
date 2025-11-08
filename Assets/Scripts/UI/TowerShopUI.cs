@@ -89,7 +89,7 @@ namespace TD.UI
 				}
 
 				TowerStats towerStats = prefab.Stats;
-				txt.text = $"${prefab.Cost}";
+				txt.text = $"${prefab.Stats.statsSO.Cost}";
 
 				Button btn = go.GetComponent<Button>();
 				_buttons.Add(btn);

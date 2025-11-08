@@ -14,7 +14,9 @@ namespace TD.Stats
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry UpgradeCost = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
+
+		public int Cost = 25;
 
 		public BaseStatEntry this[TowerStat type] => type switch
 		{
@@ -101,12 +103,15 @@ namespace TD.Stats
 					case TowerStat.ProjectileSpeed:
 						stats.ProjectileSpeed.Init(stats, stats.statsSO.ProjectileSpeed);
 						break;
+
 					case TowerStat.RotateSpeed:
 						stats.RotateSpeed.Init(stats, stats.statsSO.ProjectileSpeed);
 						break;
+
 					case TowerStat.UpgradeCost:
 						stats.UpgradeCost.Init(stats, stats.statsSO.UpgradeCost);
 						break;
+
 					default:
 						throw new ArgumentOutOfRangeException();
 				}

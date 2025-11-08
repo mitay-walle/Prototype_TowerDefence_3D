@@ -42,6 +42,12 @@ namespace TD.Interactions
 
 		void Update()
 		{
+			if (currentSelected != null && currentSelected.IsTargetingDirty)
+			{
+				currentSelected.IsTargetingDirty = false;
+				SelectNew(currentSelected);
+			}
+
 			UpdateInputDevice();
 			UpdateHover();
 		}
@@ -119,7 +125,7 @@ namespace TD.Interactions
 			}
 
 			Ray ray = GetRay();
-			
+
 			if (Physics.SphereCast(ray, spherecastRadius, out RaycastHit hit, maxRayDistance, raycastMask))
 			{
 				var selectable = hit.collider.GetComponent<ITargetable>();
@@ -163,6 +169,7 @@ namespace TD.Interactions
 				{
 					SetRenderingLayer(currentHovered.gameObject, defaultRenderingLayer);
 				}
+
 				currentHovered = null;
 			}
 		}

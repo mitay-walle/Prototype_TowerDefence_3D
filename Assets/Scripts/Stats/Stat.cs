@@ -102,10 +102,8 @@ namespace TD.Stats
 			OnChanged?.Invoke(info);
 		}
 
-		public static implicit operator float(Stat v)
-		{
-			return v.Value;
-		}
+		public static implicit operator float(Stat v) => v.Value;
+		public static implicit operator int(Stat v) => Mathf.RoundToInt(v.Value);
 
 		public override string ToString() => $"Value: {Value:F2} (Base: {BaseValue:F2}, Mods: {ModifierCount})";
 	}

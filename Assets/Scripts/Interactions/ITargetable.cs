@@ -7,5 +7,6 @@ namespace TD.Interactions
 		GameObject gameObject { get; }
 		void OnSelected();
 		void OnDeselected();
+		bool IsTargetingDirty { get; set; }
 	}
 }
