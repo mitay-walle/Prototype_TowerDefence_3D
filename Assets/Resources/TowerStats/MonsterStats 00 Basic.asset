@@ -9,15 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a7dd9bcb20241cb85bef6b0c784c8af, type: 3}
-  m_Name: TowerStatsSO 00 Basic
-  m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
+  m_Script: {fileID: 11500000, guid: 3c0607134cddd074ab7563bce4bcf258, type: 3}
+  m_Name: MonsterStats 00 Basic
+  m_EditorClassIdentifier: Assembly-CSharp::TD.Monsters.MonsterStatsSO
   maxGrade: 10
-  upgradeRules:
-  - rid: 7300525394819285084
-  - rid: 7300525394819285091
+  upgradeRules: []
   Damage:
-    BaseValue: 9
+    BaseValue: 1
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -42,33 +40,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  FireRate:
-    BaseValue: 1
-    Growth:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0.5
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1.5
-        inSlope: 0.5
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  Range:
+  MoveSpeed:
     BaseValue: 3
     Growth:
       serializedVersion: 2
@@ -94,8 +66,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  CritChance:
-    BaseValue: 0.1
+  Health:
+    BaseValue: 25
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -103,16 +75,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0.20000005
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.2
-        inSlope: 0.20000005
-        outSlope: 0
+        value: 10
+        inSlope: 1
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -120,7 +92,33 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  ProjectileSpeed:
+  InstantReward:
+    BaseValue: 50
+    Growth:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -0.055213362
+        outSlope: -0.055213362
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.07392472
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  IncomeReward:
     BaseValue: 10
     Growth:
       serializedVersion: 2
@@ -128,26 +126,26 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 2.6381629
-        outSlope: 2.6381629
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.04301075
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 2
-        inSlope: 0.20000005
-        outSlope: 0.20000005
+        value: 0
+        inSlope: -0.055213362
+        outSlope: -0.055213362
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.07392472
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  RotateSpeed:
-    BaseValue: 180
+  EarlyKillModifier:
+    BaseValue: 1.2
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -155,16 +153,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0.20000005
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.2
-        inSlope: 0.20000005
-        outSlope: 0
+        value: 1.5
+        inSlope: 1
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -174,18 +172,4 @@ MonoBehaviour:
       m_RotationOrder: 4
   references:
     version: 2
-    RefIds:
-    - rid: 7300525394819285084
-      type: {class: UpgradeRuleChangeStats, ns: TD.Stats, asm: Assembly-CSharp}
-      data:
-        startGrade: 9
-        repeatEvery: 0
-        repeatMax: 0
-        newStats: {fileID: 11400000, guid: bb76c5b713842b146ab0fde0846fba89, type: 2}
-    - rid: 7300525394819285091
-      type: {class: UpgradeRuleAdditionalGrade, ns: TD.Stats, asm: Assembly-CSharp}
-      data:
-        startGrade: 2
-        repeatEvery: 0
-        repeatMax: 0
-        additionalGrade: 1
+    RefIds: []

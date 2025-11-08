@@ -72,7 +72,7 @@ namespace TD.Editor
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                var health = prefab.GetComponent<EnemyHealth>();
+                var health = prefab.GetComponent<MonsterHealth>();
                 if (health != null)
                 {
                     var so = new SerializedObject(health);

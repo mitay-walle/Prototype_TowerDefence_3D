@@ -51,12 +51,26 @@
       "dependencies": {},
       "hash": "e9230c0024c8589b4d07a80709146a30d71c8054"
     },
+    "com.mitay-walle.ui-event-system-window": {
+      "version": "https://github.com/mitay-walle/DebugUIEventSystemWindow.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f5cf8b944725f6d426521a6e06768ec0ce677a1c"
+    },
     "com.mitay-walle.ui-graphic-sector": {
       "version": "https://github.com/mitay-walle/com.mitay-walle.ui-graphic-sector.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "8493774b8565cefee5b3ca2a9954f84d869e3a11"
+    },
+    "com.mitay-walle.ui-selectable-preview-overlay": {
+      "version": "https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ecee993e85292ea26f91ce34bdcb22ec88a54b53"
     },
     "com.truongnguyentungduy.hierarchy-2": {
       "version": "https://github.com/mitay-walle/com.truongnguyentungduy.hierarchy-2.git",

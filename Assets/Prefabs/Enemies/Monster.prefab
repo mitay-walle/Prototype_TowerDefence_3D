@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 2478138159029725029}
   - component: {fileID: 9154003399166893666}
   - component: {fileID: 7911651765443347390}
+  - component: {fileID: -8614312580055610409}
   m_Layer: 8
   m_Name: Monster
   m_TagString: Untagged
@@ -411,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6f5b8779eb73d4d8a1e60697beefbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.EnemyHealth
-  maxHealth: 100
+  maxHealth: 25
   currentHealth: 0
   deathDelay: 0.5
   giveReward: 1
@@ -475,6 +476,21 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!114 &-8614312580055610409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970266418737536391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f252d638449d014ca75d0a02448b104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.Monsters.MonsterStats
+  statsSO: {fileID: 11400000, guid: e948eecd220045243b8b88be36e15702, type: 2}
+  <currentGrade>k__BackingField: 0
+  logs: 0
 --- !u!1 &8450686693926021744
 GameObject:
   m_ObjectHideFlags: 0

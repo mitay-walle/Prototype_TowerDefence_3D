@@ -39,7 +39,7 @@ namespace TD.Weapons
 
         private Vector3 startPosition;
         private Vector3 targetPosition;
-        private EnemyHealth targetEnemy;
+        private MonsterHealth targetEnemy;
         private float damage;
         private float speed;
         private float lifetime;
@@ -47,7 +47,7 @@ namespace TD.Weapons
         private bool hasHit = false;
         private bool trackTarget = true;
 
-        public void Launch(Vector3 target, float projectileDamage, float projectileSpeed, EnemyHealth enemy = null)
+        public void Launch(Vector3 target, float projectileDamage, float projectileSpeed, MonsterHealth enemy = null)
         {
             startPosition = transform.position;
             targetPosition = target;
@@ -113,7 +113,7 @@ namespace TD.Weapons
             {
                 if (Physics.SphereCast(transform.position, sphereRadius, direction, out RaycastHit hit, distanceThisFrame))
                 {
-                    var enemyHealth = hit.collider.GetComponent<EnemyHealth>();
+                    var enemyHealth = hit.collider.GetComponent<MonsterHealth>();
                     if (enemyHealth != null && enemyHealth.IsAlive)
                     {
                         transform.position = hit.point;
@@ -160,7 +160,7 @@ namespace TD.Weapons
             ReturnToPool();
         }
 
-        private void OnImpact(EnemyHealth hitEnemy)
+        private void OnImpact(MonsterHealth hitEnemy)
         {
             if (hasHit) return;
             hasHit = true;
@@ -191,7 +191,7 @@ namespace TD.Weapons
             Collider[] colliders = Physics.OverlapSphere(transform.position, sphereRadius);
             foreach (var col in colliders)
             {
-                var enemyHealth = col.GetComponent<EnemyHealth>();
+                var enemyHealth = col.GetComponent<MonsterHealth>();
                 if (enemyHealth != null && enemyHealth.IsAlive)
                 {
                     enemyHealth.TakeDamage(damage);
@@ -205,7 +205,7 @@ namespace TD.Weapons
             Collider[] colliders = Physics.OverlapSphere(center, areaDamageRadius);
             foreach (var col in colliders)
             {
-                var enemyHealth = col.GetComponent<EnemyHealth>();
+                var enemyHealth = col.GetComponent<MonsterHealth>();
                 if (enemyHealth != null && enemyHealth.IsAlive)
                 {
                     float distancePercent = Vector3.Distance(center, col.transform.position) / areaDamageRadius;

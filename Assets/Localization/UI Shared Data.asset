@@ -59,6 +59,10 @@ MonoBehaviour:
     m_Key: tooltip.object.description
     m_Metadata:
       m_Items: []
+  - m_Id: 8309236701323264
+    m_Key: tooltip.tower.upgrade
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

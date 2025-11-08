@@ -37,7 +37,7 @@ namespace TD.Weapons
                 }
                 else
                 {
-                    var health = hit.collider.GetComponent<EnemyHealth>();
+                    var health = hit.collider.GetComponent<MonsterHealth>();
                     if (health != null)
                     {
                         health.TakeDamage(damage);
@@ -66,7 +66,7 @@ namespace TD.Weapons
 
             foreach (var hit in hits)
             {
-                var health = hit.GetComponent<EnemyHealth>();
+                var health = hit.GetComponent<MonsterHealth>();
                 if (health != null)
                 {
                     float distance = Vector3.Distance(center, hit.transform.position);

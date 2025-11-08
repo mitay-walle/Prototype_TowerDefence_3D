@@ -17,15 +17,18 @@ namespace TD.Stats
 		public bool logs = false;
 
 		public Action<int> OnGradeUpgraded { get; set; }
-		public bool CanUpgrade => currentGrade == config.maxGrade;
-
-		public int UpgradeCost
-		{
-			get => throw new NotImplementedException();
-		}
+		public bool CanUpgrade => currentGrade < config?.maxGrade;
+		public Action OnRecalculateStatsFinished { get; set; }
 
 		protected abstract void InitializeStats();
-		[Button] protected abstract void RecalculateStats();
+
+		[Button] protected void RecalculateStats()
+		{
+			OnRecalculateStats();
+			OnRecalculateStatsFinished?.Invoke();
+		}
+
+		protected abstract void OnRecalculateStats();
 
 		private void Awake()
 		{
@@ -34,6 +37,7 @@ namespace TD.Stats
 
 			if (config != null)
 			{
+				config.OnStatsChangedEvent -= RecalculateStats;
 				config.OnStatsChangedEvent += RecalculateStats;
 			}
 		}
@@ -55,7 +59,7 @@ namespace TD.Stats
 			}
 		}
 
-		[Button]
+		[Button, EnableIf("CanUpgrade")]
 		public void UpgradeGrade()
 		{
 			if (currentGrade < config.maxGrade)
@@ -71,6 +75,11 @@ namespace TD.Stats
 		{
 			if (newStats == null || newStats is TSO)
 			{
+				if (statsSO)
+				{
+					statsSO.OnStatsChangedEvent -= RecalculateStats;
+				}
+
 				statsSO = newStats as TSO;
 				RecalculateStats();
 			}

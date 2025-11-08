@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Interactions;
 using TD.Monsters;
+using TD.Plugins.Timing;
 using TD.Stats;
 using TD.UI;
 using TD.Weapons;
@@ -11,7 +13,7 @@ using UnityEngine.Localization;
 
 namespace TD.Towers
 {
-	public class Tower : MonoBehaviour, ITargetable, ITooltip
+	public class Tower : MonoBehaviour, ITargetable, ITooltipValues
 	{
 		private const string TOOLTIP_ROTATION_PART = "Transform that rotates to aim at targets (optional, uses main transform if not set)";
 		private const string TOOLTIP_FIRE_POINTS = "Spawn positions for projectiles (optional, uses turret position if empty)";
@@ -39,18 +41,18 @@ namespace TD.Towers
 		public IWeapon Weapon => weaponComponent as IWeapon;
 		[SerializeField] private bool predictiveAiming = false;
 
-		public UnityEvent<EnemyHealth> onTargetAcquired;
+		public UnityEvent<MonsterHealth> onTargetAcquired;
 		public UnityEvent onTargetLost;
 		public UnityEvent onFire;
 
 		[SerializeField] private bool Logs = false;
 
-		private EnemyHealth currentTarget;
-		private float fireTimer;
-		private List<EnemyHealth> enemiesInRange = new List<EnemyHealth>();
+		private MonsterHealth currentTarget;
+		[ShowInInspector, ReadOnly] private Timer fireTimer;
+		private List<MonsterHealth> enemiesInRange = new List<MonsterHealth>();
 
 		public TowerStats Stats => stats;
-		public EnemyHealth CurrentTarget => currentTarget;
+		public MonsterHealth CurrentTarget => currentTarget;
 		public bool HasTarget => currentTarget != null && currentTarget.IsAlive;
 		private Collider[] colliders = new Collider[500];
 		int foundCount;
@@ -64,7 +66,7 @@ namespace TD.Towers
 				return;
 			}
 
-			fireTimer = stats.FireDelay;
+			fireTimer = new(1 / stats.FireRate);
 		}
 
 		private void Update()
@@ -87,7 +89,7 @@ namespace TD.Towers
 			for (var i = 0; i < inRangeCount; i++)
 			{
 				Collider col = colliders[i];
-				var enemy = col.GetComponent<EnemyHealth>();
+				var enemy = col.GetComponent<MonsterHealth>();
 				if (enemy != null && enemy.IsAlive)
 				{
 					enemiesInRange.Add(enemy);
@@ -120,11 +122,11 @@ namespace TD.Towers
 			}
 		}
 
-		private EnemyHealth SelectTarget()
+		private MonsterHealth SelectTarget()
 		{
 			if (enemiesInRange.Count == 0) return null;
 
-			EnemyHealth target = null;
+			MonsterHealth target = null;
 
 			switch (TargetPriority)
 			{
@@ -153,9 +155,9 @@ namespace TD.Towers
 			return target;
 		}
 
-		private EnemyHealth GetNearestEnemy()
+		private MonsterHealth GetNearestEnemy()
 		{
-			EnemyHealth nearest = null;
+			MonsterHealth nearest = null;
 			float minDistance = float.MaxValue;
 
 			foreach (var enemy in enemiesInRange)
@@ -171,9 +173,9 @@ namespace TD.Towers
 			return nearest;
 		}
 
-		private EnemyHealth GetFarthestAlongPath()
+		private MonsterHealth GetFarthestAlongPath()
 		{
-			EnemyHealth farthest = null;
+			MonsterHealth farthest = null;
 			float minDistanceToBase = float.MaxValue;
 
 			var baseTransform = FindFirstObjectByType<Base>()?.transform;
@@ -192,9 +194,9 @@ namespace TD.Towers
 			return farthest ?? GetNearestEnemy();
 		}
 
-		private EnemyHealth GetStrongestEnemy()
+		private MonsterHealth GetStrongestEnemy()
 		{
-			EnemyHealth strongest = null;
+			MonsterHealth strongest = null;
 			float maxHealth = 0;
 
 			foreach (var enemy in enemiesInRange)
@@ -209,9 +211,9 @@ namespace TD.Towers
 			return strongest;
 		}
 
-		private EnemyHealth GetWeakestEnemy()
+		private MonsterHealth GetWeakestEnemy()
 		{
-			EnemyHealth weakest = null;
+			MonsterHealth weakest = null;
 			float minHealth = float.MaxValue;
 
 			foreach (var enemy in enemiesInRange)
@@ -243,12 +245,9 @@ namespace TD.Towers
 
 		private void UpdateFiring()
 		{
-			fireTimer -= Time.deltaTime;
-
-			if (fireTimer <= 0)
+			if (fireTimer.CheckAndRestart(1 / stats.FireRate))
 			{
 				Fire();
-				fireTimer = stats.FireDelay;
 			}
 		}
 
@@ -309,9 +308,9 @@ namespace TD.Towers
 			}
 		}
 
-		private Vector3 PredictTargetPosition(EnemyHealth target)
+		private Vector3 PredictTargetPosition(MonsterHealth target)
 		{
-			var movement = target.GetComponent<EnemyMovement>();
+			var movement = target.GetComponent<MonsterMove>();
 			if (movement == null) return target.transform.position;
 
 			float distance = Vector3.Distance(transform.position, target.transform.position);
@@ -332,12 +331,13 @@ namespace TD.Towers
 			return stats != null && stats.CanUpgrade;
 		}
 
-		public bool Upgrade()
+		public void Upgrade()
 		{
-			if (!CanUpgrade()) return false;
+			if (!CanUpgrade()) return;
 
 			stats.UpgradeGrade();
-			return true;
+			var tooltip = GetComponent<TooltipWorldBridge>();
+			tooltip.RefreshTooltipIfNeed();
 		}
 
 		public void OnSelected()
@@ -378,12 +378,14 @@ namespace TD.Towers
 			Arguments = new object[]
 			{
 				Stats.Damage,
-				Stats.FireDelay,
+				Stats.FireRate,
 				Stats.Range,
 				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
 				CanUpgrade() ? Stats.UpgradeCost.ToString() : "-"
 			},
 		};
+		public Action OnTooltipButtonClick => CanUpgrade() ? Upgrade : null;
+		public LocalizedString TooltipButtonText => new LocalizedString("UI", "tooltip.tower.upgrade");
 	}
 }

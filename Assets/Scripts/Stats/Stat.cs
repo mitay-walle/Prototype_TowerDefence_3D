@@ -20,8 +20,8 @@ namespace TD.Stats
 
 		private Func<float> baseValueGetter;
 		private Func<bool> logsGetter;
-		[ShowInInspector, Sirenix.OdinInspector.ReadOnly] private List<StatModifier> modifiers = new List<StatModifier>();
-		[ShowInInspector, Sirenix.OdinInspector.ReadOnly, HideLabel] private float cachedValue;
+		[HorizontalGroup(Width = .25f), ShowInInspector, Sirenix.OdinInspector.ReadOnly, HideLabel] private float cachedValue;
+		[HorizontalGroup, ShowInInspector, Sirenix.OdinInspector.ReadOnly] private List<StatModifier> modifiers = new List<StatModifier>();
 		private IStats cachedTowerStats;
 
 		public event Action<Info> OnChanged;

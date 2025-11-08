@@ -1,3 +1,5 @@
+using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
@@ -7,11 +9,13 @@ namespace TD.UI.Information
 {
 	public class AutoPositionalTooltip : MonoBehaviour
 	{
+		[ShowInInspector] bool Logs;
 		[SerializeField] private GameObject _visual;
+		[SerializeField] private Button _button;
 		[SerializeField] private LocalizeStringEvent titleEvent;
 		[SerializeField] private LocalizeStringEvent messageEvent;
-
-		private RectTransform lastTarget;
+		[ShowInInspector, HideInEditorMode, ReadOnly] private Action _action;
+		[ShowInInspector, HideInEditorMode, ReadOnly] public RectTransform lastTarget { get; private set; }
 		private RectTransform selfRect;
 		private Canvas rootCanvas;
 
@@ -28,6 +32,13 @@ namespace TD.UI.Information
 			selfRect = _visual.transform as RectTransform;
 			rootCanvas = GetComponentInParent<Canvas>();
 			Hide();
+			_button.onClick.AddListener(OnClick);
+		}
+
+		void OnClick()
+		{
+			if (Logs)  Debug.Log("OnClick");
+			_action?.Invoke();
 		}
 
 		private void Update()
@@ -39,8 +50,16 @@ namespace TD.UI.Information
 			}
 		}
 
-		public void Show(RectTransform target, LocalizedString title, LocalizedString message)
+		public void Show(RectTransform target,
+		                 LocalizedString title,
+		                 LocalizedString message,
+		                 Action action = null,
+		                 LocalizedString buttonText = null)
 		{
+			if (Logs)  Debug.Log("Show");
+			_action = action;
+			_button.gameObject.SetActive(action != null);
+			_button.GetComponentInChildren<LocalizeStringEvent>(true).StringReference = buttonText;
 			lastTarget = target;
 			_visual.SetActive(true);
 
@@ -60,8 +79,10 @@ namespace TD.UI.Information
 			// сбрасываем, чтобы не оставались ссылки
 			titleEvent.StringReference = null;
 			messageEvent.StringReference = null;
-
+			_action = null;
 			_visual.SetActive(false);
+			lastTarget = null;
+			if (Logs)  Debug.Log("Hide");
 		}
 
 		private void PositionTooltip(RectTransform target)

@@ -62,7 +62,7 @@ namespace TD.Weapons
             {
                 if (maxTargetsPerTick > 0 && hitCount >= maxTargetsPerTick) break;
 
-                var health = hit.GetComponent<EnemyHealth>();
+                var health = hit.GetComponent<MonsterHealth>();
                 if (health != null)
                 {
                     health.TakeDamage(damagePerTick);

@@ -37,7 +37,7 @@ namespace TD.Weapons
             {
                 if (hitCount >= maxPierceCount) break;
 
-                var health = hit.collider.GetComponent<EnemyHealth>();
+                var health = hit.collider.GetComponent<MonsterHealth>();
                 if (health != null)
                 {
                     health.TakeDamage(currentDamage);

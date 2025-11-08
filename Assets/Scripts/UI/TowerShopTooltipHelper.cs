@@ -21,7 +21,7 @@ namespace TD.UI
 			description.Arguments = new object[]
 			{
 				tower.Stats.statsSO.Damage.BaseValue,
-				tower.Stats.statsSO.FireDelay.BaseValue,
+				tower.Stats.statsSO.FireRate.BaseValue,
 				tower.Stats.statsSO.Range.BaseValue,
 				tower.Stats.statsSO.ProjectileSpeed.BaseValue,
 				tower.TargetPriority.ToString(),

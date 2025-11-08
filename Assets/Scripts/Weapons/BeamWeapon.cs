@@ -67,7 +67,7 @@ namespace TD.Weapons
 
             if (Time.time < nextDamageTime) return;
 
-            var health = other.GetComponent<EnemyHealth>();
+            var health = other.GetComponent<MonsterHealth>();
             if (health != null)
             {
                 health.TakeDamage(damagePerTick);

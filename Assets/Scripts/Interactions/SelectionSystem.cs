@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace TD.Interactions
@@ -118,7 +119,7 @@ namespace TD.Interactions
 			}
 
 			Ray ray = GetRay();
-
+			
 			if (Physics.SphereCast(ray, spherecastRadius, out RaycastHit hit, maxRayDistance, raycastMask))
 			{
 				var selectable = hit.collider.GetComponent<ITargetable>();
@@ -138,7 +139,10 @@ namespace TD.Interactions
 			}
 			else
 			{
-				DeselectCurrent();
+				if (!isMouseActive || !EventSystem.current.IsPointerOverGameObject())
+				{
+					DeselectCurrent();
+				}
 			}
 		}
 

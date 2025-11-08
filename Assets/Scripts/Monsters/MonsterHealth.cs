@@ -1,3 +1,5 @@
+using System;
+using Sirenix.OdinInspector;
 using TD.UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,7 +7,7 @@ using UnityEngine.Localization;
 
 namespace TD.Monsters
 {
-	public class EnemyHealth : MonoBehaviour, ITooltip
+	public class MonsterHealth : MonoBehaviour, ITooltipValues
 	{
 		private const string TOOLTIP_MAX_HEALTH = "Maximum health points for this enemy";
 		private const string TOOLTIP_DEATH_DELAY = "Delay before destroying the enemy GameObject after death";
@@ -31,9 +33,9 @@ namespace TD.Monsters
 		[Tooltip(TOOLTIP_EARLY_KILL_THRESHOLD)]
 		[SerializeField] private float earlyKillThreshold = 0.5f;
 
-		public UnityEvent<float> onHealthChanged;
-		public UnityEvent onDeath;
-		public UnityEvent<int> onRewardGiven;
+		[FoldoutGroup("Events")] public UnityEvent<float> onHealthChanged;
+		[FoldoutGroup("Events")] public UnityEvent onDeath;
+		[FoldoutGroup("Events")] public UnityEvent<int> onRewardGiven;
 
 		[Tooltip(TOOLTIP_CHANGE_COLOR)]
 		[SerializeField] private bool changeColorOnDamage = true;
@@ -42,6 +44,7 @@ namespace TD.Monsters
 		private MeshRenderer[] meshRenderers;
 		private Color[][] originalColors;
 		private float colorChangeTimer;
+		MonsterStats stats;
 
 		public float MaxHealth => maxHealth;
 		public float CurrentHealth => currentHealth;
@@ -57,6 +60,18 @@ namespace TD.Monsters
 				meshRenderers = GetComponentsInChildren<MeshRenderer>();
 				CacheOriginalColors();
 			}
+
+			if (TryGetComponent(out stats))
+			{
+				stats.OnRecalculateStatsFinished -= SetupValues;
+				stats.OnRecalculateStatsFinished += SetupValues;
+			}
+		}
+
+		private void SetupValues()
+		{
+			maxHealth = stats.Health;
+			currentHealth = Mathf.Min(maxHealth);
 		}
 
 		private void Update()
@@ -192,10 +207,9 @@ namespace TD.Monsters
 			onRewardGiven?.RemoveAllListeners();
 		}
 
-		public LocalizedString Title
-		{
-			get;
-		}
+		public Action OnTooltipButtonClick { get; }
+		public LocalizedString TooltipButtonText { get; }
+		public LocalizedString Title { get; }
 		public LocalizedString Description => new LocalizedString("UI", "tooltip.enemy.description")
 		{
 			Arguments = new object[]

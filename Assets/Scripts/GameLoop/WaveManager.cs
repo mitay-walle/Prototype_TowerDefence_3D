@@ -245,7 +245,7 @@ namespace TD.GameLoop
 			Transform spawnPoint = GetSpawnPoint();
 			GameObject enemyObject = Instantiate(enemySpawn.enemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-			var enemyHealth = enemyObject.GetComponent<EnemyHealth>();
+			var enemyHealth = enemyObject.GetComponent<MonsterHealth>();
 			if (enemyHealth != null)
 			{
 				float scaledHealth = enemyHealth.MaxHealth * enemySpawn.healthMultiplier * waveConfig.HealthScaling *
@@ -263,7 +263,7 @@ namespace TD.GameLoop
 				}
 			}
 
-			var enemyMovement = enemyObject.GetComponent<EnemyMovement>();
+			var enemyMovement = enemyObject.GetComponent<MonsterMove>();
 			if (enemyMovement != null)
 			{
 				float scaledSpeed = enemyMovement.Speed * enemySpawn.speedMultiplier;
@@ -333,7 +333,7 @@ namespace TD.GameLoop
 			isSpawning = false;
 
 			// Destroy all enemies
-			var enemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
+			var enemies = FindObjectsByType<MonsterHealth>(FindObjectsSortMode.None);
 			foreach (var enemy in enemies)
 			{
 				Destroy(enemy.gameObject);

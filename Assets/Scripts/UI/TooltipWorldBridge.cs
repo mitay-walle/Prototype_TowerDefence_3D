@@ -1,3 +1,4 @@
+using System;
 using TD.Monsters;
 using TD.Towers;
 using TD.UI.Information;
@@ -12,11 +13,15 @@ namespace TD.UI
 
 		[SerializeField] private LocalizedString title = new(tableName, "tooltip.object.title");
 		[SerializeField] private LocalizedString description = new(tableName, "tooltip.object.description");
+		LocalizedString buttonText;
+		Action buttonAction;
 
 		private AutoPositionalTooltip tooltipSystem;
 		private RectTransform proxyRect;
 		private Canvas tooltipCanvas;
 		private Camera mainCamera;
+
+		public bool IsShowingTooltip => proxyRect && tooltipSystem.lastTarget == proxyRect;
 
 		private void Awake()
 		{
@@ -51,14 +56,16 @@ namespace TD.UI
 			if (tooltipSystem == null || proxyRect == null) return;
 
 			UpdateProxyPosition();
-			if (TryGetComponent<ITooltip>(out var tooltip))
+			if (TryGetComponent<ITooltipValues>(out var tooltip))
 			{
 				title = tooltip.Title ?? title;
 				description = tooltip.Description;
+				buttonAction = tooltip.OnTooltipButtonClick;
+				buttonText = tooltip.TooltipButtonText;
 			}
 
 			proxyRect.gameObject.SetActive(true);
-			tooltipSystem.Show(proxyRect, title, description);
+			tooltipSystem.Show(proxyRect, title, description, buttonAction, buttonText);
 		}
 
 		public void HideTooltip()
@@ -97,45 +104,6 @@ namespace TD.UI
 			proxyRect.gameObject.SetActive(true);
 		}
 
-		private LocalizedString GetLocalizedDescription()
-		{
-			var tower = GetComponent<Tower>();
-			if (tower != null && tower.Stats != null)
-			{
-				description.Arguments = new object[]
-				{
-					tower.Stats.Damage,
-					tower.Stats.FireDelay,
-					tower.Stats.Range,
-					tower.TargetPriority.ToString(),
-					tower.CurrentTarget != null ? tower.CurrentTarget.name : "-",
-					tower.CanUpgrade() ? tower.Stats.UpgradeCost.ToString() : "-"
-				};
-			}
-
-			var enemyHealth = GetComponent<EnemyHealth>();
-			if (enemyHealth != null)
-			{
-				description.Arguments = new object[]
-				{
-					enemyHealth.CurrentHealth,
-					enemyHealth.MaxHealth
-				};
-			}
-
-			var playerBase = GetComponent<Base>();
-			if (playerBase != null)
-			{
-				description.Arguments = new object[]
-				{
-					playerBase.CurrentHealth,
-					playerBase.MaxHealth
-				};
-			}
-
-			return description;
-		}
-
 		private void OnDestroy()
 		{
 			if (proxyRect != null)
@@ -147,6 +115,14 @@ namespace TD.UI
 		private void OnDisable()
 		{
 			HideTooltip();
+		}
+
+		public void RefreshTooltipIfNeed()
+		{
+			if (IsShowingTooltip)
+			{
+				ShowTooltip();
+			}
 		}
 	}
 }
