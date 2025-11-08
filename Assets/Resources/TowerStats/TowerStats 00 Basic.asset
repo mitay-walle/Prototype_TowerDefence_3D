@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: RapidTower
+  m_Name: TowerStats 00 Basic
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: RapidTower
-  description: Very fast fire rate with respectable damage - cuts through waves efficiently
-  damage: 30
-  fireRate: 1.2666667
-  range: 10.333333
-  projectileSpeed: 20
-  targetPriority: 1
+  towerName: FastGun
+  description: High fire rate, low damage - perfect for dealing with enemy swarms
+  damage: 8
+  fireRate: 3
+  range: 6
+  projectileSpeed: 12
+  targetPriority: 0
   predictiveAiming: 0
-  cost: 110
-  sellValue: 77
+  cost: 90
+  sellValue: 63
   nextUpgrade: {fileID: 0}
-  upgradeCost: 160
+  upgradeCost: 120

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: FastGun
+  m_Name: TowerStats 05 Heavy
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: FastGun
-  description: High fire rate, low damage - perfect for dealing with enemy swarms
-  damage: 8
-  fireRate: 3
-  range: 6
-  projectileSpeed: 12
-  targetPriority: 0
-  predictiveAiming: 0
-  cost: 90
-  sellValue: 63
+  towerName: HeavyTower
+  description: Extremely powerful with longest range - the ultimate defensive weapon
+  damage: 60
+  fireRate: 0.8
+  range: 15
+  projectileSpeed: 30
+  targetPriority: 3
+  predictiveAiming: 1
+  cost: 250
+  sellValue: 175
   nextUpgrade: {fileID: 0}
-  upgradeCost: 120
+  upgradeCost: 350

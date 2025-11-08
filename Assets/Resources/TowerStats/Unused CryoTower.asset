@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: LaserTower
+  m_Name: Unused CryoTower
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: LaserTower
-  description: Precision targeting with instant hitscan damage - perfect for strong enemies
-  damage: 35
-  fireRate: 0.9
-  range: 11
-  projectileSpeed: 99
-  targetPriority: 2
-  predictiveAiming: 1
-  cost: 180
-  sellValue: 126
+  towerName: CryoTower
+  description: Slows enemies with icy projectiles while dealing moderate damage
+  damage: 20
+  fireRate: 1.4
+  range: 10
+  projectileSpeed: 16
+  targetPriority: 1
+  predictiveAiming: 0
+  cost: 160
+  sellValue: 112
   nextUpgrade: {fileID: 0}
-  upgradeCost: 250
+  upgradeCost: 220

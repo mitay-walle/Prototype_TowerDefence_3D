@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: Cannon
+  m_Name: TowerStats 03 Laser
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: Cannon
-  description: Explosive shells with heavy splash damage - destroys groups of enemies
-  damage: 50
-  fireRate: 0.7
-  range: 13
-  projectileSpeed: 22
-  targetPriority: 3
+  towerName: LaserTower
+  description: Precision targeting with instant hitscan damage - perfect for strong
+    enemies
+  damage: 35
+  fireRate: 0.9
+  range: 11
+  projectileSpeed: 99
+  targetPriority: 2
   predictiveAiming: 1
-  cost: 220
-  sellValue: 154
+  cost: 180
+  sellValue: 126
   nextUpgrade: {fileID: 0}
-  upgradeCost: 320
+  upgradeCost: 250

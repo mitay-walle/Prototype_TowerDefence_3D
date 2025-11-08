@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: HeavyTower
+  m_Name: TowerStats 01 Tesla
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: HeavyTower
-  description: Extremely powerful with longest range - the ultimate defensive weapon
-  damage: 60
-  fireRate: 0.8
-  range: 15
-  projectileSpeed: 30
-  targetPriority: 3
-  predictiveAiming: 1
-  cost: 250
-  sellValue: 175
+  towerName: Tesla
+  description: Chain lightning between nearby enemies - excellent against clustered
+    foes
+  damage: 30
+  fireRate: 1.1
+  range: 8
+  projectileSpeed: 20
+  targetPriority: 2
+  predictiveAiming: 0
+  cost: 170
+  sellValue: 119
   nextUpgrade: {fileID: 0}
-  upgradeCost: 350
+  upgradeCost: 260

@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using TD.GameLoop;
 using TD.Monsters;
+using TD.Stats;
 using TD.Towers;
 
 namespace TD.Editor
@@ -103,10 +104,10 @@ namespace TD.Editor
 
         private void UpdateTowerStats()
         {
-            var basicStats = AssetDatabase.LoadAssetAtPath<TowerStats>("Assets/Resources/TowerStats/BasicTower.asset");
-            var sniperStats = AssetDatabase.LoadAssetAtPath<TowerStats>("Assets/Resources/TowerStats/SniperTower.asset");
-            var rapidStats = AssetDatabase.LoadAssetAtPath<TowerStats>("Assets/Resources/TowerStats/RapidTower.asset");
-            var heavyStats = AssetDatabase.LoadAssetAtPath<TowerStats>("Assets/Resources/TowerStats/HeavyTower.asset");
+            var basicStats = AssetDatabase.LoadAssetAtPath<StatsTower>("Assets/Resources/TowerStats/BasicTower.asset");
+            var sniperStats = AssetDatabase.LoadAssetAtPath<StatsTower>("Assets/Resources/TowerStats/SniperTower.asset");
+            var rapidStats = AssetDatabase.LoadAssetAtPath<StatsTower>("Assets/Resources/TowerStats/RapidTower.asset");
+            var heavyStats = AssetDatabase.LoadAssetAtPath<StatsTower>("Assets/Resources/TowerStats/HeavyTower.asset");
 
             if (basicStats != null)
             {

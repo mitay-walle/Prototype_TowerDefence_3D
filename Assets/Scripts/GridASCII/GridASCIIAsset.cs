@@ -3,8 +3,10 @@ using System.IO;
 using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor;
-using UnityEditor.AssetImporters;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.AssetImporters;
+#endif
 
 namespace TD.GridASCII
 {

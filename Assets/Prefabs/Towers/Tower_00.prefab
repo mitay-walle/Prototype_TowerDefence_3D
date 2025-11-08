@@ -5233,6 +5233,7 @@ GameObject:
   - component: {fileID: 5433899707434417951}
   - component: {fileID: 6156850882460053632}
   - component: {fileID: 6791415761048970379}
+  - component: {fileID: 7386382002788943994}
   m_Layer: 6
   m_Name: Tower_00
   m_TagString: Untagged
@@ -5414,6 +5415,21 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!114 &7386382002788943994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808451643644963469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f5e46a5be343679af780335a14bd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.StatsTower
+  statsSO: {fileID: 0}
+  <currentGrade>k__BackingField: 0
+  logs: 0
 --- !u!1 &8073250677251828587
 GameObject:
   m_ObjectHideFlags: 0

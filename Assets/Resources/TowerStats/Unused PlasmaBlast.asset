@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d7ec03943c1c6b4ab924c5fc13dcf27, type: 3}
-  m_Name: CryoTower
+  m_Name: Unused PlasmaBlast
   m_EditorClassIdentifier: Assembly-CSharp::TD.TowerStats
-  towerName: CryoTower
-  description: Slows enemies with icy projectiles while dealing moderate damage
-  damage: 20
-  fireRate: 1.4
-  range: 10
-  projectileSpeed: 16
+  towerName: PlasmaBlast
+  description: Medium damage with medium fire rate - good area of effect weapon
+  damage: 25
+  fireRate: 1.2
+  range: 9
+  projectileSpeed: 18
   targetPriority: 1
   predictiveAiming: 0
-  cost: 160
-  sellValue: 112
+  cost: 140
+  sellValue: 98
   nextUpgrade: {fileID: 0}
-  upgradeCost: 220
+  upgradeCost: 180
