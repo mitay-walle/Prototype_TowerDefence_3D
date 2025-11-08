@@ -65,7 +65,7 @@ namespace TD.Stats
 			if (currentGrade < config.maxGrade)
 			{
 				currentGrade++;
-				config.ApplyUpgrade(currentGrade, this);
+				config.ApplyUpgradeRulesOnly(currentGrade, this);
 				RecalculateStats();
 				OnGradeUpgraded?.Invoke(currentGrade);
 			}

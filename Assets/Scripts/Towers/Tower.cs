@@ -18,23 +18,15 @@ namespace TD.Towers
 	public class Tower : MonoBehaviour, ITargetable, ITooltipValues
 	{
 		public const string EDITOR_ICON_PATH = "Assets/Scripts/Towers/Editor/Tower.png";
-		private const string TOOLTIP_ROTATION_PART = "Transform that rotates to aim at targets (optional, uses main transform if not set)";
-		private const string TOOLTIP_FIRE_POINTS = "Spawn positions for projectiles (optional, uses turret position if empty)";
-		private const string TOOLTIP_ROTATION_SPEED = "Degrees per second for turret rotation";
-		private const string TOOLTIP_SHOW_RANGE = "Show range sphere in Scene view when selected";
 
 		[SerializeField, Required] private TowerStats stats;
 		[SerializeField, Required] private Projectile projectilePrefab;
 		public int SellValue;
 
-		[Tooltip(TOOLTIP_ROTATION_PART)]
 		[SerializeField] private Transform turretRotationPart;
-		[Tooltip(TOOLTIP_FIRE_POINTS)]
 		[SerializeField] private Transform[] firePoints;
 
-		[Tooltip(TOOLTIP_ROTATION_SPEED)]
 		[SerializeField] private float rotationSpeed = 180f;
-		[Tooltip(TOOLTIP_SHOW_RANGE)]
 		[SerializeField] private bool showRange = true;
 		[SerializeField] private Color rangeColor = new Color(1, 0, 0, 0.3f);
 		public TowerStatsVisual TowerStatsVisual;

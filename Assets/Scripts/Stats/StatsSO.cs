@@ -8,8 +8,8 @@ namespace TD.Stats
 	public abstract class StatsSO : ScriptableObject
 	{
 		[TableColumnWidth(0), VerticalGroup("Stats")] public int maxGrade = 10;
-		[ShowInInspector, PropertyRange(1, nameof(maxGrade)), OnValueChanged("TestGradeCalculation")]
-		[VerticalGroup("Statistcs")]
+		[ShowInInspector, PropertyRange(1, nameof(maxGrade))]
+		[VerticalGroup("Statistcs"),OnValueChanged("OnStatsChangedEditor")]
 		protected int TestGrade = 5;
 
 		[SerializeReference] public List<UpgradeRule> upgradeRules = new();
@@ -17,12 +17,18 @@ namespace TD.Stats
 		public event Action OnStatsChangedEvent;
 
 		protected void OnStatsChanged() => OnStatsChangedEvent?.Invoke();
+		protected virtual void OnStatsChangedEditor()
+		{
+			OnStatsChangedEvent?.Invoke();
+			TestGradeCalculation();
+		}
 
 		public abstract IEnumerable<BaseStatEntry> GetStats();
 
 		protected void TestGradeCalculation()
 		{
-			ApplyUpgrade(TestGrade, null);
+			if (TestGrade <= 1) return;
+			ApplyUpgradeRulesOnly(TestGrade, null);
 
 			foreach (BaseStatEntry entry in GetStats())
 			{
@@ -30,7 +36,7 @@ namespace TD.Stats
 			}
 		}
 
-		public void ApplyUpgrade(int grade, IStats stats)
+		public void ApplyUpgradeRulesOnly(int grade, IStats stats)
 		{
 			foreach (var rule in upgradeRules)
 			{

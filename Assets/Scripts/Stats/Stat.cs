@@ -45,6 +45,7 @@ namespace TD.Stats
 				modifiers.Add(modifier);
 				modifiers.Sort((a, b) => a.priority.CompareTo(b.priority));
 				modifier.OnAdd(cachedTowerStats);
+				Calculate();
 			}
 		}
 
@@ -53,10 +54,15 @@ namespace TD.Stats
 			if (modifiers.Remove(modifier))
 			{
 				modifier.OnRemove(cachedTowerStats);
+				Calculate();
 			}
 		}
 
-		public void ClearModifiers() => modifiers.Clear();
+		public void ClearModifiers()
+		{
+			modifiers.Clear();
+			Calculate();
+		}
 
 		public void Calculate()
 		{

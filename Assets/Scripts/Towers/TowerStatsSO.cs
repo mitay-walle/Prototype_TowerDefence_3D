@@ -12,15 +12,22 @@ namespace TD.Towers
 	[CreateAssetMenu(fileName = "New Tower Stats", menuName = "Tower Defence/Tower Stats")]
 	public sealed class TowerStatsSO : StatsSO
 	{
-		[TableColumnWidth(0),VerticalGroup("Stats")] public int Cost = 25;
-		
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry Damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry FireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry Range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChanged", true),VerticalGroup("Stats")] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
+		[OnValueChanged("OnStatsChangedEditor"), VerticalGroup("Stats")] public int Cost = 25;
+
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry Damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry FireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry Range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
+		public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
 
 		[HideInInlineEditors]
 		public TowerBalanceProfileSO BalanceProfile;
@@ -49,6 +56,12 @@ namespace TD.Towers
 		}
 
 		#region Statistics
+		protected override void OnStatsChangedEditor()
+		{
+			base.OnStatsChangedEditor();
+			CalculateTest();
+		}
+
 		public float CalculateDPS(int grade)
 		{
 			var p = BalanceProfile;
@@ -83,6 +96,24 @@ namespace TD.Towers
 		private static ProfilerMarker MarkerCalculate = new ProfilerMarker("TowerStatsSO.SimulateUpgrades");
 		private static ProfilerMarker MarkerGUI = new ProfilerMarker("TowerStatsSO.OnInspectorGUI");
 		private static ProfilerMarker MarkerGraph = new ProfilerMarker("TowerStatsSO.DrawGlobalGraph");
+		int totalCost;
+		float dps;
+		float eff;
+
+		private void CalculateTest()
+		{
+			if (TestGrade <= 1) return;
+			if (!BalanceProfile)
+			{
+				EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
+				return;
+			}
+
+			using (MarkerCalculate.Auto())
+			{
+				TowerStatsSimulator.SimulateUpgrades(this, TestGrade, out dps, out eff, out totalCost);
+			}
+		}
 
 		[VerticalGroup("Statistcs")]
 		[OnInspectorGUI]
@@ -90,24 +121,8 @@ namespace TD.Towers
 		{
 			using (MarkerGUI.Auto())
 			{
-				if (!BalanceProfile)
-				{
-					EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
-					return;
-				}
-
-				int test = TestGrade;
-				int totalCost = 0;
-				float dps = 0;
-				float eff = 0;
-
-				using (MarkerCalculate.Auto())
-				{
-					TowerStatsSimulator.SimulateUpgrades(this, test, out dps, out eff, out totalCost);
-				}
-
 				EditorGUILayout.LabelField($"Total Cost: {totalCost}");
-				EditorGUILayout.LabelField($"Grade {test} (Simulated)", EditorStyles.boldLabel);
+				EditorGUILayout.LabelField($"Grade {TestGrade} (Simulated)", EditorStyles.boldLabel);
 				EditorGUILayout.LabelField($"DPS (with rules): {dps:F2}");
 				EditorGUILayout.LabelField($"Efficiency (with rules): {eff:F4}");
 
@@ -118,6 +133,7 @@ namespace TD.Towers
 		[OnInspectorGUI]
 		private void Graphs()
 		{
+			if (TestGrade <= 1) return;
 			using (MarkerGraph.Auto())
 			{
 				var p = BalanceProfile;
