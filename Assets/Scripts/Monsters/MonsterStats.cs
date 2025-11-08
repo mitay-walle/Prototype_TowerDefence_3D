@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+using System;
 using TD.Stats;
 
 namespace TD.Monsters
@@ -16,5 +16,13 @@ namespace TD.Monsters
 
 		protected override void InitializeStats() => MonsterStatUtility.Initialize(this);
 		protected override void OnRecalculateStats() => MonsterStatUtility.Calculate(this);
+
+		public override void TryAddMidifier(Enum stat, StatModifier modifier)
+		{
+			if (stat is MonsterStat monsterStat)
+			{
+				this[monsterStat].AddModifier(modifier);
+			}
+		}
 	}
 }

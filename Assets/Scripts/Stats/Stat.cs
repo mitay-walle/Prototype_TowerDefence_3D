@@ -40,13 +40,10 @@ namespace TD.Stats
 
 		public void AddModifier(StatModifier modifier)
 		{
-			if (!modifiers.Contains(modifier))
-			{
-				modifiers.Add(modifier);
-				modifiers.Sort((a, b) => a.priority.CompareTo(b.priority));
-				modifier.OnAdd(cachedTowerStats);
-				Calculate();
-			}
+			modifiers.Add(modifier);
+			modifiers.Sort((a, b) => a.priority.CompareTo(b.priority));
+			modifier.OnAdd(cachedTowerStats);
+			Calculate();
 		}
 
 		public void RemoveModifier(StatModifier modifier)

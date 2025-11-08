@@ -9,14 +9,16 @@ namespace TD.Stats
 	{
 		[TableColumnWidth(0), VerticalGroup("Stats")] public int maxGrade = 10;
 		[ShowInInspector, PropertyRange(1, nameof(maxGrade))]
-		[VerticalGroup("Statistcs"),OnValueChanged("OnStatsChangedEditor")]
+		[VerticalGroup("Statistcs"), OnValueChanged("OnStatsChangedEditor")]
 		protected int TestGrade = 5;
 
+		[OnValueChanged("OnStatsChangedEditor", true)]
 		[SerializeReference] public List<UpgradeRule> upgradeRules = new();
 
 		public event Action OnStatsChangedEvent;
 
 		protected void OnStatsChanged() => OnStatsChangedEvent?.Invoke();
+
 		protected virtual void OnStatsChangedEditor()
 		{
 			OnStatsChangedEvent?.Invoke();
@@ -28,6 +30,7 @@ namespace TD.Stats
 		protected void TestGradeCalculation()
 		{
 			if (TestGrade <= 1) return;
+
 			ApplyUpgradeRulesOnly(TestGrade, null);
 
 			foreach (BaseStatEntry entry in GetStats())

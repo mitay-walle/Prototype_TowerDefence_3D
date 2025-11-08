@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: TowerStatsSO 01 Tesla
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
   maxGrade: 15
-  upgradeRules: []
+  upgradeRules:
+  - rid: 7300525402545979767
   Cost: 40
   Damage:
     BaseValue: 10
@@ -207,4 +208,21 @@ MonoBehaviour:
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7300525402545979767
+      type: {class: UpgradeRuleStatModifier, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        startGrade: 2
+        repeatEvery: 3
+        repeatMax: 0
+        targetStat: 3
+        modifier:
+          rid: 7300525402545979768
+    - rid: 7300525402545979768
+      type: {class: BasicModifier, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        priority: 50
+        type: 0
+        value: 0.02
+        minValue: 0
+        maxValue: 100

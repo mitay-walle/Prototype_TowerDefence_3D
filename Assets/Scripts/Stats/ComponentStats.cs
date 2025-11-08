@@ -29,6 +29,7 @@ namespace TD.Stats
 		}
 
 		protected abstract void OnRecalculateStats();
+		public abstract void TryAddMidifier(Enum stat, StatModifier modifier);
 
 		private void Awake()
 		{
@@ -88,5 +89,6 @@ namespace TD.Stats
 				Debug.LogError("wrong config type", newStats);
 			}
 		}
+
 	}
 }

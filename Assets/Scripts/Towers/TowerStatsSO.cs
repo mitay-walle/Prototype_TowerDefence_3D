@@ -14,23 +14,16 @@ namespace TD.Towers
 	{
 		[OnValueChanged("OnStatsChangedEditor"), VerticalGroup("Stats")] public int Cost = 25;
 
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry Damage = new BaseStatEntry(10f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry FireRate = new BaseStatEntry(1f, AnimationCurve.Linear(0, 1, 1, 1.5f));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry Range = new BaseStatEntry(5f, AnimationCurve.Linear(0, 1, 1, 2));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry CritChance = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry ProjectileSpeed = new BaseStatEntry(0.1f, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry RotateSpeed = new BaseStatEntry(180, AnimationCurve.Linear(0, 1, 1, 1.2f));
-		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")]
-		public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, 250);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry Damage = new BaseStatEntry(10, 2);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry FireRate = new BaseStatEntry(1.5f);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry Range = new BaseStatEntry(5, 2);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, 1.2f);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(10, 1.2f);
+		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, 1.2f);
 
-		[HideInInlineEditors]
-		public TowerBalanceProfileSO BalanceProfile;
+		[VerticalGroup("External")] [HideInInlineEditors] public TowerBalanceProfileSO BalanceProfile;
+		[VerticalGroup("External")] [HideIf("@TestGrade<=1"), ShowInInspector] public TowerStatsRuntime Simulator => TowerStatsSimulator.simStats;
 
 		public BaseStatEntry this[TowerStat type] => type switch
 		{
@@ -103,6 +96,7 @@ namespace TD.Towers
 		private void CalculateTest()
 		{
 			if (TestGrade <= 1) return;
+
 			if (!BalanceProfile)
 			{
 				EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
@@ -134,6 +128,7 @@ namespace TD.Towers
 		private void Graphs()
 		{
 			if (TestGrade <= 1) return;
+
 			using (MarkerGraph.Auto())
 			{
 				var p = BalanceProfile;

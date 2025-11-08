@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using TD.Stats;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,7 +14,7 @@ namespace TD.Towers
 	/// </summary>
 	public static class TowerStatsSimulator
 	{
-		private static TowerStatsRuntime simStats;
+		public static TowerStatsRuntime simStats;
 
 		public static void SimulateUpgrades(TowerStatsSO config, int grade, out float totalDPS, out float totalEfficiency, out int totalCost)
 		{
@@ -73,7 +74,7 @@ namespace TD.Towers
 
 				int gradeCost = Mathf.RoundToInt(simStats.GetStatValue(TowerStat.UpgradeCost, g));
 
-				Debug.Log($"add cost {gradeCost} grade {g}");
+				//Debug.Log($"add cost {gradeCost} grade {g}");
 				totalCost += gradeCost;
 			}
 
@@ -87,18 +88,18 @@ namespace TD.Towers
 	/// </summary>
 	public sealed class TowerStatsRuntime : IStats
 	{
-		public TowerStatsSO Original { get; private set; }
-		public TowerStatsSO Copy { get; private set; }
+		[ShowInInspector] public TowerStatsSO Original { get; private set; }
+		[ShowInInspector] public TowerStatsSO Copy { get; private set; }
 
 		public Action<int> OnGradeUpgraded { get; set; }
 		public Action OnRecalculateStatsFinished { get; set; }
 
-		public int currentGrade { get; set; }
+		[ShowInInspector] public int currentGrade { get; set; }
 		public StatsSO config => Original;
 
 		public Func<bool> LogsFunc { get; } = () => false;
 
-		private readonly Dictionary<Enum, Stat> _stats = new();
+		[ShowInInspector] private Dictionary<Enum, Stat> _stats = new();
 
 		public TowerStatsRuntime(TowerStatsSO source)
 		{
@@ -123,6 +124,21 @@ namespace TD.Towers
 		}
 
 		/// <summary>
+		/// Применяет модификатор к нужному стату, если он есть.
+		/// </summary>
+		public void TryAddMidifier(Enum stat, StatModifier modifier)
+		{
+			if (_stats.TryGetValue(stat, out var statFound))
+			{
+				statFound.AddModifier(modifier);
+			}
+			else
+			{
+				Debug.LogError($"Stat {stat} does not exist");
+			}
+		}
+
+		/// <summary>
 		/// Возвращает текущее значение статуса с учётом grade.
 		/// </summary>
 		public float GetStatValue(Enum stat, int grade)
@@ -134,15 +150,6 @@ namespace TD.Towers
 			}
 
 			return 0f;
-		}
-
-		/// <summary>
-		/// Применяет модификатор к нужному стату, если он есть.
-		/// </summary>
-		public void ApplyModifier(Enum stat, StatModifier modifier)
-		{
-			if (_stats.TryGetValue(stat, out var s))
-				s.AddModifier(modifier);
 		}
 
 		/// <summary>

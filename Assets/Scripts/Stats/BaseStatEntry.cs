@@ -10,8 +10,20 @@ namespace TD.Stats
 		[HorizontalGroup(Width = .25f, LabelWidth = 15), HideLabel] public float BaseValue = 1f;
 		[HorizontalGroup(LabelWidth = 15), HideReferenceObjectPicker, HideLabel] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
 		[HorizontalGroup(Width = .25f), HideLabel, NonSerialized, ShowInInspector, ReadOnly] private float TestValue = 1f;
-		[HorizontalGroup(Width = .15f), SerializeField, HideInInlineEditors,LabelText("R")] private bool RoundToInt;
+		[HorizontalGroup(Width = .15f), SerializeField, HideInInlineEditors, LabelText("R")] private bool RoundToInt;
+
 		public BaseStatEntry() { }
+
+		public BaseStatEntry(float maxValue)
+		{
+			Growth = AnimationCurve.Linear(0, 1, 1, maxValue);
+		}
+
+		public BaseStatEntry(float baseValue, float maxValue)
+		{
+			BaseValue = baseValue;
+			Growth = AnimationCurve.Linear(0, 1, 1, maxValue);
+		}
 
 		public BaseStatEntry(float baseValue, AnimationCurve growth = null)
 		{

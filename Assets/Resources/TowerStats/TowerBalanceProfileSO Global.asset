@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3448466e7679d94d8e7f4ded875d95d, type: 3}
   m_Name: TowerBalanceProfileSO Global
   m_EditorClassIdentifier: Assembly-CSharp::TD.Towers.TowerBalanceProfileSO
-  CritDamageMultiplier: 20.61
+  CritDamageMultiplier: 3.92
   RangeWeight: 0.2
   RotateSpeedWeight: 0.1
   ProjectileSpeedWeight: 0.05
   GlobalMaxGrade: 40
-  MaxDpsReference: 16803.602
-  MaxEfficiencyReference: 15.304142
+  MaxDpsReference: 4119.2
+  MaxEfficiencyReference: 6.6777945

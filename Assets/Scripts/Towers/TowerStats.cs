@@ -1,4 +1,5 @@
-﻿using TD.Towers;
+﻿using System;
+using TD.Towers;
 using UnityEngine;
 
 namespace TD.Stats
@@ -18,5 +19,13 @@ namespace TD.Stats
 
 		protected override void InitializeStats() => TowerStatUtility.Initialize(this);
 		protected override void OnRecalculateStats() => TowerStatUtility.Calculate(this);
+
+		public override void TryAddMidifier(Enum stat, StatModifier modifier)
+		{
+			if (stat is TowerStat towerStat)
+			{
+				this[towerStat].AddModifier(modifier);
+			}
+		}
 	}
 }

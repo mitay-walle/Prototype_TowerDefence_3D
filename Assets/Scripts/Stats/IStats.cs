@@ -10,5 +10,6 @@ namespace TD.Stats
 		public StatsSO config { get; }
 		Func<bool> LogsFunc { get; }
 		void SetConfig(StatsSO newStats);
+		public void TryAddMidifier(Enum stat, StatModifier modifier);
 	}
 }

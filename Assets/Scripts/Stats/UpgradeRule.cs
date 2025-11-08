@@ -28,6 +28,7 @@ namespace TD.Stats
 			{
 				return true;
 			}
+
 			return false;
 		}
 
@@ -56,7 +57,7 @@ namespace TD.Stats
 
 		public override string ToString() => $"TargetStat: {targetStat}, Modifier: {modifier}";
 
-		[SerializeReference] public StatModifier modifier; // любой наследник Modifier
+		[SerializeReference, HideDuplicateReferenceBox] public StatModifier modifier; // любой наследник Modifier
 
 		protected override void Apply(IStats stats)
 		{
@@ -66,10 +67,7 @@ namespace TD.Stats
 				return;
 			}
 
-			if (stats is TowerStats statsTower)
-			{
-				statsTower[targetStat].AddModifier(modifier);
-			}
+			stats.TryAddMidifier(targetStat, modifier);
 		}
 	}
 
