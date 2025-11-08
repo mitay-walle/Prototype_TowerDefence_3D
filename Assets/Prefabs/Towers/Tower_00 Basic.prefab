@@ -5235,7 +5235,7 @@ GameObject:
   - component: {fileID: 6791415761048970379}
   - component: {fileID: 7386382002788943994}
   m_Layer: 6
-  m_Name: Tower_00
+  m_Name: Tower_00 Basic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5278,12 +5278,12 @@ MonoBehaviour:
   emissionScale: 1.02
   seed: 376781543
   profile:
-    rid: 6577126063258730734
+    rid: 7300525402545979698
   references:
     version: 2
     RefIds:
-    - rid: 6577126063258730734
-      type: {class: TurretGenerationProfile, ns: TD, asm: Assembly-CSharp}
+    - rid: 7300525402545979698
+      type: {class: TurretGenerationProfile, ns: TD.Towers, asm: Assembly-CSharp}
       data:
         seed: 376781543
         _lastSeed: 376781543
@@ -5352,7 +5352,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TD.Turret
   stats: {fileID: 7386382002788943994}
   projectilePrefab: {fileID: 6077644098176679513, guid: 5a7db0080f704c54daaad1f043c01af0, type: 3}
-  Cost: 0
   SellValue: 0
   turretRotationPart: {fileID: 4524784918887899802}
   firePoints:

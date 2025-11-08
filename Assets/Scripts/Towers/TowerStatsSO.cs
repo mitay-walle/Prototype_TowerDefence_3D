@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Stats;
+using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,7 +21,8 @@ namespace TD.Towers
 
 		public int Cost = 25;
 
-		[InlineEditor, Required] public TowerBalanceProfileSO BalanceProfile;
+		//[InlineEditor, Required]
+		public TowerBalanceProfileSO BalanceProfile;
 
 		public BaseStatEntry this[TowerStat type] => type switch
 		{
@@ -77,26 +79,43 @@ namespace TD.Towers
 		}
 
 #if UNITY_EDITOR
+		private static ProfilerMarker MarkerCalculate = new ProfilerMarker("TowerStatsSO.SimulateUpgrades");
+		private static ProfilerMarker MarkerGUI = new ProfilerMarker("TowerStatsSO.OnInspectorGUI");
+		private static ProfilerMarker MarkerGraph = new ProfilerMarker("TowerStatsSO.DrawGlobalGraph");
+
 		[OnInspectorGUI]
 		private void OnInspectorGUI()
 		{
-			if (!BalanceProfile)
+			using (MarkerGUI.Auto())
 			{
-				EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
-				return;
+				if (!BalanceProfile)
+				{
+					EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
+					return;
+				}
+
+				int test = TestGrade;
+				int totalCost = 0;
+				float dps = 0;
+				float eff = 0;
+
+				using (MarkerCalculate.Auto())
+				{
+					TowerStatsSimulator.SimulateUpgrades(this, test, out dps, out eff, out totalCost);
+				}
+
+				EditorGUILayout.LabelField($"Total Cost: {totalCost}");
+				EditorGUILayout.LabelField($"Grade {test} (Simulated)", EditorStyles.boldLabel);
+				EditorGUILayout.LabelField($"DPS (with rules): {dps:F2}");
+				EditorGUILayout.LabelField($"Efficiency (with rules): {eff:F4}");
+
+				GUILayout.Space(10);
 			}
 
-			int test = TestGrade;
-
-			TowerStatsSimulator.SimulateUpgrades(this, test, out float dps, out float eff, out int totalCost);
-
-			EditorGUILayout.LabelField($"Total Cost: {totalCost}");
-			EditorGUILayout.LabelField($"Grade {test} (Simulated)", EditorStyles.boldLabel);
-			EditorGUILayout.LabelField($"DPS (with rules): {dps:F2}");
-			EditorGUILayout.LabelField($"Efficiency (with rules): {eff:F4}");
-
-			GUILayout.Space(10);
-			DrawGlobalGraph();
+			using (MarkerGraph.Auto())
+			{
+				DrawGlobalGraph();
+			}
 		}
 
 		private void DrawGlobalGraph()

@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TD.Towers
@@ -16,12 +17,13 @@ namespace TD.Towers
 		public int GlobalMaxGrade = 10;
 
 		[Tooltip("Глобальная нормализация графика DPS/Efficiency, обновляется автоматически")]
-		public float MaxDpsReference = 0f;
-		public float MaxEfficiencyReference = 0f;
+		[ReadOnly] public float MaxDpsReference = 0f;
+		[ReadOnly] public float MaxEfficiencyReference = 0f;
 
 #if UNITY_EDITOR
+
 		// служебный метод для сброса статистики перед обновлением
-		[ContextMenu("Reset Normalization")]
+		[Button("Reset Normalization")]
 		public void ResetNormalization()
 		{
 			MaxDpsReference = 0f;

@@ -13,10 +13,6 @@ PrefabInstance:
       value: 1082862795
       objectReference: {fileID: 0}
     - target: {fileID: 1724461785092567337, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
-      propertyPath: profile
-      value: 6577126038906077306
-      objectReference: {fileID: 0}
-    - target: {fileID: 1724461785092567337, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: basePlate.voxels.Array.size
       value: 383
       objectReference: {fileID: 0}

@@ -56,7 +56,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "f5cf8b944725f6d426521a6e06768ec0ce677a1c"
+      "hash": "c1d71c1c27fa2897c281f9bcc086a8a914a3fee6"
     },
     "com.mitay-walle.ui-graphic-sector": {
       "version": "https://github.com/mitay-walle/com.mitay-walle.ui-graphic-sector.git",

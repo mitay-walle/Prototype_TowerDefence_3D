@@ -7,10 +7,10 @@ namespace TD.Stats
 	[Serializable, InlineProperty]
 	public sealed class BaseStatEntry
 	{
-		[HorizontalGroup(Width = .25f, LabelWidth = 15), LabelText(" ")] public float BaseValue = 1f;
-		[HorizontalGroup(LabelWidth = 15), LabelText(" ")] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
+		[HorizontalGroup(Width = .25f, LabelWidth = 15)] public float BaseValue = 1f;
+		[HorizontalGroup(LabelWidth = 15)] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
 		[HorizontalGroup(Width = .25f), HideLabel, NonSerialized, ShowInInspector] private float TestValue = 1f;
-		[HorizontalGroup(Width = .1f), LabelText("R"), SerializeField] private bool RoundToInt;
+		[HorizontalGroup(Width = .1f), SerializeField] private bool RoundToInt;
 		public BaseStatEntry() { }
 
 		public BaseStatEntry(float baseValue, AnimationCurve growth = null)

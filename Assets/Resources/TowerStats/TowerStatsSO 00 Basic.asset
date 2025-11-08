@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: TowerStatsSO 00 Basic
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
   maxGrade: 10
-  upgradeRules: []
+  upgradeRules:
+  - rid: 7300525402244776065
   Damage:
     BaseValue: 9
     Growth:
@@ -207,4 +208,21 @@ MonoBehaviour:
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7300525402244776065
+      type: {class: UpgradeRuleStatModifier, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        startGrade: 2
+        repeatEvery: 1
+        repeatMax: 0
+        targetStat: 0
+        modifier:
+          rid: 7300525402244776066
+    - rid: 7300525402244776066
+      type: {class: BasicModifier, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        priority: 50
+        type: 0
+        value: 10
+        minValue: 0
+        maxValue: 100

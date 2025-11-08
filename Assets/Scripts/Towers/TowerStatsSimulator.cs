@@ -56,14 +56,15 @@ namespace TD.Towers
 			int skipedCount = 0;
 			for (int g = 1; g <= grade; g++)
 			{
-				if (baseStats.upgradeRules.FirstOrDefault(r => r is UpgradeRuleAdditionalGrade graded && graded.CanApplyToGrade(g)) is UpgradeRuleAdditionalGrade found)
+				if (baseStats.upgradeRules.FirstOrDefault(r => r is UpgradeRuleAdditionalGrade graded && graded.CanApplyToGrade(g)) is
+				    UpgradeRuleAdditionalGrade found)
 				{
 					skipedCount = found.additionalGrade;
 				}
 
 				if (skipedCount > 0)
 				{
-					Debug.Log($"skip cost {Mathf.RoundToInt(simStats.GetStatValue(TowerStat.UpgradeCost, g))} for free grade {g}");
+					//Debug.Log($"skip cost {Mathf.RoundToInt(simStats.GetStatValue(TowerStat.UpgradeCost, g))} for free grade {g}");
 					skipedCount--;
 					continue;
 				}
@@ -81,47 +82,77 @@ namespace TD.Towers
 	/// </summary>
 	public sealed class TowerStatsRuntime : IStats
 	{
-		private readonly Dictionary<TowerStat, BaseStatEntry> _stats = new();
-
 		public TowerStatsSO Original { get; private set; }
-		public TowerStatsSO TowerStatsSO { get; private set; }
+		public TowerStatsSO Copy { get; private set; }
+
 		public int SimulatedGrade { get; set; }
-		public StatsSO config => TowerStatsSO;
-
-		public TowerStatsRuntime(TowerStatsSO source)
-		{
-			Original = source;
-			TowerStatsSO = Object.Instantiate(source);
-			SetConfig(TowerStatsSO);
-		}
-
-		public void ResetToBase()
-		{
-			SimulatedGrade = 0;
-			SetConfig(Original);
-		}
-
-		public float GetStatValue(TowerStat stat, int grade)
-			=> _stats.TryGetValue(stat, out var e) ? e.GetValue(grade, TowerStatsSO) : 0f;
-
-		public void SetConfig(StatsSO newStats)
-		{
-			if (newStats is not TowerStatsSO towerStats)
-				return;
-
-			_stats.Clear();
-
-			TowerStatsSO.maxGrade = towerStats.maxGrade;
-			TowerStatsSO.Cost = towerStats.Cost;
-			TowerStatsSO.upgradeRules = towerStats.upgradeRules.ToList();
-
-			foreach (TowerStat stat in Enum.GetValues(typeof(TowerStat)))
-				_stats[stat] = towerStats[stat].Clone();
-		}
 
 		public Action<int> OnGradeUpgraded { get; set; }
 		public Action OnRecalculateStatsFinished { get; set; }
-		public int currentGrade { get; set; }
-		public Func<bool> LogsFunc { get; }
+
+		public int currentGrade { get; }
+		public StatsSO config => Original;
+
+		public Func<bool> LogsFunc { get; } = () => false;
+
+		private readonly Dictionary<Enum, Stat> _stats = new();
+		private int _evalGrade;
+
+		public TowerStatsRuntime(TowerStatsSO source)
+		{
+			SetConfig(Copy = Object.Instantiate(source));
+		}
+
+		public void SetConfig(StatsSO newStats)
+		{
+			if (newStats is not TowerStatsSO towerStats) return;
+
+			Original = towerStats;
+			_stats.Clear();
+			Copy.maxGrade = Original.maxGrade;
+			Copy.Cost = Original.Cost;
+			
+			foreach (TowerStat st in Enum.GetValues(typeof(TowerStat)))
+			{
+				var runtimeStat = new Stat();
+				runtimeStat.Init(this, towerStats[st]);
+				_stats[st] = runtimeStat;
+			}
+		}
+
+		/// <summary>
+		/// Возвращает текущее значение статуса с учётом grade.
+		/// </summary>
+		public float GetStatValue(Enum stat, int grade)
+		{
+			_evalGrade = grade;
+			if (_stats.TryGetValue(stat, out var s))
+				return s.Value;
+
+			return 0f;
+		}
+
+		/// <summary>
+		/// Применяет модификатор к нужному стату, если он есть.
+		/// </summary>
+		public void ApplyModifier(Enum stat, StatModifier modifier)
+		{
+			if (_stats.TryGetValue(stat, out var s))
+				s.AddModifier(modifier);
+		}
+
+		/// <summary>
+		/// Сбрасывает значения всех Stat к базовым (чистым) без модификаторов.
+		/// </summary>
+		public void ResetToBase()
+		{
+			foreach (var s in _stats.Values)
+				s.ClearModifiers();
+
+			SimulatedGrade = 0;
+			_evalGrade = 0;
+		}
+
+		public IReadOnlyDictionary<Enum, Stat> GetAllStats() => _stats;
 	}
 }
