@@ -1,5 +1,6 @@
 using System;
 using Sirenix.OdinInspector;
+using TD.Interactions;
 using TD.UI;
 using UnityEngine;
 using UnityEngine.Events;
@@ -97,7 +98,7 @@ namespace TD.Monsters
 			if (!IsAlive) return;
 
 			currentHealth = Mathf.Max(0, currentHealth - damage);
-			onHealthChanged?.Invoke(currentHealth);
+			OnHealthChanged();
 
 			if (changeColorOnDamage)
 			{
@@ -115,6 +116,15 @@ namespace TD.Monsters
 			if (!IsAlive) return;
 
 			currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+			OnHealthChanged();
+		}
+
+		private void OnHealthChanged()
+		{
+			if (TryGetComponent(out ITargetable targetable))
+			{
+				targetable.IsTargetingDirty = true;
+			}
 			onHealthChanged?.Invoke(currentHealth);
 		}
 
