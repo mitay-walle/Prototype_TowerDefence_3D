@@ -49,12 +49,13 @@ namespace TD.Towers
 		}
 
 		#region Statistics
+		#if UNITY_EDITOR
 		protected override void OnStatsChangedEditor()
 		{
 			base.OnStatsChangedEditor();
 			CalculateTest();
 		}
-
+#endif
 		public float CalculateDPS(int grade)
 		{
 			var p = BalanceProfile;

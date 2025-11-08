@@ -16,6 +16,33 @@ MonoBehaviour:
   upgradeRules:
   - rid: 7300525402545979767
   Cost: 40
+  UpgradeCost:
+    BaseValue: 40
+    Growth:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 25
+        inSlope: 36.611713
+        outSlope: 36.611713
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.033602774
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RoundToInt: 1
   Damage:
     BaseValue: 10
     Growth:
@@ -44,7 +71,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 1
   FireRate:
-    BaseValue: 1
+    BaseValue: 0.5
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -173,33 +200,6 @@ MonoBehaviour:
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    RoundToInt: 1
-  UpgradeCost:
-    BaseValue: 40
-    Growth:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 25
-        inSlope: 36.611713
-        outSlope: 36.611713
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.033602774
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2

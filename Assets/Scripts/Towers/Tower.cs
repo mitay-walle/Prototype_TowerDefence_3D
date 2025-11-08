@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Transactions;
+using AYellowpaper;
 using Sirenix.OdinInspector;
 using TD.GameLoop;
 using TD.Interactions;
@@ -19,9 +21,11 @@ namespace TD.Towers
 	{
 		public const string EDITOR_ICON_PATH = "Assets/Scripts/Towers/Editor/Tower.png";
 
-		[SerializeField, Required] private TowerStats stats;
-		[SerializeField, Required] private Projectile projectilePrefab;
+		[SerializeField] private bool Logs = false;
+
 		public int SellValue;
+		[SerializeField, Required] private TowerStats stats;
+		[SerializeField] private Projectile projectilePrefab;
 
 		[SerializeField] private Transform turretRotationPart;
 		[SerializeField] private Transform[] firePoints;
@@ -31,15 +35,13 @@ namespace TD.Towers
 		[SerializeField] private Color rangeColor = new Color(1, 0, 0, 0.3f);
 		public TowerStatsVisual TowerStatsVisual;
 		[SerializeField] public TargetPriority TargetPriority = TargetPriority.Nearest;
-		[SerializeField] private MonoBehaviour weaponComponent;
-		public IWeapon Weapon => weaponComponent as IWeapon;
+		[field: SerializeField] public InterfaceReference<IWeapon> Weapon { get; private set; }
+
 		[SerializeField] private bool predictiveAiming = false;
 
-		public UnityEvent<MonsterHealth> onTargetAcquired;
-		public UnityEvent onTargetLost;
-		public UnityEvent onFire;
-
-		[SerializeField] private bool Logs = false;
+		[FoldoutGroup("Events")] public UnityEvent<MonsterHealth> onTargetAcquired;
+		[FoldoutGroup("Events")] public UnityEvent onTargetLost;
+		[FoldoutGroup("Events")] public UnityEvent onFire;
 
 		private MonsterHealth currentTarget;
 		[ShowInInspector, ReadOnly] private Timer fireTimer;
@@ -61,7 +63,7 @@ namespace TD.Towers
 				return;
 			}
 
-			fireTimer = new(1 / stats.FireRate);
+			fireTimer = new(1f / stats.FireRate);
 		}
 
 		private void Update()
@@ -240,7 +242,7 @@ namespace TD.Towers
 
 		private void UpdateFiring()
 		{
-			if (fireTimer.CheckAndRestart(1 / stats.FireRate))
+			if (fireTimer.CheckAndRestart(1f / stats.FireRate))
 			{
 				Fire();
 			}
@@ -283,7 +285,7 @@ namespace TD.Towers
 					direction = (targetPosition - position).normalized;
 				}
 
-				Weapon.Fire(position, direction, currentTarget.transform, stats.Damage);
+				Weapon.Value.Fire(position, direction, currentTarget.transform, stats.Damage);
 			}
 			else
 			{

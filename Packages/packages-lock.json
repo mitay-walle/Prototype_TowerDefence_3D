@@ -66,11 +66,10 @@
       "hash": "8493774b8565cefee5b3ca2a9954f84d869e3a11"
     },
     "com.mitay-walle.ui-selectable-preview-overlay": {
-      "version": "https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay.git",
+      "version": "file:com.mitay-walle.ui-selectable-preview-overlay@ecee993e8529",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "ecee993e85292ea26f91ce34bdcb22ec88a54b53"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.truongnguyentungduy.hierarchy-2": {
       "version": "https://github.com/mitay-walle/com.truongnguyentungduy.hierarchy-2.git",
