@@ -2,7 +2,7 @@
 using TD.Voxels;
 using UnityEngine;
 
-namespace TD
+namespace TD.Towers
 {
 	[System.Serializable]
 	public class TurretGenerationProfile : GenerationProfile

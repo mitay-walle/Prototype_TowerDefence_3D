@@ -332,10 +332,8 @@ namespace TD.Towers
 			return stats != null && stats.CanUpgrade;
 		}
 
-		public void Upgrade()
+		public void UpgradeSpendingCost()
 		{
-			if (!CanUpgrade()) return;
-
 			int currentTowerCost = Stats.UpgradeCost;
 			if (ResourceManager.Instance != null && currentTowerCost > 0)
 			{
@@ -345,6 +343,18 @@ namespace TD.Towers
 					return;
 				}
 			}
+
+			Upgrade();
+		}
+
+		public void UpgradeFree()
+		{
+			Upgrade();
+		}
+
+		private void Upgrade()
+		{
+			if (!CanUpgrade()) return;
 
 			stats.UpgradeGrade();
 			IsTargetingDirty = true;
@@ -360,7 +370,6 @@ namespace TD.Towers
 		{
 			TowerStatsVisual.Hide();
 		}
-
 
 		private void OnDrawGizmosSelected()
 		{
@@ -396,7 +405,7 @@ namespace TD.Towers
 				CanUpgrade() ? Stats.UpgradeCost.ToString() : "-"
 			},
 		};
-		public Action OnTooltipButtonClick => CanUpgrade() ? Upgrade : null;
+		public Action OnTooltipButtonClick => CanUpgrade() ? UpgradeSpendingCost : null;
 		public LocalizedString TooltipButtonText => new LocalizedString("UI", "tooltip.tower.upgrade");
 	}
 }

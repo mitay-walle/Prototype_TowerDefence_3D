@@ -10,7 +10,7 @@ namespace TD.Stats
 		[HorizontalGroup(Width = .25f, LabelWidth = 15), LabelText(" ")] public float BaseValue = 1f;
 		[HorizontalGroup(LabelWidth = 15), LabelText(" ")] public AnimationCurve Growth = AnimationCurve.Linear(0, 1, 10, 10);
 		[HorizontalGroup(Width = .25f), HideLabel, NonSerialized, ShowInInspector] private float TestValue = 1f;
-
+		[HorizontalGroup(Width = .1f), LabelText("R"), SerializeField] private bool RoundToInt;
 		public BaseStatEntry() { }
 
 		public BaseStatEntry(float baseValue, AnimationCurve growth = null)
@@ -19,7 +19,8 @@ namespace TD.Stats
 			Growth = growth ?? AnimationCurve.Linear(0, 1, 10, 10);
 		}
 
-		float GetValue(int grade, StatsSO stats) => BaseValue * Growth.Evaluate(grade * 1f / stats.maxGrade);
+		public float GetValue(int grade, StatsSO stats) => BaseValue * Growth.Evaluate(grade * 1f / stats.maxGrade);
+		public int GetValueInt(int grade, StatsSO stats) => Mathf.RoundToInt(GetValue(grade, stats));
 
 		public Func<float> GetFunc(IStats stats) => () =>
 		{
@@ -35,7 +36,24 @@ namespace TD.Stats
 
 		public void SetTestGrowValue(int testGrade, StatsSO statsSo)
 		{
-			TestValue = GetValue(testGrade, statsSo);
+			if (RoundToInt)
+			{
+				TestValue = GetValueInt(testGrade, statsSo);
+			}
+			else
+			{
+				TestValue = RoundTo(GetValue(testGrade, statsSo), 2);
+			}
+		}
+
+		public static float RoundTo(float value, int digits)
+		{
+			return (float)Math.Round(value, digits, MidpointRounding.AwayFromZero);
+		}
+
+		public BaseStatEntry Clone()
+		{
+			return MemberwiseClone() as BaseStatEntry;
 		}
 	}
 }

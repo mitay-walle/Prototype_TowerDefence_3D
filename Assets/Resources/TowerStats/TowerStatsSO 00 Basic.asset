@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: TowerStatsSO 00 Basic
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
   maxGrade: 10
-  upgradeRules:
-  - rid: 7300525394819285084
-  - rid: 7300525394819285091
+  upgradeRules: []
   Damage:
     BaseValue: 9
     Growth:
@@ -42,6 +40,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 1
   FireRate:
     BaseValue: 1
     Growth:
@@ -68,6 +67,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 0
   Range:
     BaseValue: 3
     Growth:
@@ -76,24 +76,25 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0
-        outSlope: 1
+        inSlope: 0.51285094
+        outSlope: 0.51285094
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.08736559
       - serializedVersion: 3
         time: 1
-        value: 2
-        inSlope: 1
-        outSlope: 0
+        value: 3
+        inSlope: 4.656329
+        outSlope: 4.656329
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.04838705
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 0
   CritChance:
     BaseValue: 0.1
     Growth:
@@ -120,6 +121,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 0
   ProjectileSpeed:
     BaseValue: 10
     Growth:
@@ -146,6 +148,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 1
   RotateSpeed:
     BaseValue: 180
     Growth:
@@ -172,6 +175,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 1
   UpgradeCost:
     BaseValue: 10
     Growth:
@@ -188,7 +192,7 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
+        value: 40
         inSlope: 0.20000005
         outSlope: 0.20000005
         tangentMode: 0
@@ -198,21 +202,9 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    RoundToInt: 1
   Cost: 25
+  BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2
-    RefIds:
-    - rid: 7300525394819285084
-      type: {class: UpgradeRuleChangeStats, ns: TD.Stats, asm: Assembly-CSharp}
-      data:
-        startGrade: 9
-        repeatEvery: 0
-        repeatMax: 0
-        newStats: {fileID: 11400000, guid: bb76c5b713842b146ab0fde0846fba89, type: 2}
-    - rid: 7300525394819285091
-      type: {class: UpgradeRuleAdditionalGrade, ns: TD.Stats, asm: Assembly-CSharp}
-      data:
-        startGrade: 2
-        repeatEvery: 0
-        repeatMax: 0
-        additionalGrade: 1
+    RefIds: []

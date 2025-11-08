@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TD.Stats;
+using UnityEditor;
 using UnityEngine;
 
-namespace TD.Stats
+namespace TD.Towers
 {
 	[CreateAssetMenu(fileName = "New Tower Stats", menuName = "Tower Defence/Tower Stats")]
 	public sealed class TowerStatsSO : StatsSO
@@ -17,6 +19,8 @@ namespace TD.Stats
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry UpgradeCost = new BaseStatEntry(20, AnimationCurve.Linear(0, 1, 1, 250));
 
 		public int Cost = 25;
+
+		[InlineEditor, Required] public TowerBalanceProfileSO BalanceProfile;
 
 		public BaseStatEntry this[TowerStat type] => type switch
 		{
@@ -40,6 +44,108 @@ namespace TD.Stats
 			yield return RotateSpeed;
 			yield return UpgradeCost;
 		}
+
+		#region Statistics
+		public float CalculateDPS(int grade)
+		{
+			var p = BalanceProfile;
+			float dmg = Damage.GetValue(grade, this);
+			float rate = FireRate.GetValue(grade, this);
+			float crit = CritChance.GetValue(grade, this);
+			float avgCrit = 1f + (crit * (p.CritDamageMultiplier - 1f));
+			return dmg * rate * avgCrit;
+		}
+
+		public float CalculateDPSScore(int grade)
+		{
+			var p = BalanceProfile;
+			float dps = CalculateDPS(grade);
+			float range = Range.GetValue(grade, this);
+			float proj = ProjectileSpeed.GetValue(grade, this);
+			float rotate = RotateSpeed.GetValue(grade, this);
+			return dps * (1f + p.RangeWeight * range + p.ProjectileSpeedWeight * proj + p.RotateSpeedWeight * rotate);
+		}
+
+		public float CalculateEfficiency(int grade)
+		{
+			int totalCost = Cost;
+			for (int i = 0; i <= grade; i++)
+				totalCost += Mathf.RoundToInt(UpgradeCost.GetValue(i, this));
+
+			float score = CalculateDPSScore(grade);
+			return score / totalCost;
+		}
+
+#if UNITY_EDITOR
+		[OnInspectorGUI]
+		private void OnInspectorGUI()
+		{
+			if (!BalanceProfile)
+			{
+				EditorGUILayout.HelpBox("Assign a TowerBalanceProfileSO for global normalization.", MessageType.Warning);
+				return;
+			}
+
+			int test = TestGrade;
+
+			TowerStatsSimulator.SimulateUpgrades(this, test, out float dps, out float eff, out int totalCost);
+
+			EditorGUILayout.LabelField($"Total Cost: {totalCost}");
+			EditorGUILayout.LabelField($"Grade {test} (Simulated)", EditorStyles.boldLabel);
+			EditorGUILayout.LabelField($"DPS (with rules): {dps:F2}");
+			EditorGUILayout.LabelField($"Efficiency (with rules): {eff:F4}");
+
+			GUILayout.Space(10);
+			DrawGlobalGraph();
+		}
+
+		private void DrawGlobalGraph()
+		{
+			var p = BalanceProfile;
+			int grades = Mathf.Max(1, p.GlobalMaxGrade);
+
+			// пересчёт глобальных максимумов
+			for (int i = 0; i <= grades; i++)
+			{
+				p.MaxDpsReference = Mathf.Max(p.MaxDpsReference, CalculateDPSScore(i));
+				p.MaxEfficiencyReference = Mathf.Max(p.MaxEfficiencyReference, CalculateEfficiency(i));
+			}
+
+			const float padding = 8f;
+			float graphWidth = EditorGUIUtility.currentViewWidth - 60f;
+			float graphHeight = 100f;
+
+			Rect rect = GUILayoutUtility.GetRect(graphWidth, graphHeight);
+			EditorGUI.DrawRect(rect, new Color(0.12f, 0.12f, 0.12f, 1f));
+
+			Handles.color = Color.green;
+			Vector3 prev = Vector3.zero;
+			for (int i = 0; i <= grades; i++)
+			{
+				float val = CalculateDPSScore(i);
+				float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
+				float y = rect.yMax - padding - (val / p.MaxDpsReference * (rect.height - padding * 2));
+				Vector3 curr = new(x, y);
+				if (i > 0) Handles.DrawLine(prev, curr);
+				prev = curr;
+			}
+
+			Handles.color = Color.cyan;
+			prev = Vector3.zero;
+			for (int i = 0; i <= grades; i++)
+			{
+				float val = CalculateEfficiency(i);
+				float x = rect.x + padding + (float)i / grades * (rect.width - padding * 2);
+				float y = rect.yMax - padding - (val / p.MaxEfficiencyReference * (rect.height - padding * 2));
+				Vector3 curr = new(x, y);
+				if (i > 0) Handles.DrawLine(prev, curr);
+				prev = curr;
+			}
+
+			EditorGUI.LabelField(new Rect(rect.x + 6, rect.y + 4, 200, 18), "Green: DPS | Cyan: Efficiency (normalized)", EditorStyles.miniBoldLabel);
+		}
+#endif
+	  #endregion
 	}
 
 	public enum TowerStat

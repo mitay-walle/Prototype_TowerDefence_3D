@@ -9,17 +9,17 @@ namespace TD.Stats
 	{
 		public int maxGrade = 10;
 		[ShowInInspector, PropertyRange(1, nameof(maxGrade)), OnValueChanged("TestGradeCalculation")]
-		private int TestGrade = 5;
+		protected int TestGrade = 5;
 
 		[SerializeReference] public List<UpgradeRule> upgradeRules = new();
 
 		public event Action OnStatsChangedEvent;
 
-		private void OnStatsChanged() => OnStatsChangedEvent?.Invoke();
+		protected void OnStatsChanged() => OnStatsChangedEvent?.Invoke();
 
 		public abstract IEnumerable<BaseStatEntry> GetStats();
 
-		private void TestGradeCalculation()
+		protected void TestGradeCalculation()
 		{
 			ApplyUpgrade(TestGrade, null);
 

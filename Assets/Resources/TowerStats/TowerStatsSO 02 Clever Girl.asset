@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a7dd9bcb20241cb85bef6b0c784c8af, type: 3}
-  m_Name: TowerStatsSO 01 Tesla
+  m_Name: TowerStatsSO 02 Clever Girl
   m_EditorClassIdentifier: Assembly-CSharp::TD.Stats.TowerStatsSO
-  maxGrade: 15
-  upgradeRules: []
+  maxGrade: 40
+  upgradeRules:
+  - rid: 7300525397335605574
   Damage:
-    BaseValue: 10
+    BaseValue: 5
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -23,16 +24,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 1
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 2
+        value: 5
         inSlope: 1
-        outSlope: 0
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -42,7 +43,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 1
   FireRate:
-    BaseValue: 1
+    BaseValue: 0.2
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -50,16 +51,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0.5
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.5
+        value: 10
         inSlope: 0.5
-        outSlope: 0
+        outSlope: 0.5
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -76,20 +77,20 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0
-        outSlope: 1
+        inSlope: 0.51285094
+        outSlope: 0.51285094
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.08736559
       - serializedVersion: 3
         time: 1
-        value: 2
-        inSlope: 1
-        outSlope: 0
+        value: 3
+        inSlope: 4.656329
+        outSlope: 4.656329
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.04838705
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -104,16 +105,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0.20000005
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.2
+        value: 4
         inSlope: 0.20000005
-        outSlope: 0
+        outSlope: 0.20000005
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -123,24 +124,24 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 0
   ProjectileSpeed:
-    BaseValue: 0.1
+    BaseValue: 5
     Growth:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0
-        outSlope: 0.20000005
+        inSlope: 2.6381629
+        outSlope: 2.6381629
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.04301075
       - serializedVersion: 3
         time: 1
-        value: 1.2
+        value: 8
         inSlope: 0.20000005
-        outSlope: 0
+        outSlope: 0.20000005
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -150,7 +151,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 1
   RotateSpeed:
-    BaseValue: 180
+    BaseValue: 160
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -158,16 +159,16 @@ MonoBehaviour:
         time: 0
         value: 1
         inSlope: 0
-        outSlope: 0.20000005
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 1.2
+        value: 2
         inSlope: 0.20000005
-        outSlope: 0
+        outSlope: 0.20000005
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -177,7 +178,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 1
   UpgradeCost:
-    BaseValue: 40
+    BaseValue: 20
     Growth:
       serializedVersion: 2
       m_Curve:
@@ -192,19 +193,26 @@ MonoBehaviour:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 25
-        inSlope: 36.611713
-        outSlope: 36.611713
+        value: 7
+        inSlope: 0.20000005
+        outSlope: 0.20000005
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.033602774
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     RoundToInt: 1
-  Cost: 40
+  Cost: 33
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7300525397335605574
+      type: {class: UpgradeRuleAdditionalGrade, ns: TD.Stats, asm: Assembly-CSharp}
+      data:
+        startGrade: 0
+        repeatEvery: 4
+        repeatMax: 0
+        additionalGrade: 1

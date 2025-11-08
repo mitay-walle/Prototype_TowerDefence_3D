@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using TD.Towers;
 using UnityEngine;
 
 namespace TD.Stats
@@ -11,6 +12,24 @@ namespace TD.Stats
 		public int repeatEvery = 0; // 0 = один раз, >0 = повторяемый
 		public int repeatMax = 0; // 0 = один раз, >0 = повторяемый
 		protected abstract void Apply(IStats stats);
+
+		public bool CanApplyToGrade(int grade)
+		{
+			if (grade < startGrade) return false;
+
+			if (repeatEvery > 0)
+			{
+				if ((grade - startGrade) % repeatEvery == 0)
+				{
+					return true;
+				}
+			}
+			else if (grade == startGrade)
+			{
+				return true;
+			}
+			return false;
+		}
 
 		public void TryApply(int grade, IStats stats)
 		{
@@ -53,26 +72,30 @@ namespace TD.Stats
 			}
 		}
 	}
+
 	[Serializable]
 	public class UpgradeRuleChangeStats : UpgradeRule
 	{
-		 public StatsSO newStats;
+		public StatsSO newStats;
 
-		 protected override void Apply(IStats stats)
+		protected override void Apply(IStats stats)
 		{
 			if (newStats == null)
 			{
 				Debug.LogError("newStats is null");
 				return;
 			}
+
 			if (stats == null)
 			{
 				Debug.LogWarning($"{GetType().Name} {newStats.name}");
 				return;
 			}
+
 			stats.SetConfig(newStats);
 		}
 	}
+
 	[Serializable]
 	public class UpgradeRuleAdditionalGrade : UpgradeRule
 	{
@@ -90,7 +113,7 @@ namespace TD.Stats
 			{
 				for (int i = 0; i < additionalGrade; i++)
 				{
-					statsTower.UpgradeGrade();
+					statsTower.GetComponent<Tower>().UpgradeFree();
 				}
 			}
 		}
