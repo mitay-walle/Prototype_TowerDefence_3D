@@ -160,13 +160,12 @@ namespace InputSystemActionPrompts
             foreach (var tag in foundTags)
             {
                 var replacementTagText = GetActionPathBindingTextSpriteTags(tag);
-                
+
                 //if PromptSpriteFormatter is empty for some reason return the text as if formatter was {SPRITE} (normally)
                 var promptSpriteFormatter = s_Settings.PromptSpriteFormatter == "" ? InputSystemDevicePromptSettings.PromptSpriteFormatterSpritePlaceholder : s_Settings.PromptSpriteFormatter;
                 //PromptSpriteFormatter in settings uses {SPRITE} as a placeholder for the sprite, convert it to {0} for string.Format
                 promptSpriteFormatter = promptSpriteFormatter.Replace( InputSystemDevicePromptSettings.PromptSpriteFormatterSpritePlaceholder, "{0}");
                 replacementTagText = string.Format(promptSpriteFormatter, replacementTagText);
-                
                 replacedText = replacedText.Replace($"{s_Settings.OpenTag}{tag}{s_Settings.CloseTag}", replacementTagText);
             }
 
@@ -267,7 +266,8 @@ namespace InputSystemActionPrompts
             }
             // Return each
             var outputText = string.Empty;
-            foreach (var prompt in matchingPrompt)
+            var matchingPrompt2 =  matchingPrompt.Distinct();
+            foreach (var prompt in matchingPrompt2)
             {
                 outputText += $"<sprite=\"{validDevice.SpriteAsset.name}\" name=\"{prompt.PromptSprite.name}\" {s_Settings.RichTextTags}>";
             }

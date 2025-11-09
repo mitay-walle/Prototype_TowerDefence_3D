@@ -39,12 +39,12 @@ namespace TD.UI
 
 		void OnEnable()
 		{
-			FindAnyObjectByType<RTSCameraController>().DisablerList.Add(this);
+			FindAnyObjectByType<RTSCameraController>(FindObjectsInactive.Include).DisablerList.Add(this);
 		}
 
 		void OnDisable()
 		{
-			FindAnyObjectByType<RTSCameraController>().DisablerList.Remove(this);
+			FindAnyObjectByType<RTSCameraController>(FindObjectsInactive.Include).DisablerList.Remove(this);
 		}
 
 		void Update()

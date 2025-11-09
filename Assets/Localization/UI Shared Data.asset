@@ -63,6 +63,18 @@ MonoBehaviour:
     m_Key: tooltip.tower.upgrade
     m_Metadata:
       m_Items: []
+  - m_Id: 8784889968058368
+    m_Key: HUD Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8786110049148928
+    m_Key: Input Close Window
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8787273431638016
+    m_Key: Tower Shop Controls
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

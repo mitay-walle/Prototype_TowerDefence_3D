@@ -104,6 +104,18 @@ MonoBehaviour:
     m_Localized: Upgrade
     m_Metadata:
       m_Items: []
+  - m_Id: 8784889968058368
+    m_Localized: '[Player/Build] Build'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8786110049148928
+    m_Localized: '[UI/Cancel] Close'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8787273431638016
+    m_Localized: '[UI/Submit] Select [Player/Build] Cancel'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

@@ -21,7 +21,7 @@ namespace InputSystemActionPrompts
         private string m_OriginalText;
         
         
-        void Start()
+        void OnEnable()
         {
             m_TextField = GetComponent<TextMeshProUGUI>();
             if (m_TextField == null) return;
@@ -31,7 +31,7 @@ namespace InputSystemActionPrompts
             InputDevicePromptSystem.OnActiveDeviceChanged+= DeviceChanged;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             // Remove listener
             InputDevicePromptSystem.OnActiveDeviceChanged-= DeviceChanged;
