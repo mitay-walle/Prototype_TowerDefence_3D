@@ -8,7 +8,6 @@ namespace InputSystemActionPrompts
 	[RequireComponent(typeof(TextMeshProUGUI))]
 	public class PromptLocalizedText : PromptBase
 	{
-		[SerializeField] private InputActionReference m_InputActionAsset;
 		[SerializeField] private LocalizedString m_LocalizedText;
 
 		/// <summary>

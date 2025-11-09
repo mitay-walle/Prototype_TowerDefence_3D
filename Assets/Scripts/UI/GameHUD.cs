@@ -13,7 +13,8 @@ namespace TD.UI
 		[Title("Screens")]
 		[SerializeField, Required] private GameObject gameOverPanel;
 		[SerializeField, Required] private TowerShopUI TowerShopUI;
-		
+		[SerializeField, Required] private GameObject BuildPanel;
+
 		[Title("Other")]
 		[SerializeField, Required] private TextMeshProUGUI currencyText;
 		[SerializeField, Required] private string currencyPrefix = "Gold: ";
@@ -181,12 +182,14 @@ namespace TD.UI
 				mainHUDGroup.alpha = Mathf.Lerp(mainHUDGroup.alpha, 1f, Time.deltaTime * 10f);
 				mainHUDGroup.interactable = true;
 				mainHUDGroup.blocksRaycasts = true;
+				BuildPanel.SetActive(false);
 			}
 			else if (!shouldShow && mainHUDGroup.alpha > 0f)
 			{
 				mainHUDGroup.alpha = Mathf.Lerp(mainHUDGroup.alpha, 0f, Time.deltaTime * 10f);
 				mainHUDGroup.interactable = false;
 				mainHUDGroup.blocksRaycasts = false;
+				BuildPanel.SetActive(true);
 			}
 		}
 
@@ -263,45 +266,14 @@ namespace TD.UI
 			}
 		}
 
-		private void OnCurrencyChanged(int newCurrency)
-		{
-			UpdateCurrency();
-		}
-
-		private void OnWaveStarted(int waveNumber)
-		{
-			UpdateWaveDisplay();
-		}
-
-		private void OnWaveCompleted(int waveNumber)
-		{
-			UpdateWaveDisplay();
-		}
-
-		private void OnEnemySpawned(int totalSpawned)
-		{
-			UpdateWaveDisplay();
-		}
-
-		private void OnEnemyKilled(int remaining)
-		{
-			UpdateWaveDisplay();
-		}
-
-		private void OnBaseHealthChanged(int newHealth)
-		{
-			UpdateBaseHealth();
-		}
-
-		private void OnGameOver()
-		{
-			ShowGameOverPanel("Game Over!", "Your base has been destroyed!");
-		}
-
-		private void OnVictory()
-		{
-			ShowGameOverPanel("Victory!", "You have defended your base!");
-		}
+		private void OnCurrencyChanged(int newCurrency) => UpdateCurrency();
+		private void OnWaveStarted(int waveNumber) => UpdateWaveDisplay();
+		private void OnWaveCompleted(int waveNumber) => UpdateWaveDisplay();
+		private void OnEnemySpawned(int totalSpawned) => UpdateWaveDisplay();
+		private void OnEnemyKilled(int remaining) => UpdateWaveDisplay();
+		private void OnBaseHealthChanged(int newHealth) => UpdateBaseHealth();
+		private void OnGameOver() => ShowGameOverPanel("Game Over!", "Your base has been destroyed!");
+		private void OnVictory() => ShowGameOverPanel("Victory!", "You have defended your base!");
 
 		private void ShowGameOverPanel(string title, string message)
 		{
@@ -316,20 +288,9 @@ namespace TD.UI
 			}
 		}
 
-		private void OnStartWaveButtonClicked()
-		{
-			WaveManager.Instance?.StartNextWave();
-		}
-
-		private void OnRestartButtonClicked()
-		{
-			GameManager.Instance?.RestartGame();
-		}
-
-		private void OnQuitButtonClicked()
-		{
-			GameManager.Instance?.QuitGame();
-		}
+		private void OnStartWaveButtonClicked() => WaveManager.Instance?.StartNextWave();
+		private void OnRestartButtonClicked() => GameManager.Instance?.RestartGame();
+		private void OnQuitButtonClicked() => GameManager.Instance?.QuitGame();
 
 		private void OnDestroy()
 		{

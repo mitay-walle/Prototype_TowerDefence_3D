@@ -28,11 +28,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681279741952
-    m_Localized: "<b>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438:</b>\n\u0423\u0440\u043E\u043D:
-      {0}\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0440\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
-      {1:F2}/\u0441\n\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: {2:F1}\n\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442:
-      {3}\n\n<color=red>\u0426\u0435\u043B\u044C: {4}</color>\n\n<color=yellow>\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435:
-      ${5}</color>"
+    m_Localized: "<b>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438:</b>\r\n<br><br><br><br><line-height=-100%>\r\n\u0423\u0440\u043E\u043D:
+      <color=#00000000>{0}</color>\r\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0440\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      <color=#00000000>{1:F2}/\u0441</color>\r\n\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      <color=#00000000>{2:F1}</color>\r\n\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442:
+      <color=#00000000>{3}</color>\r\n<align=right></line-height>\r\n{0}\r\n{1:F2}/\u0441\r\n{2:F1}\r\n{3}</align>\r\n\r\n\u0426\u0435\u043B\u044C:
+      {4}\r\n\r\n<color=yellow>\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435:
+      ${5}</color>\r\n"
     m_Metadata:
       m_Items:
       - rid: 7300525384985477566
@@ -67,12 +69,14 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681283936260
-    m_Localized: "<b>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438:</b>\n\u0423\u0440\u043E\u043D:
-      {0}\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0440\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
-      {1:F2}/\u0441\n\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C: {2:F1}\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C:
-      {3}\n\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442: {4}\n\n<b>\u0426\u0435\u043D\u0430:</b>
-      <color=yellow>${5}</color>\n<b>\u041F\u0440\u043E\u0434\u0430\u0436\u0430:</b>
-      ${6}"
+    m_Localized: "<b>\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438:</b>\r\n<br><br><br><br><br><line-height=-100%>\r\n\u0423\u0440\u043E\u043D:
+      <color=#00000000>{0}</color>\r\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u0440\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      <color=#00000000>{1:F2}/\u0441</color>\r\n\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C:
+      <color=#00000000>{2:F1}</color>\r\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C:
+      <color=#00000000>{3}</color>\r\n\u041F\u0440\u0438\u043E\u0440\u0438\u0442\u0435\u0442:
+      <color=#00000000>{4}</color>\r\n<align=right></line-height>\r\n{0}\r\n{1:F2}/\u0441\r\n{2:F1}\r\n{3}\r\n{4}</align>\r\n\r\n<b>\u0426\u0435\u043D\u0430:</b>
+      <color=yellow>${5}</color>\r\n<br>\r\n<b>\u041F\u0440\u043E\u0434\u0430\u0436\u0430:</b>
+      ${6}\r\n"
     m_Metadata:
       m_Items:
       - rid: 7300525384985477566
@@ -91,6 +95,11 @@ MonoBehaviour:
   - m_Id: 8787273431638016
     m_Localized: "[UI/Submit] \u0412\u044B\u0431\u0440\u0430\u0442\u044C [Player/Build]
       \u041E\u0442\u043C\u0435\u043D\u0430"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8802662039412736
+    m_Localized: "[UI/Submit] \u041F\u043E\u0441\u0442\u0440\u043E\u0438\u0442\u044C
+      [UI/Cancel] \u041E\u0442\u043C\u0435\u043D\u0430"
     m_Metadata:
       m_Items: []
   references:

@@ -10,7 +10,7 @@ namespace InputSystemActionPrompts
 		[ShowInInspector, ReadOnly, HideInEditorMode] private bool isUsingGamepad = false;
 		const float analogThreshold = 0.1f;
 
-		void Update()
+		protected virtual void Update()
 		{
 			DetectMouseUsage();
 			DetectGamepadUsage();

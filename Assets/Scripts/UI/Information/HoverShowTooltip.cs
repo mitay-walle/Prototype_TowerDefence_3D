@@ -5,13 +5,16 @@ using UnityEngine.Localization;
 
 namespace TD.UI.Information
 {
-	public class HoverShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+	public class HoverShowTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 	{
 		[Required] public LocalizedString title;
 		[Required] public LocalizedString message;
 		private AutoPositionalTooltip tooltip;
 
-		public void OnPointerEnter(PointerEventData eventData)
+		void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) => OnSelect(eventData);
+		void IPointerExitHandler.OnPointerExit(PointerEventData eventData) => OnDeselect(eventData);
+
+		public void OnSelect(BaseEventData eventData)
 		{
 			if (tooltip == null)
 			{
@@ -21,7 +24,7 @@ namespace TD.UI.Information
 			tooltip.Show(transform as RectTransform, title, message);
 		}
 
-		public void OnPointerExit(PointerEventData eventData)
+		public void OnDeselect(BaseEventData eventData)
 		{
 			if (tooltip == null)
 			{

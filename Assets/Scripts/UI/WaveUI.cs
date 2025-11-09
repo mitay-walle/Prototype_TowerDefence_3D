@@ -30,22 +30,19 @@ namespace TD.UI
 			if (WaveManager.Instance == null) return;
 
 			// Update button state
-			if (startWaveButton != null)
-			{
-				startWaveButton.interactable = !WaveManager.Instance.IsWaveActive;
-			}
+			startWaveButton.gameObject.SetActive(!WaveManager.Instance.IsWaveActive);
 
 			// Update wave info text
 			if (waveInfoText != null)
 			{
 				if (WaveManager.Instance.IsSpawning)
 				{
-					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves}\n" +
+					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves} " +
 					                    $"Spawning: {WaveManager.Instance.EnemiesSpawned}/{WaveManager.Instance.TotalEnemiesInWave}";
 				}
 				else if (WaveManager.Instance.IsWaveActive)
 				{
-					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves}\n" +
+					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves} " +
 					                    $"Enemies Alive: {WaveManager.Instance.EnemiesAlive}";
 				}
 				else

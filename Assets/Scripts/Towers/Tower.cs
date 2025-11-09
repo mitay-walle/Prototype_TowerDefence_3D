@@ -274,7 +274,7 @@ namespace TD.Towers
 
 		private void FireFromPosition(Vector3 position)
 		{
-			if (Weapon != null)
+			if (Weapon.Value != null)
 			{
 				Vector3 targetPosition = currentTarget.transform.position;
 				Vector3 direction = (targetPosition - position).normalized;
@@ -393,12 +393,12 @@ namespace TD.Towers
 		{
 			Arguments = new object[]
 			{
-				Stats.Damage,
-				Stats.FireRate,
-				Stats.Range,
+				Stats.Damage.Value,
+				Stats.FireRate.Value,
+				Stats.Range.Value,
 				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
-				CanUpgrade() ? Stats.UpgradeCost.ToString() : "-"
+				CanUpgrade() ? Stats.UpgradeCost.Value : "-"
 			},
 		};
 		public Action OnTooltipButtonClick => CanUpgrade() ? UpgradeSpendingCost : null;

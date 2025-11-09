@@ -30,21 +30,38 @@ MonoBehaviour:
   - m_Id: 681279741952
     m_Localized: '<b>Stats:</b>
 
-      Damage: {0}
+      <br><br><br><br><line-height=-100%>
 
-      Fire Rate: {1:F2}/s
+      Damage:
+      <color=#00000000>{0}</color>
+
+      Fire Rate: <color=#00000000>{1:F2}/s</color>
 
       Range:
+      <color=#00000000>{2:F1}</color>
+
+      Priority: <color=#00000000>{3}</color>
+
+      <align=right></line-height>
+
+      {0}
+
+      {1:F2}/s
+
       {2:F1}
 
-      Priority: {3}
+      {3}</align>
 
+      
 
-      <color=red>Target: {4}</color>
+      Target:
+      {4}
 
+      
 
-      <color=yellow>Upgrade:
-      ${5}</color>'
+      <color=yellow>Upgrade: ${5}</color>
+
+'
     m_Metadata:
       m_Items:
       - rid: 7300525384985477567
@@ -81,22 +98,43 @@ MonoBehaviour:
   - m_Id: 681283936260
     m_Localized: '<b>Stats:</b>
 
-      Damage: {0}
+      <br><br><br><br><br><line-height=-100%>
 
-      Fire Rate: {1:F2}/s
+      Damage:
+      <color=#00000000>{0}</color>
+
+      Fire Rate: <color=#00000000>{1:F2}/s</color>
 
       Range:
+      <color=#00000000>{2:F1}</color>
+
+      Speed: <color=#00000000>{3}</color>
+
+      Priority:
+      <color=#00000000>{4}</color>
+
+      <align=right></line-height>
+
+      {0}
+
+      {1:F2}/s
+
       {2:F1}
 
-      Speed: {3}
+      {3}
 
-      Priority: {4}
+      {4}</align>
 
+      
 
-      <b>Cost:</b> <color=yellow>${5}</color>
+      <b>Cost:</b>
+      <color=yellow>${5}</color>
 
-      <b>Sell:</b>
-      ${6}'
+      <br>
+
+      <b>Sell:</b> ${6}
+
+'
     m_Metadata:
       m_Items:
       - rid: 7300525384985477567
@@ -114,6 +152,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 8787273431638016
     m_Localized: '[UI/Submit] Select [Player/Build] Cancel'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8802662039412736
+    m_Localized: '[UI/Submit] Build [UI/Cancel] Cancel'
     m_Metadata:
       m_Items: []
   references:
