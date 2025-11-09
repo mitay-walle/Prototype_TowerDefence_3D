@@ -75,7 +75,7 @@ MonoBehaviour:
   displayTag: 1
   tagAlignment: 0
   displayLayer: 1
-  layerAlignment: 0
+  layerAlignment: 1
   applyStaticTargetAndChild: 1
   applyTagTargetAndChild: 1
   applyLayerTargetAndChild: 1

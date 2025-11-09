@@ -1,0 +1,18 @@
+{
+    "name": "JoshH.ProceduralUIImageEditor",
+    "rootNamespace": "JoshH.ProceduralUIImageEditor",
+    "references": [
+        "GUID:8c305a7beee40ac40826d9822a72a499"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

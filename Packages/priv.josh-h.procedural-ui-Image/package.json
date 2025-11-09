@@ -1,0 +1,15 @@
+{
+  "displayName": "UI Procedural Image",
+  "keywords": ["UI", "PCG", "Procedural Geometry"],
+  "name": "priv.josh-h.procedural-ui-image",
+  "unity": "2017.1",
+  "version": "2.2.0",
+  "description": "Custom Geomtry for uGUI to display circles. Shader-based",
+  "samples":[
+  {
+	"displayName": "Demo",
+	"path": "Demo~"
+  }
+  ],
+  "author": "Paid"
+}

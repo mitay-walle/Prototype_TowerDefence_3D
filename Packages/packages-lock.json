@@ -66,10 +66,20 @@
       "hash": "8493774b8565cefee5b3ca2a9954f84d869e3a11"
     },
     "com.mitay-walle.ui-selectable-preview-overlay": {
-      "version": "file:com.mitay-walle.ui-selectable-preview-overlay@ecee993e8529",
+      "version": "https://github.com/mitay-walle/com.mitay-walle.ui-selectable-preview-overlay.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3019e0b40d9a18be8fdf23b1d3f069193a8762d5"
+    },
+    "com.simonoliver.inputsystemactionprompts": {
+      "version": "file:com.simonoliver.inputsystemactionprompts",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.textmeshpro": "2.0.1",
+        "com.unity.inputsystem": "1.5.0"
+      }
     },
     "com.truongnguyentungduy.hierarchy-2": {
       "version": "https://github.com/mitay-walle/com.truongnguyentungduy.hierarchy-2.git",
@@ -362,6 +372,14 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.textmeshpro": {
+      "version": "5.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
+    },
     "com.unity.timeline": {
       "version": "1.8.9",
       "depth": 0,
@@ -382,6 +400,12 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
+    },
+    "priv.josh-h.procedural-ui-image": {
+      "version": "file:priv.josh-h.procedural-ui-Image",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
