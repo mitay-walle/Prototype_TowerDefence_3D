@@ -17,7 +17,7 @@ namespace TD.UI
 
 		[Title("Other")]
 		[SerializeField, Required] private TextMeshProUGUI currencyText;
-		[SerializeField, Required] private string currencyPrefix = "Gold: ";
+		[SerializeField] private string currencyPrefix = "Gold: ";
 		[SerializeField, Required] private TextMeshProUGUI waveText;
 		[SerializeField, Required] private TextMeshProUGUI enemiesText;
 		[SerializeField, Required] private Slider waveProgressBar;
@@ -77,7 +77,7 @@ namespace TD.UI
 			}
 
 			// Base
-			var playerBase = FindFirstObjectByType<Base>();
+			var playerBase = FindFirstObjectByType<PlayerBase>();
 			if (playerBase != null)
 			{
 				playerBase.onHealthChanged.AddListener(OnBaseHealthChanged);
@@ -234,7 +234,7 @@ namespace TD.UI
 
 		private void UpdateBaseHealth()
 		{
-			var playerBase = FindFirstObjectByType<Base>();
+			var playerBase = FindFirstObjectByType<PlayerBase>();
 			if (playerBase == null) return;
 
 			if (baseHealthText != null)
@@ -309,7 +309,7 @@ namespace TD.UI
 				WaveManager.Instance.onEnemyKilled.RemoveListener(OnEnemyKilled);
 			}
 
-			var playerBase = FindFirstObjectByType<Base>();
+			var playerBase = FindFirstObjectByType<PlayerBase>();
 			if (playerBase != null)
 			{
 				playerBase.onHealthChanged.RemoveListener(OnBaseHealthChanged);

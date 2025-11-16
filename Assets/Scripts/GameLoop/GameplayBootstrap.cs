@@ -113,7 +113,7 @@ namespace TD.GameLoop
 					Debug.LogWarning("[GameplayBootstrap] Base prefab not assigned, creating default cube");
 					playerBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					playerBase.transform.localScale = new Vector3(5, 3, 5);
-					playerBase.AddComponent<Base>();
+					playerBase.AddComponent<PlayerBase>();
 				}
 				else
 				{

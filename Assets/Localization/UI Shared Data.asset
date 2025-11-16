@@ -20,7 +20,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681283936259
-    m_Key: tooltip.tower.title
+    m_Key: TowerNameNovice
     m_Metadata:
       m_Items: []
   - m_Id: 681279741952
@@ -44,7 +44,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681267159040
-    m_Key: tooltip.tower.shop.title
+    m_Key: TowerDefaultName
     m_Metadata:
       m_Items: []
   - m_Id: 681283936260
@@ -77,6 +77,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 8802662039412736
     m_Key: Controls Build Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8840114187788288
+    m_Key: New Entry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8846449197441024
+    m_Key: TowerStyle{0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8851944150917120
+    m_Key: TowerNameTesla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8852046353522688
+    m_Key: TowerNameCleverGirl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8857142994919424
+    m_Key: UpgradeCost{0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8860983723286528
+    m_Key: MonsterNameTurtle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8861518270554112
+    m_Key: MonsterStyle{0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8878425941991424
+    m_Key: Sell{0}
     m_Metadata:
       m_Items: []
   m_Metadata:

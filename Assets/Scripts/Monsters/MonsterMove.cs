@@ -8,7 +8,7 @@ namespace TD.Monsters
 	[RequireComponent(typeof(MonsterHealth))]
 	public class MonsterMove : MonoBehaviour
 	{
-		private static Base cachedBase;
+		private static PlayerBase cachedBase;
 
 		[field: SerializeField] public float baseSpeed { get; private set; } = 3f;
 		private float calculatedSpeed;
@@ -36,7 +36,7 @@ namespace TD.Monsters
 
 			if (cachedBase == null)
 			{
-				cachedBase = FindFirstObjectByType<Base>();
+				cachedBase = FindFirstObjectByType<PlayerBase>();
 			}
 
 			if (cachedBase != null)
@@ -63,10 +63,10 @@ namespace TD.Monsters
 		
 		private void OnTriggerEnter(Collider other)
 		{
-			var baseComponent = other.GetComponent<Base>();
+			var baseComponent = other.GetComponent<PlayerBase>();
 			if (baseComponent != null && health.IsAlive)
 			{
-				baseComponent.TakeDamage(1);
+				baseComponent.TakeDamage(stats.Damage.ValueInt);
 				health.onDeath?.Invoke();
 				Destroy(gameObject, 0.1f);
 			}

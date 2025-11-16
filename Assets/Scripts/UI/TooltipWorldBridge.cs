@@ -1,6 +1,5 @@
 using System;
-using TD.Monsters;
-using TD.Towers;
+using System.Collections.Generic;
 using TD.UI.Information;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -10,11 +9,6 @@ namespace TD.UI
 	public class TooltipWorldBridge : MonoBehaviour
 	{
 		private const string tableName = "UI";
-
-		[SerializeField] private LocalizedString title = new(tableName, "tooltip.object.title");
-		[SerializeField] private LocalizedString description = new(tableName, "tooltip.object.description");
-		LocalizedString buttonText;
-		Action buttonAction;
 
 		private AutoPositionalTooltip tooltipSystem;
 		private RectTransform proxyRect;
@@ -56,16 +50,18 @@ namespace TD.UI
 			if (tooltipSystem == null || proxyRect == null) return;
 
 			UpdateProxyPosition();
+			LocalizedString title = null;
+			LocalizedString description = null;
+			IEnumerable<(Action, LocalizedString)> buttonActions = null;
 			if (TryGetComponent<ITooltipValues>(out var tooltip))
 			{
-				title = tooltip.Title ?? title;
+				title = tooltip.Title;
 				description = tooltip.Description;
-				buttonAction = tooltip.OnTooltipButtonClick;
-				buttonText = tooltip.TooltipButtonText;
+				buttonActions = tooltip.OnTooltipButtonClick;
 			}
 
 			proxyRect.gameObject.SetActive(true);
-			tooltipSystem.Show(proxyRect, title, description, buttonAction, buttonText);
+			tooltipSystem.Show(proxyRect, title, description, buttonActions);
 		}
 
 		public void HideTooltip()

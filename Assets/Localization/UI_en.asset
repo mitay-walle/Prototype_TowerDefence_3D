@@ -24,7 +24,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681267159040
-    m_Localized: '{0}'
+    m_Localized: Tower
     m_Metadata:
       m_Items: []
   - m_Id: 681279741952
@@ -33,40 +33,34 @@ MonoBehaviour:
       <br><br><br><br><line-height=-100%>
 
       Damage:
-      <color=#00000000>{0}</color>
+      <alpha=#00>{0}<alpha=#FF>
 
-      Fire Rate: <color=#00000000>{1:F2}/s</color>
+      Fire Rate: <alpha=#00>{1}/s<alpha=#FF>
 
       Range:
-      <color=#00000000>{2:F1}</color>
+      <alpha=#00>{2}<alpha=#FF>
 
-      Priority: <color=#00000000>{3}</color>
+      Priority: <alpha=#00>{3}<alpha=#FF>
 
       <align=right></line-height>
 
-      {0}
+      {3}<alpha=#FF>
 
-      {1:F2}/s
+      {2:F1}<alpha=#FF>
 
-      {2:F1}
+      {1:F2}/s<alpha=#FF>
 
-      {3}</align>
+      {0}<alpha=#FF></align>
 
-      
+
 
       Target:
-      {4}
-
-      
-
-      <color=yellow>Upgrade: ${5}</color>
-
-'
+      {4}'
     m_Metadata:
       m_Items:
       - rid: 7300525384985477567
   - m_Id: 681279741953
-    m_Localized: Enemy
+    m_Localized: <style="Monster">Enemy</style>
     m_Metadata:
       m_Items: []
   - m_Id: 681279741954
@@ -92,7 +86,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 681283936259
-    m_Localized: Tower
+    m_Localized: Novice
     m_Metadata:
       m_Items: []
   - m_Id: 681283936260
@@ -101,38 +95,38 @@ MonoBehaviour:
       <br><br><br><br><br><line-height=-100%>
 
       Damage:
-      <color=#00000000>{0}</color>
+      <alpha=#00>{0}<alpha=#FF>
 
-      Fire Rate: <color=#00000000>{1:F2}/s</color>
+      Fire Rate: <alpha=#00>{1}/s<alpha=#FF>
 
       Range:
-      <color=#00000000>{2:F1}</color>
+      <alpha=#00>{2:F1}<alpha=#FF>
 
-      Speed: <color=#00000000>{3}</color>
+      Projectile Speed: <alpha=#00>{3}<alpha=#FF>
 
       Priority:
-      <color=#00000000>{4}</color>
+      <alpha=#00>{4}<alpha=#FF>
 
       <align=right></line-height>
 
-      {0}
-
-      {1:F2}/s
-
-      {2:F1}
+      {4}
 
       {3}
 
-      {4}</align>
+      {2:F1}
 
-      
+      {1:F2}/s
+
+      {0}</align>
+
+
 
       <b>Cost:</b>
-      <color=yellow>${5}</color>
+      <style="Gold">{5}</style>
 
       <br>
 
-      <b>Sell:</b> ${6}
+      <b>Sell:</b> <style="Gold">{6}</style>
 
 '
     m_Metadata:
@@ -143,7 +137,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 8784889968058368
-    m_Localized: '[Player/Build] Build'
+    m_Localized: '[UI/Submit] Select [Player/Build] Build'
     m_Metadata:
       m_Items: []
   - m_Id: 8786110049148928
@@ -156,6 +150,34 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 8802662039412736
     m_Localized: '[UI/Submit] Build [UI/Cancel] Cancel'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8846449197441024
+    m_Localized: <style="Tower">{0}</style>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8851944150917120
+    m_Localized: Tesla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8852046353522688
+    m_Localized: Clever Girl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8857142994919424
+    m_Localized: Upgrade {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8860983723286528
+    m_Localized: Turtle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8861518270554112
+    m_Localized: <style="Monster">{0}</style>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8878425941991424
+    m_Localized: Sell {0}
     m_Metadata:
       m_Items: []
   references:

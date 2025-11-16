@@ -27,6 +27,7 @@ namespace TD.Stats
 		public event Action<Info> OnChanged;
 
 		public float Value => cachedValue;
+		public int ValueInt => Mathf.RoundToInt(cachedValue);
 		public float BaseValue => baseValueGetter();
 		public int ModifierCount => modifiers.Count;
 

@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using TD.Towers;
 using UnityEditor;
 using UnityEngine;
+using WizzardSurvivors.Plugins.TransformOperations;
 
 namespace TD.Voxels
 {
@@ -59,7 +60,7 @@ namespace TD.Voxels
 			var combinedMR = combined.GetComponent<MeshRenderer>();
 
 			Mesh finalMesh = new Mesh();
-			finalMesh.name = $"{profile.GetType().Name}_{profile.seed}";
+			finalMesh.name = $"{profile.GetType().Name}_{parent.name}_{profile.seed}";
 			finalMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 			List<Material> materials = new List<Material>();
 			List<CombineInstance> submeshCombines = new List<CombineInstance>();
@@ -77,6 +78,7 @@ namespace TD.Voxels
 				});
 
 				Material mat = new Material(voxelMaterial);
+				mat.name += kvp.Key.color;
 				mat.color = kvp.Key.color;
 
 				if (hasEmission)
@@ -332,5 +334,186 @@ namespace TD.Voxels
 			profile.seed = seed;
 			profile.Generate(this);
 		}
+
+#if UNITY_EDITOR
+		[Button]
+		public void GenerateAndEmbed()
+		{
+			Generate(); // твоя генерация Mesh/Material
+
+			GameObject prefabAsset = PrefabUtility.GetCorrespondingObjectFromSource(gameObject) as GameObject;
+			if (prefabAsset == null) return;
+
+			string prefabPath = AssetDatabase.GetAssetPath(prefabAsset);
+			if (string.IsNullOrEmpty(prefabPath)) return;
+
+			// 1. Загружаем все subassets
+			Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
+
+			// Временный словарь для хранения соответствий MeshFilter → (MeshName, List<MaterialNames>)
+			var meshMap = new Dictionary<MeshFilter, (string meshName, List<string> matNames)>();
+
+			// 2. Встраиваем Mesh и материалы, заполняем словарь
+			foreach (var mf in GetComponentsInChildren<MeshFilter>())
+			{
+				if (mf == null || mf.sharedMesh == null) continue;
+
+				string meshName = mf.sharedMesh.name;
+				Mesh targetMesh = GetOrCreateMesh(subAssets, mf.sharedMesh, meshName, prefabPath);
+
+				mf.sharedMesh = targetMesh;
+
+				var mr = mf.GetComponent<MeshRenderer>();
+				List<string> matNames = new List<string>();
+				if (mr != null && mr.sharedMaterials != null)
+				{
+					Material[] newMats = new Material[mr.sharedMaterials.Length];
+					for (int i = 0; i < mr.sharedMaterials.Length; i++)
+					{
+						Material mat = mr.sharedMaterials[i];
+						if (mat == null) continue;
+
+						string matName = mr.name + "_Mat_" + i;
+						Material targetMat = GetOrCreateMaterial(subAssets, mat, matName, prefabPath);
+						newMats[i] = targetMat;
+						matNames.Add(matName);
+					}
+
+					mr.sharedMaterials = newMats;
+				}
+
+				meshMap[mf] = (meshName, matNames);
+			}
+
+			AssetDatabase.SaveAssets();
+
+			// 3. После сохранения prefab восстанавливаем ссылки по именам
+			Object[] updatedSubAssets = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
+
+			foreach (var kvp in meshMap)
+			{
+				var mf = kvp.Key;
+				if (mf == null) continue;
+
+				// Mesh
+				Mesh importedMesh = FindSubAsset<Mesh>(updatedSubAssets, kvp.Value.meshName);
+				if (importedMesh != null)
+					mf.sharedMesh = importedMesh;
+
+				// Materials
+				var mr = mf.GetComponent<MeshRenderer>();
+				if (mr != null && kvp.Value.matNames != null)
+				{
+					Material[] mats = new Material[kvp.Value.matNames.Count];
+					for (int i = 0; i < kvp.Value.matNames.Count; i++)
+					{
+						Material importedMat = FindSubAsset<Material>(updatedSubAssets, kvp.Value.matNames[i]);
+						mats[i] = importedMat != null ? importedMat : mr.sharedMaterials[i];
+					}
+
+					mr.sharedMaterials = mats;
+				}
+			}
+
+			Debug.Log("Mesh и материалы встроены в prefab, ссылки восстановлены через временный словарь.");
+		}
+
+		private Mesh GetOrCreateMesh(Object[] subAssets, Mesh source, string name, string prefabPath)
+		{
+			Mesh existing = FindSubAsset<Mesh>(subAssets, name);
+			if (existing != null)
+			{
+				ReplaceMesh(existing, source);
+				return existing;
+			}
+			else
+			{
+				Mesh copy = Object.Instantiate(source);
+				copy.name = name;
+				AssetDatabase.AddObjectToAsset(copy, prefabPath);
+				return copy;
+			}
+		}
+
+		private Material GetOrCreateMaterial(Object[] subAssets, Material source, string name, string prefabPath)
+		{
+			Material existing = FindSubAsset<Material>(subAssets, name);
+			if (existing != null)
+			{
+				ReplaceMaterial(existing, source);
+				return existing;
+			}
+			else
+			{
+				Material copy = Object.Instantiate(source);
+				copy.name = name;
+				AssetDatabase.AddObjectToAsset(copy, prefabPath);
+				return copy;
+			}
+		}
+
+		private T FindSubAsset<T>(Object[] subAssets, string name) where T : Object
+		{
+			foreach (var sa in subAssets)
+			{
+				if (sa is T t && t.name == name) return t;
+			}
+
+			return null;
+		}
+
+		private void ReplaceMesh(Mesh existing, Mesh source)
+		{
+			existing.Clear();
+			existing.vertices = source.vertices;
+			existing.triangles = source.triangles;
+			existing.normals = source.normals;
+			existing.uv = source.uv;
+			existing.tangents = source.tangents;
+			existing.colors = source.colors;
+			existing.subMeshCount = source.subMeshCount;
+			for (int i = 0; i < source.subMeshCount; i++)
+				existing.SetTriangles(source.GetTriangles(i), i);
+		}
+
+		private void ReplaceMaterial(Material existing, Material source)
+		{
+			existing.CopyPropertiesFromMaterial(source);
+		}
+
+		[Button]
+		public void RemoveAllSubassets()
+		{
+			GameObject prefabAsset = PrefabUtility.GetCorrespondingObjectFromSource(gameObject) as GameObject;
+			if (prefabAsset == null)
+			{
+				Debug.LogError("Этот объект не является экземпляром prefab!");
+				return;
+			}
+
+			string prefabPath = AssetDatabase.GetAssetPath(prefabAsset);
+			if (string.IsNullOrEmpty(prefabPath))
+			{
+				Debug.LogError("Не удалось получить путь к prefab");
+				return;
+			}
+
+			Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
+
+			int removedCount = 0;
+			foreach (var subAsset in subAssets)
+			{
+				// Игнорируем сам GameObject prefab
+				if (subAsset == prefabAsset) continue;
+
+				// Удаляем subasset
+				AssetDatabase.RemoveObjectFromAsset(subAsset);
+				removedCount++;
+			}
+
+			AssetDatabase.SaveAssets();
+			Debug.Log($"Удалено {removedCount} subasset(ов) из prefab '{prefabPath}'");
+		}
+#endif
 	}
 }

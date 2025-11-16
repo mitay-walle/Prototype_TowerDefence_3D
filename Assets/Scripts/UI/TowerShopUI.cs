@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using TD.GameLoop;
 using TD.Interactions;
 using TD.Stats;
 using TD.Towers;
@@ -27,7 +29,7 @@ namespace TD.UI
 			_buildHotkey.action.Enable();
 			_buildHotkey.action.started -= OnHotkey;
 			_buildHotkey.action.started += OnHotkey;
-			FillUI();
+
 			gameObject.SetActive(false);
 		}
 
@@ -40,6 +42,7 @@ namespace TD.UI
 		void OnEnable()
 		{
 			FindAnyObjectByType<RTSCameraController>(FindObjectsInactive.Include).DisablerList.Add(this);
+			StartCoroutine(FillUI());
 		}
 
 		void OnDisable()
@@ -70,8 +73,15 @@ namespace TD.UI
 			gameObject.SetActive(false);
 		}
 
-		void FillUI()
+		IEnumerator FillUI()
 		{
+			foreach (Button button in _buttons)
+			{
+				Destroy(button.gameObject);
+			}
+
+			content.DetachChildren();
+
 			_buttons.Clear();
 			previewGen.GeneratePreviews();
 
@@ -89,7 +99,7 @@ namespace TD.UI
 				}
 
 				TowerStats towerStats = prefab.Stats;
-				txt.text = $"${prefab.Stats.statsSO.Cost}";
+				txt.text = prefab.Stats.statsSO.Cost.ToStringGoldCanAfford();
 
 				Button btn = go.GetComponent<Button>();
 				_buttons.Add(btn);
@@ -102,18 +112,20 @@ namespace TD.UI
 
 				if (towerStats != null)
 				{
-					TowerShopTooltipHelper.SetupTooltip(go, prefab, prefab.name);
+					TowerShopTooltipHelper.SetupTooltip(go, prefab);
 				}
 			}
+
+			yield return null;
 
 			foreach (Button btn in _buttons)
 			{
 				Navigation navigation = btn.navigation;
 				navigation.wrapAround = false;
 				btn.navigation = navigation;
+				btn.gameObject.SetActive(false);
+				btn.gameObject.SetActive(true);
 			}
-
-			Canvas.ForceUpdateCanvases();
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Interactions;
 using TD.UI;
@@ -10,37 +11,17 @@ namespace TD.Monsters
 {
 	public class MonsterHealth : MonoBehaviour, ITooltipValues
 	{
-		private const string TOOLTIP_MAX_HEALTH = "Maximum health points for this enemy";
-		private const string TOOLTIP_DEATH_DELAY = "Delay before destroying the enemy GameObject after death";
-		private const string TOOLTIP_GIVE_REWARD = "Whether this enemy gives currency reward on death";
-		private const string TOOLTIP_REWARD_AMOUNT = "Amount of currency given on death";
-		private const string TOOLTIP_CHANGE_COLOR = "Flash red color when taking damage";
-		private const string TOOLTIP_COLOR_DURATION = "Duration of damage color flash effect";
-		private const string TOOLTIP_EARLY_KILL_BONUS = "Bonus multiplier for killing enemy with >50% health remaining";
-		private const string TOOLTIP_EARLY_KILL_THRESHOLD = "Health percentage threshold for early kill bonus (0.5 = 50%)";
-
-		[Tooltip(TOOLTIP_MAX_HEALTH)]
 		[SerializeField] private float maxHealth = 100f;
 		[SerializeField] private float currentHealth;
-
-		[Tooltip(TOOLTIP_DEATH_DELAY)]
 		[SerializeField] private float deathDelay = 0.5f;
-		[Tooltip(TOOLTIP_GIVE_REWARD)]
-		[SerializeField] private bool giveReward = true;
-		[Tooltip(TOOLTIP_REWARD_AMOUNT)]
-		[SerializeField] private int rewardAmount = 10;
-		[Tooltip(TOOLTIP_EARLY_KILL_BONUS)]
 		[SerializeField] private float earlyKillBonusMultiplier = 1.5f;
-		[Tooltip(TOOLTIP_EARLY_KILL_THRESHOLD)]
 		[SerializeField] private float earlyKillThreshold = 0.5f;
 
 		[FoldoutGroup("Events")] public UnityEvent<float> onHealthChanged;
 		[FoldoutGroup("Events")] public UnityEvent onDeath;
 		[FoldoutGroup("Events")] public UnityEvent<int> onRewardGiven;
 
-		[Tooltip(TOOLTIP_CHANGE_COLOR)]
 		[SerializeField] private bool changeColorOnDamage = true;
-		[Tooltip(TOOLTIP_COLOR_DURATION)]
 		[SerializeField] private float colorChangeDuration = 0.2f;
 		private MeshRenderer[] meshRenderers;
 		private Color[][] originalColors;
@@ -125,6 +106,7 @@ namespace TD.Monsters
 			{
 				targetable.IsTargetingDirty = true;
 			}
+
 			onHealthChanged?.Invoke(currentHealth);
 		}
 
@@ -132,17 +114,15 @@ namespace TD.Monsters
 		{
 			onDeath?.Invoke();
 
-			if (giveReward)
+			int rewardAmount = stats.InstantReward.ValueInt;
+			int finalReward = rewardAmount;
+
+			if (HealthPercent >= earlyKillThreshold)
 			{
-				int finalReward = rewardAmount;
-
-				if (HealthPercent >= earlyKillThreshold)
-				{
-					finalReward = Mathf.RoundToInt(rewardAmount * earlyKillBonusMultiplier);
-				}
-
-				onRewardGiven?.Invoke(finalReward);
+				finalReward = Mathf.RoundToInt(rewardAmount * earlyKillBonusMultiplier);
 			}
+
+			onRewardGiven?.Invoke(finalReward);
 
 			Destroy(gameObject, deathDelay);
 		}
@@ -217,9 +197,21 @@ namespace TD.Monsters
 			onRewardGiven?.RemoveAllListeners();
 		}
 
-		public Action OnTooltipButtonClick { get; }
-		public LocalizedString TooltipButtonText { get; }
-		public LocalizedString Title { get; }
+		public IEnumerable<(Action, LocalizedString)> OnTooltipButtonClick { get; }
+
+		[SerializeField] LocalizedString _title;
+
+		public LocalizedString Title
+		{
+			get
+			{
+				return new LocalizedString("UI", "MonsterStyle{0}")
+				{
+					Arguments = new object[] { _title.GetLocalizedString() }
+				};
+			}
+		}
+
 		public LocalizedString Description => new LocalizedString("UI", "tooltip.enemy.description")
 		{
 			Arguments = new object[]

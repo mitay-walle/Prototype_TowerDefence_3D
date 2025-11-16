@@ -152,7 +152,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 0
   ProjectileSpeed:
-    BaseValue: 0.1
+    BaseValue: 10
     Growth:
       serializedVersion: 2
       m_Curve:

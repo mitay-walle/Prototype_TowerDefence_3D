@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TD.Plugins.Runtime;
 using UnityEngine;
+using TD.Voxels;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using TD.Voxels;
 
 namespace TD
 {
@@ -12,17 +13,13 @@ namespace TD
 	public class LevelRoadGenerationProfile : GenerationProfile
 	{
 		public enum NoiseType { Perlin, Random, Voronoi, Combined }
-		public enum PathType { Straight, Loop, SCurve, Branch }
 
 		public int mapSize = 60;
-		public int roadWidth = 1;
-		public int pathCount = 3;
+		public int roadWidth = 2;
+		public int minPathsFromBase = 3;
+		public int maxPathsFromBase = 5;
 		public float heightScale = 8f;
-		public float noiseScale = 0.08f;
-
-		[Range(0f, 1f)] public float loopChance = 0.3f;
-		[Range(0f, 1f)] public float sCurveChance = 0.3f;
-		[Range(0f, 1f)] public float intersectionChance = 0.4f;
+		public float noiseScale = 0.15f;
 
 		public GameObject roadEdgePrefab;
 
@@ -42,21 +39,25 @@ namespace TD
 		public Part road = new Part { name = "Road" };
 
 		private Vector2Int basePosition;
-		private HashSet<Vector2Int> roadCells;
-		private List<Vector2Int> roadEdges;
+		private HashSet<Vector2Int> roadCells = new HashSet<Vector2Int>();
+		private List<Vector2Int> spawnerPositions = new List<Vector2Int>();
+		private List<Vector2Int> roadEdges = new List<Vector2Int>();
 		private float noiseOffsetX;
 		private float noiseOffsetZ;
 		private float heightCurvePower;
-		private List<Vector2> voronoiPoints;
+		private List<Vector2> voronoiPoints = new List<Vector2>();
 
 		protected override void Randomize()
 		{
 			Random.InitState(Seed);
+			Debug.Log($"=== ГЕНЕРАЦИЯ КАРТЫ | SEED: {Seed} ===");
+
 			GenerateColorPalette();
 
-			int margin = mapSize / 4;
-			basePosition = new Vector2Int(Random.Range(-mapSize / 2 + margin, mapSize / 2 - margin),
-				Random.Range(-mapSize / 2 + margin, mapSize / 2 - margin));
+			// Этап 1: Размещение базы
+			PlaceBase();
+			Debug.Log($"Этап 1: База размещена в ({basePosition.x}, {basePosition.y})");
+			PrintMap("ЭТАП 1: БАЗА");
 
 			noiseOffsetX = Random.Range(0f, 1000f);
 			noiseOffsetZ = Random.Range(0f, 1000f);
@@ -65,10 +66,500 @@ namespace TD
 			GenerateVoronoiPoints();
 
 			roadCells = new HashSet<Vector2Int>();
+			spawnerPositions = new List<Vector2Int>();
 			roadEdges = new List<Vector2Int>();
-			GenerateRoadPaths();
+
+			// Этап 2: Генерация путей от базы
+			GeneratePathsFromBase();
+			Debug.Log($"Этап 2: Сгенерировано {roadEdges.Count} путей от базы");
+			PrintMap("ЭТАП 2: ПУТИ ОТ БАЗЫ");
+
+			// Этап 3: Размещение спавнеров
+			PlaceSpawners();
+			Debug.Log($"Этап 3: Размещено {spawnerPositions.Count} спавнеров");
+			PrintMap("ЭТАП 3: СПАВНЕРЫ");
+			foreach (Vector2Int p in spawnerPositions)
+			{
+				Debug.DrawLine(Vector3.up, new(p.x, 0, p.y),Color.black,10);
+			}
+
+			// Этап 4: Добавление ветвлений
+			AddBranches();
+			Debug.Log("Этап 4: Добавлены ветвления");
+			PrintMap("ЭТАП 4: ВЕТВЛЕНИЯ");
+
+			// Этап 5: Очистка изолированных клеток
+			CleanIsolatedCells();
+			Debug.Log("Этап 5: Очищены изолированные клетки");
+			PrintMap("ЭТАП 5: ОЧИСТКА");
+
+			// Этап 6: Удаление тупиковых концов
+			RemoveDeadEnds();
+			Debug.Log("Этап 6: Удалены тупики");
+			PrintMap("ЭТАП 6: УДАЛЕНИЕ ТУПИКОВ");
+
+			// Этап 7: Утончение путей
+			ThinPaths();
+			Debug.Log("Этап 7: Пути утончены");
+			PrintMap("ЭТАП 7: УТОНЧЕНИЕ");
+
+			// Этап 8: Финальная проверка связности
+			VerifyPathfinding();
+			Debug.Log("Этап 8: Проверка связности завершена");
+			PrintMap("ФИНАЛ: ГОТОВАЯ КАРТА");
+
+			Debug.Log($"=== ГЕНЕРАЦИЯ ЗАВЕРШЕНА | Дорога: {roadCells.Count} клеток | Спавнеры: {spawnerPositions.Count} ===\n");
 		}
 
+		private void PlaceBase()
+		{
+			int margin = mapSize / 4;
+			basePosition = new Vector2Int(Random.Range(-mapSize / 2 + margin, mapSize / 2 - margin),
+				Random.Range(-mapSize / 2 + margin, mapSize / 2 - margin));
+
+			// База - небольшая область 3x3
+			for (int x = -1; x <= 1; x++)
+			{
+				for (int z = -1; z <= 1; z++)
+				{
+					roadCells.Add(new Vector2Int(basePosition.x + x, basePosition.y + z));
+				}
+			}
+		}
+
+		private void GeneratePathsFromBase()
+		{
+			int pathCount = Random.Range(minPathsFromBase, maxPathsFromBase + 1);
+
+			for (int i = 0; i < pathCount; i++)
+			{
+				float angle = (360f / pathCount * i + Random.Range(-20f, 20f)) * Mathf.Deg2Rad;
+				Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+
+				GenerateWanderingPath(basePosition, direction);
+			}
+		}
+
+		private void GenerateWanderingPath(Vector2Int start, Vector2 initialDirection)
+		{
+			Vector2Int current = start;
+			Vector2Int previous = start;
+			Vector2 direction = initialDirection;
+
+			int stepCount = 0;
+			int maxSteps = mapSize * 2;
+			int directionChangeInterval = Random.Range(4, 8);
+
+			while (stepCount < maxSteps && IsInsideMap(current))
+			{
+				AddRoadCell(current);
+				FillDiagonalGaps(current, previous);
+
+				// Меняем направление периодически
+				if (stepCount % directionChangeInterval == 0)
+				{
+					direction = RotateVector(direction, Random.Range(-0.6f, 0.6f));
+					directionChangeInterval = Random.Range(4, 8);
+				}
+
+				previous = current;
+				current = GetNextPositionInDirection(current, direction);
+
+				stepCount++;
+
+				// Если дошли до края карты
+				if (IsNearMapEdge(current))
+				{
+					roadEdges.Add(current);
+					break;
+				}
+			}
+		}
+
+		private Vector2Int GetNextPositionInDirection(Vector2Int current, Vector2 direction)
+		{
+			// Определяем следующую позицию с небольшой рандомизацией
+			float randomAngle = Random.Range(-0.3f, 0.3f);
+			Vector2 newDir = RotateVector(direction, randomAngle);
+
+			Vector2Int next = new Vector2Int(current.x + Mathf.RoundToInt(newDir.x), current.y + Mathf.RoundToInt(newDir.y));
+
+			// Избегаем существующих дорог (кроме базы)
+			if (roadCells.Contains(next) && Vector2Int.Distance(next, basePosition) > 3)
+			{
+				// Пробуем альтернативные направления
+				for (int i = 0; i < 4; i++)
+				{
+					float testAngle = i * Mathf.PI / 2;
+					Vector2 testDir = RotateVector(direction, testAngle);
+					Vector2Int testPos = new Vector2Int(current.x + Mathf.RoundToInt(testDir.x), current.y + Mathf.RoundToInt(testDir.y));
+
+					if (!roadCells.Contains(testPos) && IsInsideMap(testPos))
+					{
+						return testPos;
+					}
+				}
+			}
+
+			return next;
+		}
+
+		private Vector2 RotateVector(Vector2 v, float angle)
+		{
+			float cos = Mathf.Cos(angle);
+			float sin = Mathf.Sin(angle);
+			return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
+		}
+
+		private void PlaceSpawners()
+		{
+			// Группируем края по сторонам карты
+			var edgesBySide = new Dictionary<string, List<Vector2Int>>();
+			edgesBySide["north"] = new List<Vector2Int>();
+			edgesBySide["south"] = new List<Vector2Int>();
+			edgesBySide["east"] = new List<Vector2Int>();
+			edgesBySide["west"] = new List<Vector2Int>();
+
+			int halfSize = mapSize / 2;
+			int edgeThreshold = halfSize - 5;
+
+			foreach (var edge in roadEdges)
+			{
+				if (edge.y >= edgeThreshold) edgesBySide["north"].Add(edge);
+				else if (edge.y <= -edgeThreshold) edgesBySide["south"].Add(edge);
+				else if (edge.x >= edgeThreshold) edgesBySide["east"].Add(edge);
+				else if (edge.x <= -edgeThreshold) edgesBySide["west"].Add(edge);
+			}
+
+			// Определяем, на какой стороне находится база
+			string baseSide = "";
+			if (basePosition.y >= edgeThreshold / 2) baseSide = "north";
+			else if (basePosition.y <= -edgeThreshold / 2) baseSide = "south";
+			else if (basePosition.x >= edgeThreshold / 2) baseSide = "east";
+			else if (basePosition.x <= -edgeThreshold / 2) baseSide = "west";
+
+			// Размещаем спавнеры на противоположных сторонах
+			foreach (var side in edgesBySide.Keys)
+			{
+				if (side == baseSide) continue;
+
+				var edges = edgesBySide[side];
+				if (edges.Count > 0)
+				{
+					// Выбираем самую дальнюю точку от базы
+					Vector2Int furthest = edges[0];
+					float maxDist = Vector2Int.Distance(furthest, basePosition);
+
+					foreach (var edge in edges)
+					{
+						float dist = Vector2Int.Distance(edge, basePosition);
+						if (dist > maxDist)
+						{
+							maxDist = dist;
+							furthest = edge;
+						}
+					}
+
+					spawnerPositions.Add(furthest);
+				}
+			}
+		}
+
+		private void AddBranches()
+		{
+			var cellsList = roadCells.ToList();
+			int branchCount = Random.Range(2, 4);
+
+			for (int i = 0; i < branchCount; i++)
+			{
+				// Выбираем случайную точку не слишком близко к базе
+				Vector2Int branchStart = cellsList[Random.Range(cellsList.Count / 3, cellsList.Count)];
+
+				// Генерируем короткое ответвление
+				Vector2 randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+				int branchLength = Random.Range(5, 12);
+
+				Vector2Int current = branchStart;
+				for (int j = 0; j < branchLength; j++)
+				{
+					current = GetNextPositionInDirection(current, randomDir);
+					if (!IsInsideMap(current)) break;
+
+					AddRoadCell(current);
+
+					if (Random.value < 0.3f)
+					{
+						randomDir = RotateVector(randomDir, Random.Range(-0.5f, 0.5f));
+					}
+				}
+			}
+		}
+
+		private void CleanIsolatedCells()
+		{
+			var toRemove = new HashSet<Vector2Int>();
+
+			foreach (var cell in roadCells)
+			{
+				// Пропускаем базу и спавнеры
+				if (Vector2Int.Distance(cell, basePosition) < 2) continue;
+				if (spawnerPositions.Any(s => Vector2Int.Distance(s, cell) < 2)) continue;
+
+				int neighborCount = 0;
+				foreach (var neighbor in GetOrthogonalNeighbors(cell))
+				{
+					if (roadCells.Contains(neighbor))
+						neighborCount++;
+				}
+
+				if (neighborCount == 0)
+					toRemove.Add(cell);
+			}
+
+			foreach (var cell in toRemove)
+				roadCells.Remove(cell);
+		}
+
+		private void RemoveDeadEnds()
+		{
+			bool changed = true;
+			int iterations = 0;
+			int maxIterations = 20;
+
+			while (changed && iterations < maxIterations)
+			{
+				changed = false;
+				iterations++;
+				var toRemove = new HashSet<Vector2Int>();
+
+				foreach (var cell in roadCells)
+				{
+					// Защищаем базу и спавнеры
+					if (Vector2Int.Distance(cell, basePosition) < 2) continue;
+					if (spawnerPositions.Any(s => Vector2Int.Distance(s, cell) < 2)) continue;
+
+					int neighborCount = 0;
+					foreach (var neighbor in GetOrthogonalNeighbors(cell))
+					{
+						if (roadCells.Contains(neighbor))
+							neighborCount++;
+					}
+
+					// Если только один сосед - это тупик
+					if (neighborCount == 1)
+					{
+						toRemove.Add(cell);
+						changed = true;
+					}
+				}
+
+				foreach (var cell in toRemove)
+					roadCells.Remove(cell);
+			}
+		}
+
+		private void ThinPaths()
+		{
+			var cellsList = roadCells.ToList();
+			var toRemove = new HashSet<Vector2Int>();
+
+			foreach (var cell in cellsList)
+			{
+				// Защищаем ключевые точки
+				if (Vector2Int.Distance(cell, basePosition) < 2) continue;
+				if (spawnerPositions.Any(s => Vector2Int.Distance(s, cell) < 2)) continue;
+
+				// Проверяем, можем ли удалить клетку без разрыва пути
+				if (CanRemoveWithoutBreaking(cell))
+				{
+					// Удаляем с вероятностью 30%
+					if (Random.value < 0.3f)
+					{
+						toRemove.Add(cell);
+					}
+				}
+			}
+
+			// Применяем удаление и проверяем связность
+			var backup = new HashSet<Vector2Int>(roadCells);
+			foreach (var cell in toRemove)
+			{
+				roadCells.Remove(cell);
+
+				// Если нарушилась связность, возвращаем клетку
+				if (!AreAllSpawnersReachable())
+				{
+					roadCells.Add(cell);
+				}
+			}
+		}
+
+		private bool CanRemoveWithoutBreaking(Vector2Int cell)
+		{
+			var neighbors = GetOrthogonalNeighbors(cell).Where(n => roadCells.Contains(n)).ToList();
+
+			// Если меньше 2 соседей - это край или тупик, не трогаем
+			if (neighbors.Count < 2) return false;
+
+			// Если 2 соседа - проверяем, не на одной ли они линии
+			if (neighbors.Count == 2)
+			{
+				var n1 = neighbors[0];
+				var n2 = neighbors[1];
+
+				// Если соседи на одной линии (по X или Y), клетка избыточна
+				if (n1.x == n2.x || n1.y == n2.y)
+					return true;
+			}
+
+			// Если больше 2 соседей - перекресток, не удаляем
+			return false;
+		}
+
+		private bool AreAllSpawnersReachable()
+		{
+			if (spawnerPositions.Count == 0) return true;
+
+			foreach (var spawner in spawnerPositions)
+			{
+				if (!IsPathExists(basePosition, spawner))
+					return false;
+			}
+
+			return true;
+		}
+
+		private void VerifyPathfinding()
+		{
+			foreach (var spawner in spawnerPositions)
+			{
+				if (!IsPathExists(basePosition, spawner))
+				{
+					Debug.LogWarning($"Спавнер {spawner} недостижим от базы! Соединяю...");
+					ConnectTwoPoints(basePosition, spawner);
+				}
+			}
+		}
+
+		private bool IsPathExists(Vector2Int from, Vector2Int to)
+		{
+			var visited = new HashSet<Vector2Int>();
+			var queue = new Queue<Vector2Int>();
+			queue.Enqueue(from);
+			visited.Add(from);
+
+			while (queue.Count > 0)
+			{
+				var current = queue.Dequeue();
+				if (current == to) return true;
+
+				foreach (var neighbor in GetOrthogonalNeighbors(current))
+				{
+					if (roadCells.Contains(neighbor) && !visited.Contains(neighbor))
+					{
+						visited.Add(neighbor);
+						queue.Enqueue(neighbor);
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private void ConnectTwoPoints(Vector2Int from, Vector2Int to)
+		{
+			Vector2Int current = from;
+
+			while (current != to)
+			{
+				AddRoadCell(current);
+
+				int dx = Math.Sign(to.x - current.x);
+				int dy = Math.Sign(to.y - current.y);
+
+				if (Random.value < 0.5f && dx != 0)
+					current.x += dx;
+				else if (dy != 0)
+					current.y += dy;
+				else if (dx != 0)
+					current.x += dx;
+			}
+
+			AddRoadCell(to);
+		}
+
+		private IEnumerable<Vector2Int> GetOrthogonalNeighbors(Vector2Int pos)
+		{
+			yield return new Vector2Int(pos.x + 1, pos.y);
+			yield return new Vector2Int(pos.x - 1, pos.y);
+			yield return new Vector2Int(pos.x, pos.y + 1);
+			yield return new Vector2Int(pos.x, pos.y - 1);
+		}
+
+		private void FillDiagonalGaps(Vector2Int current, Vector2Int previous)
+		{
+			if (current == previous) return;
+
+			int dx = current.x - previous.x;
+			int dy = current.y - previous.y;
+
+			if (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 1)
+			{
+				AddRoadCell(new Vector2Int(previous.x + dx, previous.y));
+				AddRoadCell(new Vector2Int(previous.x, previous.y + dy));
+			}
+		}
+
+		private void AddRoadCell(Vector2Int pos)
+		{
+			roadCells.Add(pos);
+		}
+
+		private bool IsInsideMap(Vector2Int pos)
+		{
+			int halfSize = mapSize / 2;
+			return pos.x >= -halfSize && pos.x < halfSize && pos.y >= -halfSize && pos.y < halfSize;
+		}
+
+		private bool IsNearMapEdge(Vector2Int pos)
+		{
+			int halfSize = mapSize / 2;
+			int edgeThreshold = halfSize - 3;
+			return Mathf.Abs(pos.x) >= edgeThreshold || Mathf.Abs(pos.y) >= edgeThreshold;
+		}
+
+		private void PrintMap(string title)
+		{
+			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			sb.AppendLine($"\n{title}");
+			sb.AppendLine(new string('=', mapSize + 2));
+
+			int halfSize = mapSize / 2;
+
+			for (int z = halfSize - 1; z >= -halfSize; z--)
+			{
+				for (int x = -halfSize; x < halfSize; x++)
+				{
+					Vector2Int pos = new Vector2Int(x, z);
+
+					if (Vector2Int.Distance(pos, basePosition) < 1.5f)
+						sb.Append("■"); // База
+					else if (spawnerPositions.Contains(pos))
+						sb.Append("▲"); // Спавнер
+					else if (roadCells.Contains(pos))
+						sb.Append("▓"); // Дорога
+					else
+						sb.Append("░"); // Terrain
+				}
+
+				sb.AppendLine();
+			}
+
+			sb.AppendLine(new string('=', mapSize + 2));
+			Debug.Log(sb.ToString());
+		}
+
+		// Остальные методы без изменений
 		public override void Generate(VoxelGenerator generator)
 		{
 			base.Generate(generator);
@@ -103,10 +594,10 @@ namespace TD
 			edgesParent.SetParent(parent);
 			edgesParent.localPosition = Vector3.zero;
 
-			foreach (var edge in roadEdges)
+			foreach (var spawner in spawnerPositions)
 			{
 				GameObject instance = Object.Instantiate(roadEdgePrefab, edgesParent);
-				instance.transform.localPosition = new Vector3(edge.x, 0, edge.y);
+				instance.transform.localPosition = new Vector3(spawner.x, 0, spawner.y);
 			}
 		}
 
@@ -161,498 +652,6 @@ namespace TD
 			{
 				voronoiPoints.Add(new Vector2(Random.Range(-mapSize / 2f, mapSize / 2f), Random.Range(-mapSize / 2f, mapSize / 2f)));
 			}
-		}
-
-private void GenerateRoadPaths()
-	{
-		int baseSize = 6;
-		for (int x = -baseSize / 2; x <= baseSize / 2; x++)
-		{
-			for (int z = -baseSize / 2; z <= baseSize / 2; z++)
-			{
-				roadCells.Add(new Vector2Int(basePosition.x + x, basePosition.y + z));
-			}
-		}
-
-		var pathQueue = new System.Collections.Generic.Queue<(Vector2Int start, float direction, int depth)>();
-		for (int i = 0; i < pathCount; i++)
-		{
-			float angleBase = 360f / pathCount * i;
-			float angle = (angleBase + Random.Range(-30f, 30f)) * Mathf.Deg2Rad;
-			pathQueue.Enqueue((basePosition, angle, 0));
-		}
-
-		while (pathQueue.Count > 0)
-		{
-			var (start, direction, depth) = pathQueue.Dequeue();
-			if (depth > 2) continue;
-
-			GenerateRandomWalkPath(start, direction, pathQueue, depth);
-		}
-
-		EnsureRoadConnectivity();
-		SimplifyRoadEdges();
-	}
-
-		private void GenerateRandomWalkPath(Vector2Int start,
-		                                    float initialDirection,
-		                                    System.Collections.Generic.Queue<(Vector2Int, float, int)> pathQueue,
-		                                    int depth)
-		{
-			var current = start;
-			var previous = start;
-			var direction = initialDirection;
-			int distance = 0;
-
-			while (IsInsideMap(current) && distance < mapSize * 2)
-			{
-				AddRoadCell(current);
-				FillDiagonalGaps(current, previous);
-
-				int midpoint = mapSize;
-				if (distance == midpoint && depth < 2)
-				{
-					for (int b = 0; b < 2; b++)
-					{
-						float branchAngle = direction + Random.Range(-0.7f, 0.7f);
-						pathQueue.Enqueue((current, branchAngle, depth + 1));
-					}
-				}
-
-				if (distance % 15 == 0 && Random.value < 0.4f)
-				{
-					if (Random.value < 0.5f)
-						GenerateRectangularRing(current);
-					else
-						GenerateDiamondRing(current);
-				}
-
-				if (distance % 20 == 0 && Random.value < 0.3f)
-				{
-					GenerateSmallLabyrinth(current);
-				}
-
-				previous = current;
-
-				var neighbors = GetRandomNeighbor(current, direction);
-				if (neighbors != current)
-				{
-					direction += Random.Range(-0.2f, 0.2f);
-					current = neighbors;
-					distance++;
-				}
-				else
-					break;
-			}
-
-			roadEdges.Add(current);
-		}
-
-		private Vector2Int GetRandomNeighbor(Vector2Int current, float preferredDirection)
-		{
-			var neighbors = new Vector2Int[]
-			{
-				new Vector2Int(current.x + 1, current.y),
-				new Vector2Int(current.x - 1, current.y),
-				new Vector2Int(current.x, current.y + 1),
-				new Vector2Int(current.x, current.y - 1)
-			};
-
-			Vector2Int best = current;
-			float bestScore = -1f;
-
-			foreach (var neighbor in neighbors)
-			{
-				if (!IsInsideMap(neighbor)) continue;
-
-				var direction = ((Vector2)neighbor - (Vector2)current).normalized;
-				var dirAngle = Mathf.Atan2(direction.y, direction.x);
-				var score = Mathf.Cos(dirAngle - preferredDirection) + Random.Range(-0.3f, 0.3f);
-
-				if (score > bestScore)
-				{
-					bestScore = score;
-					best = neighbor;
-				}
-			}
-
-			return best;
-		}
-
-		private void GenerateRectangularRing(Vector2Int center)
-		{
-			int size = Random.Range(4, 8);
-			for (int x = -size; x <= size; x++)
-			{
-				for (int z = -size; z <= size; z++)
-				{
-					if ((x == -size || x == size || z == -size || z == size))
-					{
-						Vector2Int pos = new Vector2Int(center.x + x, center.y + z);
-						if (IsInsideMap(pos))
-							AddRoadCell(pos);
-					}
-				}
-			}
-		}
-
-		private void GenerateDiamondRing(Vector2Int center)
-		{
-			int radius = Random.Range(3, 6);
-			for (int x = -radius; x <= radius; x++)
-			{
-				for (int z = -radius; z <= radius; z++)
-				{
-					if (Mathf.Abs(x) + Mathf.Abs(z) == radius)
-					{
-						Vector2Int pos = new Vector2Int(center.x + x, center.y + z);
-						if (IsInsideMap(pos))
-							AddRoadCell(pos);
-					}
-				}
-			}
-		}
-
-		private void GenerateSmallLabyrinth(Vector2Int center)
-		{
-			int size = 5;
-			var maze = new bool[size, size];
-
-			for (int x = 0; x < size; x++)
-			{
-				for (int z = 0; z < size; z++)
-				{
-					maze[x, z] = Random.value < 0.4f;
-				}
-			}
-
-			for (int x = 0; x < size; x++)
-			{
-				for (int z = 0; z < size; z++)
-				{
-					if (maze[x, z])
-					{
-						Vector2Int pos = new Vector2Int(center.x + x - size / 2, center.y + z - size / 2);
-						if (IsInsideMap(pos))
-							AddRoadCell(pos);
-					}
-				}
-			}
-		}
-
-		private void EnsureAllPathsConnected(List<Vector2Int> endpoints)
-		{
-			foreach (var endpoint in endpoints)
-			{
-				if (!IsRoadConnected(basePosition, endpoint))
-				{
-					ConnectTwoPoints(basePosition, endpoint);
-				}
-			}
-		}
-
-		private void EnsureRoadConnectivity()
-		{
-			var cellsToRemove = new HashSet<Vector2Int>();
-
-			foreach (var cell in roadCells)
-			{
-				var xzNeighbors = new Vector2Int[]
-				{
-					new Vector2Int(cell.x + 1, cell.y),
-					new Vector2Int(cell.x - 1, cell.y),
-					new Vector2Int(cell.x, cell.y + 1),
-					new Vector2Int(cell.x, cell.y - 1)
-				};
-
-				bool hasNeighbor = false;
-				foreach (var neighbor in xzNeighbors)
-				{
-					if (roadCells.Contains(neighbor))
-					{
-						hasNeighbor = true;
-						break;
-					}
-				}
-
-				if (!hasNeighbor)
-					cellsToRemove.Add(cell);
-			}
-
-			foreach (var cell in cellsToRemove)
-				roadCells.Remove(cell);
-		}
-
-		private PathType ChoosePathType()
-		{
-			float roll = Random.value;
-
-			if (roll < loopChance)
-				return PathType.Loop;
-			else if (roll < loopChance + sCurveChance)
-				return PathType.SCurve;
-			else if (roll < loopChance + sCurveChance + intersectionChance)
-				return PathType.Branch;
-			else
-				return PathType.Straight;
-		}
-
-		private Vector2Int GenerateStraightPath(Vector2Int start, float direction, int maxLength = -1)
-		{
-			Vector2Int current = start;
-			Vector2Int previous = start;
-			Vector2 dir = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
-
-			float waveFrequency = Random.Range(0.05f, 0.15f);
-			float waveAmplitude = Random.Range(3f, 8f);
-			float distance = 0;
-
-			while (IsInsideMap(current))
-			{
-				AddRoadCell(current);
-				FillDiagonalGaps(current, previous);
-
-				previous = current;
-
-				float wave = Mathf.Sin(distance * waveFrequency) * waveAmplitude;
-				Vector2 perpendicular = new Vector2(-dir.y, dir.x);
-
-				Vector2 offset = dir + perpendicular * wave * 0.1f;
-				offset.Normalize();
-
-				current.x += Mathf.RoundToInt(offset.x);
-				current.y += Mathf.RoundToInt(offset.y);
-				distance++;
-
-				if (Random.value < 0.1f)
-				{
-					direction += Random.Range(-0.3f, 0.3f);
-					dir = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
-				}
-
-				if (maxLength > 0 && distance >= maxLength)
-					break;
-			}
-
-			roadEdges.Add(current);
-			return current;
-		}
-
-		private void GenerateLoopPath(Vector2Int start, float startDirection)
-		{
-			Vector2Int current = start;
-			Vector2Int previous = start;
-
-			float radius = Random.Range(15f, 25f);
-			float angle = startDirection;
-			float angleStep = Random.Range(0.15f, 0.25f);
-			int steps = Mathf.RoundToInt(Mathf.PI * 2f / angleStep);
-
-			Vector2 center = new Vector2(start.x, start.y) + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-
-			for (int i = 0; i < steps; i++)
-			{
-				angle += angleStep;
-				current = new Vector2Int(Mathf.RoundToInt(center.x + Mathf.Cos(angle) * radius),
-					Mathf.RoundToInt(center.y + Mathf.Sin(angle) * radius));
-
-				if (!IsInsideMap(current)) break;
-
-				AddRoadCell(current);
-				FillDiagonalGaps(current, previous);
-				previous = current;
-			}
-		}
-
-		private void GenerateSCurvePath(Vector2Int start, float direction)
-		{
-			Vector2Int current = start;
-			Vector2Int previous = start;
-			Vector2 dir = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
-
-			float curveStrength = Random.Range(0.3f, 0.6f);
-			float distance = 0;
-
-			while (IsInsideMap(current))
-			{
-				AddRoadCell(current);
-				FillDiagonalGaps(current, previous);
-
-				previous = current;
-
-				// S-образная кривая
-				float sCurve = Mathf.Sin(distance * 0.1f) * curveStrength;
-				Vector2 perpendicular = new Vector2(-dir.y, dir.x);
-
-				Vector2 offset = dir + perpendicular * sCurve;
-				offset.Normalize();
-
-				current.x += Mathf.RoundToInt(offset.x);
-				current.y += Mathf.RoundToInt(offset.y);
-				distance++;
-
-				if (distance > 40) break;
-			}
-
-			roadEdges.Add(current);
-		}
-
-		private void FillDiagonalGaps(Vector2Int current, Vector2Int previous)
-		{
-			if (current == previous) return;
-
-			int dx = current.x - previous.x;
-			int dz = current.y - previous.y;
-
-			if (Mathf.Abs(dx) == 1 && Mathf.Abs(dz) == 1)
-			{
-				AddRoadCell(new Vector2Int(previous.x + dx, previous.y));
-				AddRoadCell(new Vector2Int(previous.x, previous.y + dz));
-			}
-		}
-
-		private void ConnectDisconnectedSegments(List<Vector2Int> connectedPoints)
-		{
-			if (connectedPoints.Count <= 1) return;
-
-			HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-			foreach (var point in connectedPoints)
-			{
-				visited.Add(point);
-			}
-
-			for (int i = 1; i < connectedPoints.Count; i++)
-			{
-				if (!IsRoadConnected(connectedPoints[i - 1], connectedPoints[i]))
-				{
-					ConnectTwoPoints(connectedPoints[i - 1], connectedPoints[i]);
-				}
-			}
-		}
-
-		private bool IsRoadConnected(Vector2Int from, Vector2Int to)
-		{
-			if (roadCells.Contains(from) && roadCells.Contains(to))
-			{
-				var visited = new HashSet<Vector2Int>();
-				return BfsPathExists(from, to, visited);
-			}
-
-			return false;
-		}
-
-		private bool BfsPathExists(Vector2Int from, Vector2Int to, HashSet<Vector2Int> visited)
-		{
-			var queue = new System.Collections.Generic.Queue<Vector2Int>();
-			queue.Enqueue(from);
-			visited.Add(from);
-
-			while (queue.Count > 0)
-			{
-				var current = queue.Dequeue();
-				if (current == to) return true;
-
-				var neighbors = new Vector2Int[]
-				{
-					new Vector2Int(current.x + 1, current.y),
-					new Vector2Int(current.x - 1, current.y),
-					new Vector2Int(current.x, current.y + 1),
-					new Vector2Int(current.x, current.y - 1)
-				};
-
-				foreach (var neighbor in neighbors)
-				{
-					if (!visited.Contains(neighbor) && roadCells.Contains(neighbor))
-					{
-						visited.Add(neighbor);
-						queue.Enqueue(neighbor);
-					}
-				}
-			}
-
-			return false;
-		}
-
-		private void ConnectTwoPoints(Vector2Int from, Vector2Int to)
-		{
-			Vector2Int current = from;
-			int dx = Math.Sign(to.x - from.x);
-			int dz = Math.Sign(to.y - from.y);
-
-			while (current != to)
-			{
-				AddRoadCell(current);
-
-				if (Random.value < 0.5f && current.x != to.x)
-					current.x += dx;
-				else if (current.y != to.y)
-					current.y += dz;
-				else if (current.x != to.x)
-					current.x += dx;
-			}
-
-			AddRoadCell(to);
-		}
-
-		private void EnsureRoadContinuity()
-		{
-			var cellsToAdd = new List<Vector2Int>();
-
-			foreach (var cell in roadCells)
-			{
-				var neighbors = new Vector2Int[]
-				{
-					new Vector2Int(cell.x + 1, cell.y),
-					new Vector2Int(cell.x - 1, cell.y),
-					new Vector2Int(cell.x, cell.y + 1),
-					new Vector2Int(cell.x, cell.y - 1),
-					new Vector2Int(cell.x + 1, cell.y + 1),
-					new Vector2Int(cell.x - 1, cell.y - 1),
-					new Vector2Int(cell.x + 1, cell.y - 1),
-					new Vector2Int(cell.x - 1, cell.y + 1)
-				};
-
-				int adjacentCount = 0;
-				foreach (var neighbor in neighbors)
-				{
-					if (roadCells.Contains(neighbor))
-						adjacentCount++;
-				}
-
-				if (adjacentCount == 1 && Random.value < 0.3f)
-				{
-					foreach (var neighbor in neighbors)
-					{
-						if (!roadCells.Contains(neighbor) && IsInsideMap(neighbor))
-						{
-							cellsToAdd.Add(neighbor);
-							break;
-						}
-					}
-				}
-			}
-
-			foreach (var cell in cellsToAdd)
-			{
-				AddRoadCell(cell);
-			}
-		}
-
-		private void AddRoadCell(Vector2Int pos)
-		{
-			for (int dx = -roadWidth / 2; dx <= roadWidth / 2; dx++)
-			{
-				for (int dz = -roadWidth / 2; dz <= roadWidth / 2; dz++)
-				{
-					roadCells.Add(new Vector2Int(pos.x + dx, pos.y + dz));
-				}
-			}
-		}
-
-		private bool IsInsideMap(Vector2Int pos)
-		{
-			int halfSize = mapSize / 2;
-			return pos.x >= -halfSize && pos.x < halfSize && pos.y >= -halfSize && pos.y < halfSize;
 		}
 
 		private void GenerateTerrain()
@@ -821,28 +820,19 @@ private void GenerateRoadPaths()
 			}
 		}
 
-		/// <summary>
-		/// Центральная (базовая) позиция генерации.
-		/// </summary>
 		public Vector3 BasePosition => new Vector3(basePosition.x, 0, basePosition.y);
 
-		/// <summary>
-		/// Возвращает ячейки дороги, находящиеся на внешней границе карты.
-		/// </summary>
 		public IReadOnlyList<Vector2Int> RoadOuterCells
 		{
 			get
 			{
 				if (_cachedRoadOuterCells == null)
-					_cachedRoadOuterCells = CalculateMapEdgeRoadCells();
+					_cachedRoadOuterCells = new List<Vector2Int>(spawnerPositions);
 
 				return _cachedRoadOuterCells;
 			}
 		}
 
-		/// <summary>
-		/// Возвращает мировые позиции вокселей на внешней границе карты (дороги).
-		/// </summary>
 		public IReadOnlyList<Vector3> RoadOuterVoxelsWorldPositions
 		{
 			get
@@ -850,8 +840,8 @@ private void GenerateRoadPaths()
 				if (_cachedRoadOuterWorldPositions == null)
 				{
 					var list = new List<Vector3>();
-					foreach (var c in RoadOuterCells)
-						list.Add(new Vector3(c.x, 0f, c.y));
+					foreach (var s in spawnerPositions)
+						list.Add(new Vector3(s.x, 0f, s.y));
 
 					_cachedRoadOuterWorldPositions = list;
 				}
@@ -860,66 +850,7 @@ private void GenerateRoadPaths()
 			}
 		}
 
-private void SimplifyRoadEdges()
-	{
-		if (roadEdges.Count <= 2) return;
-
-		var simplified = new List<Vector2Int>();
-		simplified.Add(roadEdges[0]);
-
-		float minDistanceThreshold = 5f;
-		float angleThreshold = 30f * Mathf.Deg2Rad;
-
-		for (int i = 1; i < roadEdges.Count - 1; i++)
-		{
-			Vector2Int prev = roadEdges[i - 1];
-			Vector2Int curr = roadEdges[i];
-			Vector2Int next = roadEdges[i + 1];
-
-			Vector2 dir1 = ((Vector2)curr - (Vector2)prev).normalized;
-			Vector2 dir2 = ((Vector2)next - (Vector2)curr).normalized;
-
-			float angle = Mathf.Abs(Mathf.Atan2(dir1.x * dir2.y - dir1.y * dir2.x, Vector2.Dot(dir1, dir2)));
-			float distToPrev = Vector2.Distance(prev, curr);
-			float distToNext = Vector2.Distance(curr, next);
-
-			if (angle < angleThreshold || (distToPrev < minDistanceThreshold && distToNext < minDistanceThreshold))
-				continue;
-
-			simplified.Add(curr);
-		}
-
-		simplified.Add(roadEdges[roadEdges.Count - 1]);
-		roadEdges = simplified;
-		_cachedRoadOuterCells = null;
-		_cachedRoadOuterWorldPositions = null;
-	}
-
 		private List<Vector2Int> _cachedRoadOuterCells;
 		private List<Vector3> _cachedRoadOuterWorldPositions;
-
-		/// <summary>
-		/// Возвращает ячейки дороги, которые находятся на краю карты (x или y равны ±mapSize/2 - 1).
-		/// </summary>
-		private List<Vector2Int> CalculateMapEdgeRoadCells()
-		{
-			var result = new List<Vector2Int>();
-			if (roadCells == null || roadCells.Count == 0)
-				return result;
-
-			int half = mapSize / 2;
-			int edgeMin = -half;
-			int edgeMax = half - 1;
-
-			foreach (var cell in roadCells)
-			{
-				if (cell.x <= edgeMin || cell.x >= edgeMax || cell.y <= edgeMin || cell.y >= edgeMax)
-				{
-					result.Add(cell);
-				}
-			}
-
-			return result;
-		}
 	}
 }

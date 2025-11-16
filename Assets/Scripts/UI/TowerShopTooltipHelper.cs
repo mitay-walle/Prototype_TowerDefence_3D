@@ -9,7 +9,7 @@ namespace TD.UI
 	{
 		private const string tableName = "UI";
 
-		public static void SetupTooltip(GameObject button, Tower tower, string towerName)
+		public static void SetupTooltip(GameObject button, Tower tower)
 		{
 			var hoverTooltip = button.GetComponent<HoverShowTooltip>();
 			if (hoverTooltip == null)
@@ -20,10 +20,10 @@ namespace TD.UI
 			LocalizedString description = new LocalizedString(tableName, "tooltip.tower.shop.description");
 			description.Arguments = new object[]
 			{
-				tower.Stats.statsSO.Damage.BaseValue,
-				tower.Stats.statsSO.FireRate.BaseValue,
-				tower.Stats.statsSO.Range.BaseValue,
-				tower.Stats.statsSO.ProjectileSpeed.BaseValue,
+				tower.Stats.statsSO.Damage.BaseValueInt,
+				tower.Stats.statsSO.FireRate.BaseValueInt,
+				tower.Stats.statsSO.Range.BaseValueInt,
+				tower.Stats.statsSO.ProjectileSpeed.BaseValueInt,
 				tower.TargetPriority.ToString(),
 				tower.Stats.statsSO.Cost,
 				tower.SellValue

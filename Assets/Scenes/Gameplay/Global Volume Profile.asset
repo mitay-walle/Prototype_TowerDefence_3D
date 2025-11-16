@@ -29,14 +29,14 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 0.3, g: 0.75, b: 1, a: 1}
   fallOff1:
-    m_OverrideState: 0
-    m_Value: 0.015
+    m_OverrideState: 1
+    m_Value: 0.512
   fallOff2:
-    m_OverrideState: 0
-    m_Value: 0.015
+    m_OverrideState: 1
+    m_Value: 0.505
   fallOff3:
-    m_OverrideState: 0
-    m_Value: 0.015
+    m_OverrideState: 1
+    m_Value: 0.489
   fallOff4:
     m_OverrideState: 0
     m_Value: 0.015

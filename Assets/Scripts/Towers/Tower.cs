@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Transactions;
+using System.Linq;
 using AYellowpaper;
 using Sirenix.OdinInspector;
 using TD.GameLoop;
@@ -175,7 +175,7 @@ namespace TD.Towers
 			MonsterHealth farthest = null;
 			float minDistanceToBase = float.MaxValue;
 
-			var baseTransform = FindFirstObjectByType<Base>()?.transform;
+			var baseTransform = FindFirstObjectByType<PlayerBase>()?.transform;
 			if (baseTransform == null) return GetNearestEnemy();
 
 			foreach (var enemy in enemiesInRange)
@@ -388,20 +388,67 @@ namespace TD.Towers
 			onFire?.RemoveAllListeners();
 		}
 
-		public LocalizedString Title => null;
+		[SerializeField] LocalizedString _title = new LocalizedString("UI", "TowerNameNovice");
+
+		public LocalizedString Title
+		{
+			get
+			{
+				return new LocalizedString("UI", "TowerStyle{0}")
+				{
+					Arguments = new object[] { _title.GetLocalizedString() }
+				};
+			}
+		}
+
 		public LocalizedString Description => new LocalizedString("UI", "tooltip.tower.description")
 		{
 			Arguments = new object[]
 			{
-				Stats.Damage.Value,
-				Stats.FireRate.Value,
-				Stats.Range.Value,
+				Stats.Damage.ValueInt,
+				Stats.FireRate.ValueInt,
+				Stats.Range.ValueInt,
 				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
-				CanUpgrade() ? Stats.UpgradeCost.Value : "-"
+
+				//CanUpgrade() ? Stats.UpgradeCost.ValueInt : "-",
 			},
 		};
-		public Action OnTooltipButtonClick => CanUpgrade() ? UpgradeSpendingCost : null;
-		public LocalizedString TooltipButtonText => new LocalizedString("UI", "tooltip.tower.upgrade");
+
+		public IEnumerable<(Action, LocalizedString)> OnTooltipButtonClick
+		{
+			get
+			{
+				yield return (UpgradeSpendingCost, UpgradeButtonText);
+				yield return (Sell, SellButtonText);
+			}
+		}
+
+		void Sell()
+		{
+			ResourceManager.Instance.AddCurrency(SellValue);
+			gameObject.SetActive(false);
+			Destroy(gameObject);
+		}
+
+		public LocalizedString UpgradeButtonText
+		{
+			get
+			{
+				var loc = new LocalizedString("UI", "UpgradeCost{0}");
+				loc.Arguments = new object[] { Stats.UpgradeCost.ValueInt.ToStringGoldCanAfford() };
+				return loc;
+			}
+		}
+
+		public LocalizedString SellButtonText
+		{
+			get
+			{
+				var loc = new LocalizedString("UI", "Sell{0}");
+				loc.Arguments = new object[] { "+"+SellValue.ToString().ToStyle(TextStyle.Gold) };
+				return loc;
+			}
+		}
 	}
 }

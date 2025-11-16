@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine.Localization;
 
 namespace TD.UI
@@ -7,7 +8,6 @@ namespace TD.UI
 	{
 		LocalizedString Title { get; }
 		LocalizedString Description { get; }
-		Action OnTooltipButtonClick { get; }
-		LocalizedString TooltipButtonText { get; }
+		IEnumerable<(Action, LocalizedString)> OnTooltipButtonClick { get; }
 	}
 }

@@ -111,7 +111,7 @@ namespace TD.Towers
 			var behs = ghostInstance.GetComponents<MonoBehaviour>();
 			foreach (MonoBehaviour beh in behs)
 			{
-				if (beh is Tower)
+				if (beh is Tower or VoxelGenerator)
 				{
 					beh.enabled = false;
 					continue;

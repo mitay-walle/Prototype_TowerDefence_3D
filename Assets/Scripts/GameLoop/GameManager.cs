@@ -16,8 +16,7 @@ namespace TD.GameLoop
 		[SerializeField] private float gameOverDelay = 2f;
 		[SerializeField] private GameState currentState = GameState.Initial;
 		[SerializeField] private SerializedDictionary<GameState, GameObject> _stateGameObjecs = new();
-		
-		
+
 		public UnityEvent<GameState> onGameStateChanged;
 		public UnityEvent onGameStarted;
 		public UnityEvent onGamePaused;
@@ -26,14 +25,14 @@ namespace TD.GameLoop
 		public UnityEvent onVictory;
 
 		[ShowInInspector] private TimeControl TimeControl => TimeControl.Instance;
-		
+
 		public GameState CurrentState => currentState;
 		public bool IsPlaying => currentState == PlayingState;
 		public bool IsPaused => TimeControl.Instance.IsPaused;
 		public bool IsGameOver => currentState == GameState.GameOver || currentState == GameState.Victory;
 
 		private GameState PlayingState => WaveManager.Instance.IsWaveActive ? GameState.WaveActive : GameState.WavePreparing;
-		private Base playerBase;
+		private PlayerBase playerBase;
 
 		private void Awake()
 		{
@@ -58,7 +57,7 @@ namespace TD.GameLoop
 
 		private void SetupEventListeners()
 		{
-			playerBase = FindAnyObjectByType<Base>();
+			playerBase = FindAnyObjectByType<PlayerBase>();
 			if (playerBase != null)
 			{
 				playerBase.onBaseDestroyed.AddListener(OnBaseDestroyed);
@@ -127,6 +126,11 @@ namespace TD.GameLoop
 			{
 				PauseGame();
 			}
+		}
+
+		public void ToggleFullscreen()
+		{
+			Screen.SetResolution(1280, 800, FullScreenMode.Windowed);
 		}
 
 		private void OnBaseDestroyed()

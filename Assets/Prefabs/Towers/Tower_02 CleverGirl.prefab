@@ -17540,6 +17540,30 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.3000001
       objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: SellValue
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: _title.m_TableEntryReference.m_KeyId
+      value: 8852046353522688
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: _title.m_TableReference.m_TableCollectionName
+      value: GUID:b84ca543df66a8846bcc3107b1ef02bc
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: <Title>k__BackingField.m_TableEntryReference.m_KeyId
+      value: 8852046353522688
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: <Title>k__BackingField.m_TableReference.m_TableCollectionName
+      value: GUID:b84ca543df66a8846bcc3107b1ef02bc
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791415761048970379, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: title.m_TableEntryReference.m_KeyId
+      value: 8852046353522688
+      objectReference: {fileID: 0}
     - target: {fileID: 6808451643644963469, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: m_Name
       value: Tower_02 CleverGirl

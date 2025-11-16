@@ -20,7 +20,6 @@ namespace TD.Tests
 			profile = new LevelRoadGenerationProfile();
 			profile.mapSize = 60;
 			profile.roadWidth = 1;
-			profile.pathCount = 3;
 			profile.seed = 12345;
 
 			generator.profile = profile;
@@ -37,7 +36,6 @@ namespace TD.Tests
 		{
 			Assert.AreEqual(60, profile.mapSize);
 			Assert.AreEqual(1, profile.roadWidth);
-			Assert.AreEqual(3, profile.pathCount);
 		}
 
 		[Test]
@@ -114,7 +112,6 @@ namespace TD.Tests
 			profile = new LevelRoadGenerationProfile();
 			profile.mapSize = 60;
 			profile.roadWidth = 1;
-			profile.pathCount = 3;
 			profile.seed = 9999;
 			generator.profile = profile;
 
@@ -146,7 +143,6 @@ namespace TD.Tests
 		[Test]
 		public void TestMultiplePathsGeneration()
 		{
-			profile.pathCount = 5;
 			generator.Generate();
 
 			var outerCells = profile.RoadOuterCells;
@@ -156,7 +152,6 @@ namespace TD.Tests
 		[Test]
 		public void TestPathBranching()
 		{
-			profile.pathCount = 1;
 			profile.mapSize = 80;
 			generator.Generate();
 
@@ -204,7 +199,6 @@ namespace TD.Tests
 			profile = new LevelRoadGenerationProfile();
 			profile.mapSize = 60;
 			profile.roadWidth = 1;
-			profile.pathCount = 3;
 			profile.seed = 222;
 			generator.profile = profile;
 
@@ -228,7 +222,6 @@ namespace TD.Tests
 				profile = new LevelRoadGenerationProfile();
 				profile.mapSize = size;
 				profile.roadWidth = 1;
-				profile.pathCount = 3;
 				profile.seed = 42;
 				generator.profile = profile;
 
@@ -253,7 +246,6 @@ namespace TD.Tests
 			profile = new LevelRoadGenerationProfile();
 			profile.mapSize = 60;
 			profile.roadWidth = 3;
-			profile.pathCount = 3;
 			profile.seed = 42;
 			generator.profile = profile;
 
@@ -266,7 +258,6 @@ namespace TD.Tests
 		[Test]
 		public void TestSimplifyRoadEdgesReducesSpawnPoints()
 		{
-			profile.pathCount = 1;
 			profile.mapSize = 100;
 			profile.seed = 777;
 			generator.Generate();

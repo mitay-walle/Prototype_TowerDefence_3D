@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
@@ -11,13 +13,19 @@ namespace TD.UI.Information
 	{
 		[ShowInInspector] bool Logs;
 		[SerializeField] private GameObject _visual;
-		[SerializeField] private Button _button;
+		[SerializeField] private ButtonData[] _buttons;
 		[SerializeField] private LocalizeStringEvent titleEvent;
 		[SerializeField] private LocalizeStringEvent messageEvent;
-		[ShowInInspector, HideInEditorMode, ReadOnly] private Action _action;
 		[ShowInInspector, HideInEditorMode, ReadOnly] public RectTransform lastTarget { get; private set; }
 		private RectTransform selfRect;
 		private Canvas rootCanvas;
+
+		[Serializable]
+		public class ButtonData
+		{
+			public Button Button;
+			public Action onClick;
+		}
 
 		private enum Side
 		{
@@ -32,13 +40,10 @@ namespace TD.UI.Information
 			selfRect = _visual.transform as RectTransform;
 			rootCanvas = GetComponentInParent<Canvas>();
 			Hide();
-			_button.onClick.AddListener(OnClick);
-		}
-
-		void OnClick()
-		{
-			if (Logs)  Debug.Log("OnClick");
-			_action?.Invoke();
+			foreach (var button in _buttons)
+			{
+				button.Button.onClick.AddListener(() => { button.onClick?.Invoke(); });
+			}
 		}
 
 		private void Update()
@@ -50,16 +55,29 @@ namespace TD.UI.Information
 			}
 		}
 
-		public void Show(RectTransform target,
-		                 LocalizedString title,
-		                 LocalizedString message,
-		                 Action action = null,
-		                 LocalizedString buttonText = null)
+		public void Show(RectTransform target, LocalizedString title, LocalizedString message, IEnumerable<(Action, LocalizedString)> actions = null)
 		{
-			if (Logs)  Debug.Log("Show");
-			_action = action;
-			_button.gameObject.SetActive(action != null);
-			_button.GetComponentInChildren<LocalizeStringEvent>(true).StringReference = buttonText;
+			_buttons[0].Button.transform.parent.gameObject.SetActive(actions != null);
+
+			foreach (ButtonData button in _buttons)
+			{
+				button.Button.gameObject.SetActive(false);
+			}
+
+			if (actions != null)
+			{
+				int i = 0;
+				foreach (var tuple in actions)
+				{
+					_buttons[i].Button.gameObject.SetActive(tuple.Item1 != null);
+					_buttons[i].onClick = tuple.Item1;
+					_buttons[i].Button.GetComponentInChildren<LocalizeStringEvent>().StringReference = tuple.Item2;
+					i++;
+				}
+			}
+
+			if (Logs) Debug.Log("Show");
+
 			lastTarget = target;
 			_visual.SetActive(true);
 
@@ -79,10 +97,9 @@ namespace TD.UI.Information
 			// сбрасываем, чтобы не оставались ссылки
 			titleEvent.StringReference = null;
 			messageEvent.StringReference = null;
-			_action = null;
 			_visual.SetActive(false);
 			lastTarget = null;
-			if (Logs)  Debug.Log("Hide");
+			if (Logs) Debug.Log("Hide");
 		}
 
 		private void PositionTooltip(RectTransform target)

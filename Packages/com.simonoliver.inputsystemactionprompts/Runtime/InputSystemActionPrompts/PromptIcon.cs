@@ -41,9 +41,11 @@ namespace InputSystemActionPrompts
 			if (actionReference != null)
 			{
 				var interactions = actionReference.action.interactions.Split(',');
+				Debug.Log($"{actionReference.action.name} {actionReference.action.interactions}");
 
-				foreach (var interaction in interactions)
+				foreach (string interaction in interactions)
 				{
+					Debug.Log(interaction);
 					if (!interaction.StartsWith("Hold"))
 					{
 						continue;
@@ -56,6 +58,7 @@ namespace InputSystemActionPrompts
 					}
 
 					var durationPart = interaction.Split('(').LastOrDefault()?.TrimEnd(')');
+					Debug.Log(durationPart);
 					if (string.IsNullOrEmpty(durationPart))
 					{
 						holdDuration = InputSystem.settings.defaultHoldTime;

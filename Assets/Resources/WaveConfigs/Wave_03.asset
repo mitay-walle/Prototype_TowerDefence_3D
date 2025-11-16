@@ -16,8 +16,18 @@ MonoBehaviour:
   waveNumber: 3
   enemySpawns:
   - enemyPrefab: {fileID: 7970266418737536391, guid: 349d5c8d24aafd54e957f2e6bace4131, type: 3}
-    count: 11
+    count: 20
+    spawnDelay: 0.5
+    healthMultiplier: 1
+    speedMultiplier: 1
+  - enemyPrefab: {fileID: 4039716555362393745, guid: cfb6eac0b4687af4488391516e2a026c, type: 3}
+    count: 20
     spawnDelay: 1
+    healthMultiplier: 1.5
+    speedMultiplier: 1.5
+  - enemyPrefab: {fileID: 133989316118575833, guid: ac454eafc7839444cae9d2999544433f, type: 3}
+    count: 1
+    spawnDelay: 0.5
     healthMultiplier: 1
     speedMultiplier: 1
   delayBeforeWave: 5

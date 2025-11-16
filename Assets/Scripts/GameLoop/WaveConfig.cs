@@ -7,7 +7,7 @@ namespace TD.GameLoop
     [System.Serializable]
     public class EnemySpawnData
     {
-        public GameObject enemyPrefab;
+        [AssetList(Path = "Prefabs/Enemies"),PreviewField]public GameObject enemyPrefab;
         [Min(1)] public int count = 5;
         [Min(0)] public float spawnDelay = 0.5f;
         [Min(0)] public float healthMultiplier = 1f;

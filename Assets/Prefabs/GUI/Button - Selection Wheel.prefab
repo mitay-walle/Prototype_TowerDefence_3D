@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4176844917242144039}
   - component: {fileID: 8904018371525123873}
-  - component: {fileID: 913062256557744615}
+  - component: {fileID: 5627301882928910009}
+  - component: {fileID: 7617402931051780966}
   m_Layer: 5
-  m_Name: Button - Selection Wheel
+  m_Name: arc - background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +26,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143976397583725982}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -36,7 +37,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8904018371525123873
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -44,8 +45,8 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143976397583725982}
-  m_CullTransparentMesh: 1
---- !u!114 &913062256557744615
+  m_CullTransparentMesh: 0
+--- !u!114 &5627301882928910009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,9 +55,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 143976397583725982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5aac720e5c9f3c4468554a47a55d1449, type: 3}
+  m_Script: {fileID: 11500000, guid: d8a1b8877299db24599601e66ad6f78b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Mitaywalle.UI.Sector::Mitaywalle.UI.Sector.Sector
+  m_EditorClassIdentifier: TLab.SDF-UI-Toolkit.Runtime::TLab.UI.SDF.SDFArc
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
@@ -65,43 +66,104 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  Logs: 0
-  <Settings>k__BackingField:
-    ShapeSource: 2
-    CloneParentSectorSettings: 0
-    ParentOffsetTransform: 1
-    Clockwise: -1
-    DegreesTotal: 360
-    DegreesOffset: 0
-    DegreesGap: 0.2
-    PivotToSector: 1
-    LocalRescaleDelta: 0
-    GeometryResolution: 49.7
-    SpriteBorderBalance: 77
-    Radius1: 49.3
-    Radius2: 100.5
-    PixelsPerUnitMultiplier: 61.8
-    FillCenter: 1
-    Type: 1
-    Sprite:
-      m_Sprite: {fileID: 21300000, guid: 43d22e482fdde434c96a5b6a1518ff57, type: 3}
-    Gradients: []
-  Layout:
-    Anchors:
-    - rectTransform: {fileID: 0}
-      Resize: 1
-      ResizeOffset: {x: -40, y: -40}
-      PivotToOuterCorner: 0
-      NormalizedAnchorAngleRadius: {x: 0.5, y: 0.5}
-      OffsetAnchorAngleRadius: {x: 0, y: 0}
-      Rotation: 1
-    - rectTransform: {fileID: 0}
-      Resize: 0
-      ResizeOffset: {x: -40, y: -40}
-      PivotToOuterCorner: 1
-      NormalizedAnchorAngleRadius: {x: 0.5, y: 1}
-      OffsetAnchorAngleRadius: {x: 0, y: 0}
-      Rotation: 1
+  m_onion: 0
+  m_onionWidth: 10
+  m_antialiasing: -1
+  m_outline: 0
+  m_outlineWidth: 1
+  m_outlineInnerSoftWidth: 0
+  m_outlineInnerSoftness: 0
+  m_outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  m_outlineType: 0
+  m_outlineGradationColor: {r: 0, g: 1, b: 1, a: 1}
+  m_outlineGradationAngle: 0
+  m_outlineGradationRadius: 0.5
+  m_outlineGradationSmooth: 0.5
+  m_outlineGradationRange: {x: 0.25, y: 0.75}
+  m_outlineGradationOffset: {x: 0, y: 0}
+  m_outlineGradationShape: 0
+  m_outlineEffectType: 0
+  m_outlineEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_outlineEffectOffset: {x: 0, y: 0}
+  m_outlineEffectAngle: 0
+  m_outlineEffectShinyBlur: 0
+  m_outlineEffectShinyWidth: 0.25
+  m_outlineEffectPatternTexture: {fileID: 0}
+  m_outlineEffectPatternRow: 5
+  m_outlineEffectPatternScroll: 0
+  m_outlineEffectPatternParamsX: 1
+  m_outlineEffectPatternParamsY: 1
+  m_outlineEffectPatternParamsZ: 1
+  m_outlineEffectPatternParamsW: 1
+  m_outlineEffectPatternScale: {x: 1, y: 1}
+  m_shadow: 0
+  m_shadowWidth: 10
+  m_shadowInnerSoftWidth: 0
+  m_shadowSoftness: 0
+  m_shadowDilate: 0
+  m_shadowOffset: {x: 0, y: 4}
+  m_shadowColor: {r: 0, g: 0, b: 0, a: 0.25}
+  m_shadowEffectType: 0
+  m_shadowGradationColor: {r: 0, g: 0, b: 0, a: 1}
+  m_shadowGradationAngle: 0
+  m_shadowGradationRadius: 0.5
+  m_shadowGradationSmooth: 0.5
+  m_shadowGradationRange: {x: 0.25, y: 0.75}
+  m_shadowGradationOffset: {x: 0, y: 0}
+  m_shadowGradationShape: 0
+  m_fillColor: {r: 1, g: 1, b: 1, a: 1}
+  m_activeImageType: 0
+  m_sprite: {fileID: 0}
+  m_texture: {fileID: 0}
+  m_uvRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_gradationColor: {r: 1, g: 1, b: 1, a: 1}
+  m_gradationAngle: 0
+  m_gradationRadius: 0.5
+  m_gradationSmooth: 0.5
+  m_gradationRange: {x: 0.25, y: 0.75}
+  m_gradationOffset: {x: 0, y: 0}
+  m_gradationShape: 0
+  m_graphicEffectType: 0
+  m_graphicEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_graphicEffectOffset: {x: 0, y: 0}
+  m_graphicEffectAngle: 0
+  m_graphicEffectShinyBlur: 0
+  m_graphicEffectShinyWidth: 0.25
+  m_graphicEffectPatternTexture: {fileID: 0}
+  m_graphicEffectPatternRow: 5
+  m_graphicEffectPatternScroll: 0
+  m_graphicEffectPatternParamsX: 1
+  m_graphicEffectPatternParamsY: 1
+  m_graphicEffectPatternParamsZ: 1
+  m_graphicEffectPatternParamsW: 1
+  m_graphicEffectPatternScale: {x: 1, y: 1}
+  m_rainbowSaturation: 1
+  m_rainbowValue: 1
+  m_rainbowHueOffset: 0
+  m_fillAmount: -0.99722224
+  m_cornersRounding: 0
+  m_startAngle: -1
+  m_ratio: 0.45
+--- !u!114 &7617402931051780966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143976397583725982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9da21bffd3077643a7fb20fd8b81a8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.SDF_UI_Toolkit.Scripts.TransformSiblingToArcValues
+  startAngle: 0
+  parentOffset: 1
+  offsetAngle: -1
 --- !u!1 &3682816221881032586
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,6 +198,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4176844917242144039}
+  - {fileID: 3186374372295437104}
   - {fileID: 4670436208759811}
   - {fileID: 4096472243002662993}
   m_Father: {fileID: 0}
@@ -193,7 +256,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 7448690270813792017}
+  m_TargetGraphic: {fileID: 5627301882928910009}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -210,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mitaywalle.UI.Sector::Mitaywalle.UI.Sector.Sector
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -228,7 +291,7 @@ MonoBehaviour:
     DegreesGap: 0.5
     PivotToSector: 1
     LocalRescaleDelta: 0
-    GeometryResolution: 49.7
+    GeometryResolution: 5.6
     SpriteBorderBalance: 85
     Radius1: 50
     Radius2: 100
@@ -277,7 +340,7 @@ MonoBehaviour:
         enabled: 1
         mode: 1
         _applyMode: 0
-        graphic: {fileID: 913062256557744615}
+        graphic: {fileID: 2566789709674849420}
         normalColor: {r: 1, g: 1, b: 1, a: 0}
         pressedColor: {r: 1, g: 0, b: 1, a: 1}
         highlightedColor: {r: 1, g: 0, b: 1, a: 1}
@@ -378,7 +441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -391,6 +454,170 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!1 &7259277476057914543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3186374372295437104}
+  - component: {fileID: 1417328278288314929}
+  - component: {fileID: 2566789709674849420}
+  - component: {fileID: 8307532103462326284}
+  m_Layer: 5
+  m_Name: arc - overlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3186374372295437104
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259277476057914543}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1945259054499920332}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1417328278288314929
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259277476057914543}
+  m_CullTransparentMesh: 0
+--- !u!114 &2566789709674849420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259277476057914543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a1b8877299db24599601e66ad6f78b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLab.SDF-UI-Toolkit.Runtime::TLab.UI.SDF.SDFArc
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_onion: 1
+  m_onionWidth: 0.62
+  m_antialiasing: -1
+  m_outline: 0
+  m_outlineWidth: 1
+  m_outlineInnerSoftWidth: 0
+  m_outlineInnerSoftness: 0
+  m_outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  m_outlineType: 0
+  m_outlineGradationColor: {r: 0, g: 1, b: 1, a: 1}
+  m_outlineGradationAngle: 0
+  m_outlineGradationRadius: 0.5
+  m_outlineGradationSmooth: 0.5
+  m_outlineGradationRange: {x: 0.25, y: 0.75}
+  m_outlineGradationOffset: {x: 0, y: 0}
+  m_outlineGradationShape: 0
+  m_outlineEffectType: 0
+  m_outlineEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_outlineEffectOffset: {x: 0, y: 0}
+  m_outlineEffectAngle: 0
+  m_outlineEffectShinyBlur: 0
+  m_outlineEffectShinyWidth: 0.25
+  m_outlineEffectPatternTexture: {fileID: 0}
+  m_outlineEffectPatternRow: 5
+  m_outlineEffectPatternScroll: 0
+  m_outlineEffectPatternParamsX: 1
+  m_outlineEffectPatternParamsY: 1
+  m_outlineEffectPatternParamsZ: 1
+  m_outlineEffectPatternParamsW: 1
+  m_outlineEffectPatternScale: {x: 1, y: 1}
+  m_shadow: 0
+  m_shadowWidth: 10
+  m_shadowInnerSoftWidth: 0
+  m_shadowSoftness: 0
+  m_shadowDilate: 0
+  m_shadowOffset: {x: 0, y: 4}
+  m_shadowColor: {r: 0, g: 0, b: 0, a: 0.25}
+  m_shadowEffectType: 0
+  m_shadowGradationColor: {r: 0, g: 0, b: 0, a: 1}
+  m_shadowGradationAngle: 0
+  m_shadowGradationRadius: 0.5
+  m_shadowGradationSmooth: 0.5
+  m_shadowGradationRange: {x: 0.25, y: 0.75}
+  m_shadowGradationOffset: {x: 0, y: 0}
+  m_shadowGradationShape: 0
+  m_fillColor: {r: 1, g: 1, b: 1, a: 1}
+  m_activeImageType: 0
+  m_sprite: {fileID: 0}
+  m_texture: {fileID: 0}
+  m_uvRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_gradationColor: {r: 1, g: 1, b: 1, a: 1}
+  m_gradationAngle: 0
+  m_gradationRadius: 0.5
+  m_gradationSmooth: 0.5
+  m_gradationRange: {x: 0.25, y: 0.75}
+  m_gradationOffset: {x: 0, y: 0}
+  m_gradationShape: 0
+  m_graphicEffectType: 0
+  m_graphicEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_graphicEffectOffset: {x: 0, y: 0}
+  m_graphicEffectAngle: 0
+  m_graphicEffectShinyBlur: 0
+  m_graphicEffectShinyWidth: 0.25
+  m_graphicEffectPatternTexture: {fileID: 0}
+  m_graphicEffectPatternRow: 5
+  m_graphicEffectPatternScroll: 0
+  m_graphicEffectPatternParamsX: 1
+  m_graphicEffectPatternParamsY: 1
+  m_graphicEffectPatternParamsZ: 1
+  m_graphicEffectPatternParamsW: 1
+  m_graphicEffectPatternScale: {x: 1, y: 1}
+  m_rainbowSaturation: 1
+  m_rainbowValue: 1
+  m_rainbowHueOffset: 0
+  m_fillAmount: -0.99722224
+  m_cornersRounding: 0
+  m_startAngle: -1
+  m_ratio: 0.45
+--- !u!114 &8307532103462326284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259277476057914543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9da21bffd3077643a7fb20fd8b81a8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.SDF_UI_Toolkit.Scripts.TransformSiblingToArcValues
+  startAngle: 0
+  parentOffset: 1
+  offsetAngle: -1
 --- !u!1 &8252466166033970706
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

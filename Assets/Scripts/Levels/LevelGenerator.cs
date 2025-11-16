@@ -24,7 +24,7 @@ namespace TD
 			{
 				if (randomSeed)
 				{
-					levelSeed = Random.Range(0, 999999);
+					levelSeed = System.DateTime.Now.Millisecond;
 				}
 
 				// Access profile through reflection or make it public

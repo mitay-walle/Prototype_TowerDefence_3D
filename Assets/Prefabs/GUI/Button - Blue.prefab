@@ -101,11 +101,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3808044085894335970}
   - component: {fileID: 6992005649862855507}
-  - component: {fileID: 1165846745197185482}
   - component: {fileID: 3741333767064073472}
   - component: {fileID: 7173719204487505529}
-  - component: {fileID: 2990047051476388073}
   - component: {fileID: 2212525395153208926}
+  - component: {fileID: 7518137734996119214}
   m_Layer: 0
   m_Name: Button - Blue
   m_TagString: Untagged
@@ -141,39 +140,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3439431341311018089}
-  m_CullTransparentMesh: 1
---- !u!114 &1165846745197185482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3439431341311018089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: JoshH.ProceduralUIImage::UnityEngine.UI.ProceduralImage.ProceduralImage
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0.55
+  m_CullTransparentMesh: 0
 --- !u!114 &3741333767064073472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,7 +181,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1165846745197185482}
+  m_TargetGraphic: {fileID: 7518137734996119214}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -231,34 +198,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: JoshH.ProceduralUIImage::UniformModifier
   radius: 3.06
---- !u!114 &2990047051476388073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3439431341311018089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c162dc854d2f24fa639ba0623de5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LeTai.TrueShadow::LeTai.TrueShadow.TrueShadow
-  size: 3.56
-  spread: 0
-  offsetAngle: 90
-  offsetDistance: 4.3
-  offset: {x: 0.0000002563, y: -4.3}
-  color: {r: 0, g: 0, b: 0, a: 0.5803922}
-  inset: 0
-  blendMode: 0
-  useCasterAlpha: 1
-  ignoreCasterColor: 0
-  colorBleedMode: 2
-  shadowAsSibling: 0
-  cutout: 0
-  baked: 0
-  modifiedFromInspector: 0
-  bakedShadows: []
 --- !u!114 &2212525395153208926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +246,111 @@ MonoBehaviour:
         _unityEvent:
           m_PersistentCalls:
             m_Calls: []
+--- !u!114 &7518137734996119214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3439431341311018089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86bfa46edb710064fb60144606c4893b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TLab.SDF-UI-Toolkit.Runtime::TLab.UI.SDF.SDFQuad
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_onion: 0
+  m_onionWidth: 10
+  m_antialiasing: -1
+  m_outline: 1
+  m_outlineWidth: 1
+  m_outlineInnerSoftWidth: 0
+  m_outlineInnerSoftness: 0
+  m_outlineColor: {r: 0.19215687, g: 0.19215687, b: 0.19215687, a: 1}
+  m_outlineType: 0
+  m_outlineGradationColor: {r: 0, g: 1, b: 1, a: 1}
+  m_outlineGradationAngle: 0
+  m_outlineGradationRadius: 0.5
+  m_outlineGradationSmooth: 0.5
+  m_outlineGradationRange: {x: 0.25, y: 0.75}
+  m_outlineGradationOffset: {x: 0, y: 0}
+  m_outlineGradationShape: 0
+  m_outlineEffectType: 0
+  m_outlineEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_outlineEffectOffset: {x: 0, y: 0}
+  m_outlineEffectAngle: 0
+  m_outlineEffectShinyBlur: 0
+  m_outlineEffectShinyWidth: 0.25
+  m_outlineEffectPatternTexture: {fileID: 0}
+  m_outlineEffectPatternRow: 5
+  m_outlineEffectPatternScroll: 0
+  m_outlineEffectPatternParamsX: 1
+  m_outlineEffectPatternParamsY: 1
+  m_outlineEffectPatternParamsZ: 1
+  m_outlineEffectPatternParamsW: 1
+  m_outlineEffectPatternScale: {x: 1, y: 1}
+  m_shadow: 1
+  m_shadowWidth: 0
+  m_shadowInnerSoftWidth: 0
+  m_shadowSoftness: 0
+  m_shadowDilate: 0
+  m_shadowOffset: {x: 0, y: -4}
+  m_shadowColor: {r: 0.19245279, g: 0.19245279, b: 0.19245279, a: 1}
+  m_shadowEffectType: 0
+  m_shadowGradationColor: {r: 0, g: 0, b: 0, a: 1}
+  m_shadowGradationAngle: 0
+  m_shadowGradationRadius: 0.5
+  m_shadowGradationSmooth: 0.5
+  m_shadowGradationRange: {x: 0.25, y: 0.75}
+  m_shadowGradationOffset: {x: 0, y: 0}
+  m_shadowGradationShape: 0
+  m_fillColor: {r: 1, g: 1, b: 1, a: 1}
+  m_activeImageType: 0
+  m_sprite: {fileID: 0}
+  m_texture: {fileID: 0}
+  m_uvRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_gradationColor: {r: 1, g: 1, b: 1, a: 1}
+  m_gradationAngle: 0
+  m_gradationRadius: 0.5
+  m_gradationSmooth: 0.5
+  m_gradationRange: {x: 0.25, y: 0.75}
+  m_gradationOffset: {x: 0, y: 0}
+  m_gradationShape: 0
+  m_graphicEffectType: 0
+  m_graphicEffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_graphicEffectOffset: {x: 0, y: 0}
+  m_graphicEffectAngle: 0
+  m_graphicEffectShinyBlur: 0
+  m_graphicEffectShinyWidth: 0.25
+  m_graphicEffectPatternTexture: {fileID: 0}
+  m_graphicEffectPatternRow: 5
+  m_graphicEffectPatternScroll: 0
+  m_graphicEffectPatternParamsX: 1
+  m_graphicEffectPatternParamsY: 1
+  m_graphicEffectPatternParamsZ: 1
+  m_graphicEffectPatternParamsW: 1
+  m_graphicEffectPatternScale: {x: 1, y: 1}
+  m_rainbowSaturation: 1
+  m_rainbowValue: 1
+  m_rainbowHueOffset: 0
+  m_independent: 0
+  m_radius: 4.5
+  m_radiusX: 40
+  m_radiusY: 40
+  m_radiusZ: 40
+  m_radiusW: 40
 --- !u!1 &8871806933984238019
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +452,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
