@@ -18,6 +18,45 @@ namespace TD.Editor
             CreateTileAssetsFinal();
         }
 
+        [MenuItem("Assets/TD/Recreate Tile Assets")]
+        public static void RecreateTileAssetsMenu()
+        {
+            DeleteExistingTileAssets();
+            CreateTileAssetsFinal();
+        }
+
+        private static void DeleteExistingTileAssets()
+        {
+            var tileDefFolder = TileDefPath;
+            var guids = AssetDatabase.FindAssets("", new[] { tileDefFolder });
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.EndsWith(".asset"))
+                {
+                    AssetDatabase.DeleteAsset(path);
+                    Debug.Log($"[CreateTileAssets] Deleted: {path}");
+                }
+            }
+
+            var prefabFolder = TilePrefabPath;
+            guids = AssetDatabase.FindAssets("", new[] { prefabFolder });
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.EndsWith(".prefab"))
+                {
+                    AssetDatabase.DeleteAsset(path);
+                    Debug.Log($"[CreateTileAssets] Deleted: {path}");
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log("[CreateTileAssets] Old assets deleted");
+        }
+
         public static void CreateTileAssetsFinal()
         {
             Debug.Log("[CreateTileAssets] Starting tile asset creation...");
@@ -94,14 +133,8 @@ namespace TD.Editor
                 }
                 
                 RoadTileDef def = ScriptableObject.CreateInstance<RoadTileDef>();
-                
-                var property = typeof(RoadTileDef).GetProperty("connections", 
-                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase);
-                if (property != null && property.CanWrite)
-                {
-                    property.SetValue(def, connections);
-                }
-                
+                def.InitializeConnections(connections);
+
                 AssetDatabase.CreateAsset(def, assetPath);
                 EditorUtility.SetDirty(def);
                 

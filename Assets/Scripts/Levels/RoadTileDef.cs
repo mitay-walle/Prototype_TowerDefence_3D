@@ -49,5 +49,26 @@ namespace TD.Levels
             }
             return result;
         }
+
+        #if UNITY_EDITOR
+        public void InitializeConnections(RoadConnections newConnections)
+        {
+            var fields = typeof(RoadTileDef).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            foreach (var f in fields)
+            {
+                if (f.Name.Contains("connections"))
+                {
+                    if (f.FieldType == typeof(RoadConnections))
+                    {
+                        f.SetValue(this, newConnections);
+                        break;
+                    }
+                }
+            }
+
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+        #endif
     }
 }
