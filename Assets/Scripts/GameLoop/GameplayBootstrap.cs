@@ -1,183 +1,138 @@
-using System.Collections;
-using Sirenix.OdinInspector;
-using TD.Towers;
-using TD.UI;
-using TD.Voxels;
-using Unity.AI.Navigation;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using TD.UI;
 
 namespace TD.GameLoop
 {
-	/// <summary>
-	/// Single entry point for gameplay initialization.
-	/// Bootstrap sequence:
-	/// 1. Generate level (LevelRoad)
-	/// 2. Bake NavMesh
-	/// 3. Place Base and Spawners
-	/// 4. Initialize pools
-	/// 5. Start game
-	/// </summary>
-	public class GameplayBootstrap : MonoBehaviour
-	{
-		[SerializeField] private bool logs = true;
-		[SerializeField, Required, SceneObjectsOnly] private LevelGenerator LevelGenerator;
-		[SerializeField, SceneObjectsOnly] private GameObject playerBase;
+    public class GameplayBootstrap : MonoBehaviour
+    {
+        [SerializeField] private LevelGenerator levelGenerator;
+        [SerializeField] private GameManager gameManager;
+        [SerializeField] private GameHUD gameHUD;
+        [SerializeField] private WaveManager waveManager;
+        [SerializeField] private TilePlacementSystem tilePlacementSystem;
+        [SerializeField] private NavMeshSurfaceWrapper navMeshSurfaceWrapper;
 
-		private Transform[] spawnPoints;
-		private GameObject basePrefab;
-		private NavMeshSurface navMeshSurface;
+        private void Start()
+        {
+            StartCoroutine(BootstrapSequence());
+        }
 
-		private void Start()
-		{
-			StartCoroutine(BootstrapSequence());
-		}
+        private IEnumerator BootstrapSequence()
+        {
+            if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP STARTED ===");
 
-		private IEnumerator BootstrapSequence()
-		{
-			if (logs) Debug.Log("[GameplayBootstrap] Starting bootstrap sequence...");
+            yield return StartCoroutine(GenerateLevel());
+            yield return StartCoroutine(BakeNavMesh());
+            yield return StartCoroutine(PlaceGameplayObjects());
+            yield return StartCoroutine(InitializeSystems());
 
-			// Step 1: Generate Level
-			yield return StartCoroutine(GenerateLevel());
+            if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP COMPLETE ===");
+        }
 
-			// Step 2: Bake NavMesh
-			yield return StartCoroutine(BakeNavMesh());
+        private IEnumerator GenerateLevel()
+        {
+            if (Logs) Debug.Log("[GameplayBootstrap] Generating level...");
 
-			// Step 3: Place Base and Spawners
-			yield return StartCoroutine(PlaceGameplayObjects());
+            if (levelGenerator != null)
+                levelGenerator.GenerateLevel();
 
-			FindAnyObjectByType<GameHUD>().Initialize();
-			FindAnyObjectByType<GameManager>().Initialize();
+            yield return new WaitForSeconds(0.5f);
+        }
 
-			// Step 5: Finalize
-			FinalizeBootstrap();
+        private IEnumerator BakeNavMesh()
+        {
+            if (Logs) Debug.Log("[GameplayBootstrap] Baking NavMesh...");
 
-			if (logs) Debug.Log("[GameplayBootstrap] ✓ Bootstrap complete!");
-		}
+            if (navMeshSurfaceWrapper != null)
+            {
+                navMeshSurfaceWrapper.BuildNavMesh();
+                yield return new WaitForSeconds(0.5f);
+            }
+            else
+            {
+                if (Logs) Debug.LogWarning("[GameplayBootstrap] NavMeshSurface wrapper not found!");
+                yield return null;
+            }
+        }
 
-		private IEnumerator GenerateLevel()
-		{
-			if (logs) Debug.Log("[GameplayBootstrap] Step 1/5: Generating level...");
+        private IEnumerator PlaceGameplayObjects()
+        {
+            if (Logs) Debug.Log("[GameplayBootstrap] Placing gameplay objects...");
 
-			LevelGenerator.GenerateLevel();
+            if (levelGenerator == null)
+            {
+                if (Logs) Debug.LogError("[GameplayBootstrap] LevelGenerator not found!");
+                yield break;
+            }
 
-			yield return new WaitForSeconds(0.5f); // Wait for generation to complete
-		}
+            var tileMapManager = levelGenerator.GetTileMapManager();
+            if (tileMapManager == null)
+            {
+                if (Logs) Debug.LogError("[GameplayBootstrap] TileMapManager not found!");
+                yield break;
+            }
 
-		private IEnumerator BakeNavMesh()
-		{
-			if (logs) Debug.Log("[GameplayBootstrap] Step 2/5: Baking NavMesh...");
+            Vector3 basePosition = tileMapManager.BasePosition;
+            List<Vector3> spawnPositions = tileMapManager.SpawnPositions;
 
-			// Find or create NavMeshSurface
-			navMeshSurface = FindFirstObjectByType<NavMeshSurface>();
-			if (navMeshSurface == null)
-			{
-				GameObject navMeshGO = new GameObject("NavMesh Surface");
-				navMeshSurface = navMeshGO.AddComponent<NavMeshSurface>();
-			}
+            if (Logs) Debug.Log($"[GameplayBootstrap] Base at {basePosition}, spawners: {spawnPositions.Count}");
 
-			// Build NavMesh
-			navMeshSurface.BuildNavMesh();
+            var playerBaseGo = GameObject.FindObjectOfType<GameManager>()?.gameObject;
+            if (playerBaseGo != null)
+            {
+                var base3dGo = playerBaseGo.transform.Find("Base3D");
+                if (base3dGo != null)
+                    base3dGo.position = basePosition;
+            }
 
-			if (logs) Debug.Log("[GameplayBootstrap] NavMesh baked");
+            if (waveManager != null)
+            {
+                var spawnTransforms = new Transform[spawnPositions.Count];
+                for (int i = 0; i < spawnPositions.Count; i++)
+                {
+                    var spawnGo = new GameObject($"Spawner_{i}");
+                    spawnGo.transform.position = spawnPositions[i];
+                    spawnTransforms[i] = spawnGo.transform;
+                }
 
-			yield return null;
-		}
+                waveManager.Initialize(null, spawnTransforms);
+                if (Logs) Debug.Log("[GameplayBootstrap] WaveManager initialized with spawn points");
+            }
+            else
+            {
+                if (Logs) Debug.LogWarning("[GameplayBootstrap] WaveManager not found!");
+            }
 
-		private IEnumerator PlaceGameplayObjects()
-		{
-			if (logs) Debug.Log("[GameplayBootstrap] Step 3/5: Placing Base and Spawners...");
+            yield return null;
+        }
 
-			// Find level bounds from generated road
-			LevelRoadGenerationProfile profile = GetLevelProfile();
-			if (profile == null)
-			{
-				Debug.LogError("[GameplayBootstrap] Could not find level generation profile");
-				yield break;
-			}
+        private IEnumerator InitializeSystems()
+        {
+            if (Logs) Debug.Log("[GameplayBootstrap] Initializing systems...");
 
-			// Place Base at center (where road network converges)
-			PlaceBase(profile.BasePosition);
+            if (gameHUD != null)
+            {
+                gameHUD.Initialize();
+            }
+            else
+            {
+                if (Logs) Debug.LogWarning("[GameplayBootstrap] GameHUD not found!");
+            }
 
-			// Place Spawners around the edges
-			PlaceSpawners(profile);
+            if (gameManager != null)
+            {
+                gameManager.Initialize();
+            }
+            else
+            {
+                if (Logs) Debug.LogError("[GameplayBootstrap] GameManager not found!");
+            }
 
-			yield return null;
-		}
+            yield return null;
+        }
 
-		private void PlaceBase(Vector3 position)
-		{
-			if (!playerBase)
-			{
-				if (basePrefab == null)
-				{
-					Debug.LogWarning("[GameplayBootstrap] Base prefab not assigned, creating default cube");
-					playerBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					playerBase.transform.localScale = new Vector3(5, 3, 5);
-					playerBase.AddComponent<PlayerBase>();
-				}
-				else
-				{
-					playerBase = Instantiate(basePrefab);
-				}
-			}
-
-			playerBase.transform.position = position + Vector3.up * 0.5f;
-			if (logs) Debug.Log($"[GameplayBootstrap] Base placed at {position}");
-		}
-
-		private void PlaceSpawners(LevelRoadGenerationProfile profile)
-		{
-			GameObject spawnersParent = new GameObject("SpawnPoints");
-			spawnPoints = new Transform[profile.RoadOuterVoxelsWorldPositions.Count];
-
-			int i = 0;
-			foreach (Vector3 spawnPos in profile.RoadOuterVoxelsWorldPositions)
-			{
-				GameObject spawner = new GameObject($"SpawnPoint_{i + 1}");
-				spawner.transform.SetParent(spawnersParent.transform);
-				spawner.transform.position = spawnPos;
-
-				spawnPoints[i] = spawner.transform;
-
-				if (logs) Debug.Log($"[GameplayBootstrap] Spawner {i + 1} placed at {spawnPos}");
-				i++;
-			}
-
-			// Assign spawn points to WaveManager
-			AssignSpawnPointsToWaveManager();
-		}
-
-		private void AssignSpawnPointsToWaveManager()
-		{
-			WaveManager waveManager = FindFirstObjectByType<WaveManager>();
-			if (waveManager != null)
-			{
-				waveManager.Initialize(null, spawnPoints);
-				if (logs) Debug.Log($"[GameplayBootstrap] Assigned {spawnPoints.Length} spawn points to WaveManager");
-			}
-		}
-
-		private void FinalizeBootstrap()
-		{
-			// Any final initialization
-			GameManager gameManager = FindFirstObjectByType<GameManager>();
-			if (gameManager != null)
-			{
-				// Game is ready to start
-			}
-		}
-
-		private LevelRoadGenerationProfile GetLevelProfile()
-		{
-			if (LevelGenerator == null) return null;
-
-			VoxelGenerator voxelGen = LevelGenerator.GetComponentInChildren<VoxelGenerator>();
-			if (voxelGen != null)
-			{
-				return voxelGen.profile as LevelRoadGenerationProfile;
-			}
-
-			return null;
-		}
-	}
+        private bool Logs = true;
+    }
 }

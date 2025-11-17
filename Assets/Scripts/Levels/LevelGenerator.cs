@@ -1,42 +1,28 @@
-using Sirenix.OdinInspector;
-using TD.Plugins.Randomization;
-using TD.Voxels;
 using UnityEngine;
 
 namespace TD
 {
-	public class LevelGenerator : MonoBehaviour
-	{
-		[SerializeField] private bool randomSeed = true;
-		[SerializeField] private int levelSeed = 0;
-		[SerializeField, Required] VoxelGenerator generatedLevel;
+    public class LevelGenerator : MonoBehaviour
+    {
+        [SerializeField] private TileMapManager tileMapManager;
 
-		[Button]
-		public void GenerateLevel()
-		{
-			generatedLevel.transform.position = Vector3.zero;
-			generatedLevel.transform.rotation = Quaternion.identity;
-			generatedLevel.name = "LevelRoad (Generated)";
+        private void OnEnable()
+        {
+            if (tileMapManager == null)
+                tileMapManager = GetComponent<TileMapManager>();
+        }
 
-			// Find VoxelGenerator and generate
-			VoxelGenerator voxelGen = generatedLevel.GetComponentInChildren<VoxelGenerator>();
-			if (voxelGen != null)
-			{
-				if (randomSeed)
-				{
-					levelSeed = System.DateTime.Now.Millisecond;
-				}
+        public void GenerateLevel()
+        {
+            if (tileMapManager == null)
+            {
+                Debug.LogError("[LevelGenerator] TileMapManager not found!");
+                return;
+            }
 
-				// Access profile through reflection or make it public
-				voxelGen.seed = levelSeed;
+            Debug.Log("[LevelGenerator] Tile-based level generated - ready for player tile placement");
+        }
 
-				voxelGen.Generate();
-			}
-
-			foreach (Randomizer randomizer in GetComponentsInChildren<Randomizer>())
-			{
-				randomizer.Randomize();
-			}
-		}
-	}
+        public TileMapManager GetTileMapManager() => tileMapManager;
+    }
 }

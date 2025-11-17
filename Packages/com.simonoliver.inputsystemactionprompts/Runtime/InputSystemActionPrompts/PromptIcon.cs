@@ -22,6 +22,7 @@ namespace InputSystemActionPrompts
 		public bool InvertEvent;
 		public bool _disableObject;
 		public bool _disableComponent;
+		public bool Logs;
 		/// <summary>
 		/// The image to apply the prompt sprite to
 		/// </summary>
@@ -41,11 +42,11 @@ namespace InputSystemActionPrompts
 			if (actionReference != null)
 			{
 				var interactions = actionReference.action.interactions.Split(',');
-				Debug.Log($"{actionReference.action.name} {actionReference.action.interactions}");
+				if (Logs)  Debug.Log($"{actionReference.action.name} {actionReference.action.interactions}");
 
 				foreach (string interaction in interactions)
 				{
-					Debug.Log(interaction);
+					if (Logs)  Debug.Log(interaction);
 					if (!interaction.StartsWith("Hold"))
 					{
 						continue;
@@ -58,7 +59,7 @@ namespace InputSystemActionPrompts
 					}
 
 					var durationPart = interaction.Split('(').LastOrDefault()?.TrimEnd(')');
-					Debug.Log(durationPart);
+					if (Logs)  Debug.Log(durationPart);
 					if (string.IsNullOrEmpty(durationPart))
 					{
 						holdDuration = InputSystem.settings.defaultHoldTime;
@@ -69,7 +70,7 @@ namespace InputSystemActionPrompts
 					if (args.Length == 2 && args[0] == "duration")
 						if (float.TryParse(args[1], out var duration))
 						{
-							Debug.Log("Hold duration = " + duration);
+							if (Logs)  Debug.Log("Hold duration = " + duration);
 							holdDuration = duration;
 						}
 				}
