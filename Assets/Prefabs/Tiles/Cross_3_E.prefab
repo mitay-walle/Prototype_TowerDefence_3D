@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4426108455249863539
+--- !u!1 &2752992006900733322
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7188801805556206348}
-  - component: {fileID: 2664032651853822594}
-  - component: {fileID: 8538482008545650893}
+  - component: {fileID: 5145654798628733641}
+  - component: {fileID: 5442571542198426500}
+  - component: {fileID: 4812954746170016973}
   m_Layer: 0
   m_Name: Cross_3_E
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7188801805556206348
+--- !u!4 &5145654798628733641
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4426108455249863539}
+  m_GameObject: {fileID: 2752992006900733322}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,13 +33,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2664032651853822594
+--- !u!114 &5442571542198426500
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4426108455249863539}
+  m_GameObject: {fileID: 2752992006900733322}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6230b52b9cf3de544a8ad72f0185f16d, type: 3}
@@ -51,12 +51,12 @@ MonoBehaviour:
   emissionScale: 1.02
   seed: 0
   profile:
-    rid: 7300525603688284239
+    rid: 7300525603688284267
   references:
     version: 2
     RefIds:
-    - rid: 7300525603688284239
-      type: {class: LevelTileGenerationProfile, ns: TD, asm: Assembly-CSharp}
+    - rid: 7300525603688284267
+      type: {class: LevelTileGenerationProfile, ns: TD.Levels, asm: Assembly-CSharp}
       data:
         seed: 0
         _lastSeed: 0
@@ -66,16 +66,16 @@ MonoBehaviour:
         roadHeight: 0.2
         roadThickness: 1
         connections: 0
---- !u!114 &8538482008545650893
+--- !u!114 &4812954746170016973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4426108455249863539}
+  m_GameObject: {fileID: 2752992006900733322}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 2aa8e115d6a64ddebac81c95036c8d9c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp-Editor::TD.Editor.RoadTileComponent
+  m_EditorClassIdentifier: Assembly-CSharp::TD.Levels.RoadTileComponent
   connections: 11

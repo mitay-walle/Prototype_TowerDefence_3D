@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using TD.GameLoop;
+using TD.Levels;
 
 namespace TD.Editor
 {
@@ -127,12 +128,12 @@ namespace TD.Editor
                 GameObject.Find(TilePlacementName)
             };
 
-            foreach (var obj in objects)
+            foreach (GameObject obj in objects)
             {
                 if (obj != null)
                 {
-                    Object.DestroyImmediate(obj);
                     Debug.Log($"[SetupTileBasedLevel] Destroyed {obj.name}");
+                    Object.DestroyImmediate(obj);
                 }
             }
 

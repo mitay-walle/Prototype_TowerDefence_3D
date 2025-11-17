@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TD.Plugins.Runtime;
-using UnityEngine;
 using TD.Voxels;
+using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace TD
+namespace TD.Levels
 {
 	[System.Serializable]
 	public class LevelRoadGenerationProfile : GenerationProfile

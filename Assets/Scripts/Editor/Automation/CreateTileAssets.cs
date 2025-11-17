@@ -3,6 +3,7 @@ using UnityEditor;
 using TD;
 using TD.Voxels;
 using System.IO;
+using TD.Levels;
 
 namespace TD.Editor
 {
@@ -155,17 +156,5 @@ namespace TD.Editor
             
             Debug.Log("[CreateTileAssets] Prefabs created");
         }
-    }
-
-    public class RoadTileComponent : MonoBehaviour
-    {
-        [SerializeField] private RoadConnections connections;
-
-        public void Initialize(RoadConnections roadConnections)
-        {
-            connections = roadConnections;
-        }
-
-        public RoadConnections GetConnections() => connections;
     }
 }

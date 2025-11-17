@@ -1,9 +1,9 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
 using Sirenix.OdinInspector;
 using TD.Voxels;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace TD
+namespace TD.Levels
 {
     public class TilePlacementSystem : MonoBehaviour
     {

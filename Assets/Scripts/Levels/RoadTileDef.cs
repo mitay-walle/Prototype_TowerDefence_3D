@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TD
+namespace TD.Levels
 {
     [CreateAssetMenu(menuName = "TD/Road Tile Definition")]
     public class RoadTileDef : ScriptableObject

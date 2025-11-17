@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TD
+namespace TD.Levels
 {
     public class LevelGenerator : MonoBehaviour
     {

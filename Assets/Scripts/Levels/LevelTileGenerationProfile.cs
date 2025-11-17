@@ -1,8 +1,8 @@
-using UnityEngine;
 using Sirenix.OdinInspector;
 using TD.Voxels;
+using UnityEngine;
 
-namespace TD
+namespace TD.Levels
 {
     public class LevelTileGenerationProfile : GenerationProfile
     {
