@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6db09a04acf19f44816b619a922eb4d, type: 3}
-  m_Name: Straight_H
-  m_EditorClassIdentifier: Assembly-CSharp::TD.RoadTileDef
-  <connections>k__BackingField: 0
+  m_Name: Straight
+  m_EditorClassIdentifier: Assembly-CSharp::TD.Levels.RoadTileDef
+  <connections>k__BackingField: 3
   <preview>k__BackingField: {fileID: 0}
   <description>k__BackingField: 

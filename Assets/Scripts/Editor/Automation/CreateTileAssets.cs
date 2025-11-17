@@ -18,7 +18,7 @@ namespace TD.Editor
             CreateTileAssetsFinal();
         }
 
-        [MenuItem("Assets/TD/Recreate Tile Assets")]
+        [MenuItem("Assets/TD/Recreate Optimized Tile Assets")]
         public static void RecreateTileAssetsMenu()
         {
             DeleteExistingTileAssets();
@@ -108,16 +108,9 @@ namespace TD.Editor
         {
             var tileDefs = new (string name, RoadConnections connections)[]
             {
-                ("Straight_H", RoadConnections.North | RoadConnections.South),
-                ("Straight_V", RoadConnections.East | RoadConnections.West),
-                ("Turn_NE", RoadConnections.North | RoadConnections.East),
-                ("Turn_NW", RoadConnections.North | RoadConnections.West),
-                ("Turn_SE", RoadConnections.South | RoadConnections.East),
-                ("Turn_SW", RoadConnections.South | RoadConnections.West),
-                ("Cross_3_N", RoadConnections.East | RoadConnections.South | RoadConnections.West),
-                ("Cross_3_S", RoadConnections.North | RoadConnections.East | RoadConnections.West),
-                ("Cross_3_E", RoadConnections.North | RoadConnections.South | RoadConnections.West),
-                ("Cross_3_W", RoadConnections.North | RoadConnections.South | RoadConnections.East),
+                ("Straight", RoadConnections.North | RoadConnections.South),
+                ("Turn", RoadConnections.North | RoadConnections.East),
+                ("Cross_3", RoadConnections.North | RoadConnections.East | RoadConnections.West),
                 ("Cross_4", RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West),
             };
 
@@ -149,16 +142,9 @@ namespace TD.Editor
         {
             var tileConfigs = new (string name, RoadConnections connections)[]
             {
-                ("Straight_H", RoadConnections.North | RoadConnections.South),
-                ("Straight_V", RoadConnections.East | RoadConnections.West),
-                ("Turn_NE", RoadConnections.North | RoadConnections.East),
-                ("Turn_NW", RoadConnections.North | RoadConnections.West),
-                ("Turn_SE", RoadConnections.South | RoadConnections.East),
-                ("Turn_SW", RoadConnections.South | RoadConnections.West),
-                ("Cross_3_N", RoadConnections.East | RoadConnections.South | RoadConnections.West),
-                ("Cross_3_S", RoadConnections.North | RoadConnections.East | RoadConnections.West),
-                ("Cross_3_E", RoadConnections.North | RoadConnections.South | RoadConnections.West),
-                ("Cross_3_W", RoadConnections.North | RoadConnections.South | RoadConnections.East),
+                ("Straight", RoadConnections.North | RoadConnections.South),
+                ("Turn", RoadConnections.North | RoadConnections.East),
+                ("Cross_3", RoadConnections.North | RoadConnections.East | RoadConnections.West),
                 ("Cross_4", RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West),
             };
 
