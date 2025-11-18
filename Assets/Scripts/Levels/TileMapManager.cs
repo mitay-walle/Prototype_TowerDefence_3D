@@ -30,12 +30,12 @@ namespace TD.Levels
 		}
 
 		private void InitializeBaseTile()
-	{
-		basePosition = Vector3.zero;
-		spawnPositions.Clear();
+		{
+			basePosition = Vector3.zero;
+			spawnPositions.Clear();
 
-		if (Logs) Debug.Log($"[TileMapManager] Base position initialized at {basePosition}");
-	}
+			if (Logs) Debug.Log($"[TileMapManager] Base position initialized at {basePosition}");
+		}
 
 		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
 		{
@@ -77,7 +77,7 @@ namespace TD.Levels
 
 			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
 			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
-		tileInstance.transform.rotation = Quaternion.Euler(0, -rotation * 90, 0);
+			tileInstance.transform.rotation = Quaternion.Euler(0, -rotation * 90, 0);
 			placedTiles[gridPosition] = tileInstance;
 
 			UpdateSpawnerPositions();
@@ -91,7 +91,7 @@ namespace TD.Levels
 				return;
 
 			validator.RemoveTile(gridPosition);
-			Destroy(tileGo);
+			DestroyImmediate(tileGo);
 			placedTiles.Remove(gridPosition);
 
 			UpdateSpawnerPositions();
