@@ -9,11 +9,13 @@ namespace TD.Levels
         [SerializeField] private int tilesToGenerate = 10;
 
         private bool Logs = true;
+        private MapVisualizer mapVisualizer;
 
         private void OnEnable()
         {
             if (tileMapManager == null)
                 tileMapManager = GetComponent<TileMapManager>();
+            mapVisualizer = new MapVisualizer(tileMapManager);
         }
 
 public void GenerateLevel()
@@ -121,7 +123,6 @@ private void GenerateInitialTiles()
 
 private void VisualizeMaps()
 	{
-		var mapVisualizer = GetComponent<MapVisualizer>();
 		if (mapVisualizer != null)
 		{
 			mapVisualizer.VisualizeCurrentMap();

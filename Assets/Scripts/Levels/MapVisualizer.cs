@@ -1,24 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 namespace TD.Levels
 {
-	public class MapVisualizer : MonoBehaviour
+	public class MapVisualizer
 	{
-		[SerializeField] private TileMapManager tileMapManager;
-		[SerializeField] private int mapWidth = 30;
-		[SerializeField] private int mapHeight = 30;
-
+		private TileMapManager tileMapManager;
 		private bool Logs = true;
 
-		private void OnEnable()
+		public MapVisualizer(TileMapManager tileMapManager)
 		{
-			if (tileMapManager == null)
-				tileMapManager = GetComponent<TileMapManager>();
+			this.tileMapManager = tileMapManager;
 		}
 
-		[Button("Visualize Current Map")]
 		public void VisualizeCurrentMap()
 		{
 			if (tileMapManager == null)
