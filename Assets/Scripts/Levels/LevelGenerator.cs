@@ -37,11 +37,17 @@ namespace TD.Levels
             if (Logs) Debug.Log($"[LevelGenerator] Generating initial road network (radius: {initialTileRadius})");
 
             var straight = Resources.Load<RoadTileDef>("TileDefs/Straight");
-            var straightPrefab = LoadTilePrefab("Straight");
+            var turn = Resources.Load<RoadTileDef>("TileDefs/Turn");
+            var cross3 = Resources.Load<RoadTileDef>("TileDefs/Cross_3");
 
-            if (straight == null || straightPrefab == null)
+            var straightPrefab = LoadTilePrefab("Straight");
+            var turnPrefab = LoadTilePrefab("Turn");
+            var cross3Prefab = LoadTilePrefab("Cross_3");
+
+            if (straight == null || turn == null || cross3 == null ||
+                straightPrefab == null || turnPrefab == null || cross3Prefab == null)
             {
-                if (Logs) Debug.LogWarning("[LevelGenerator] Could not load Straight tile definition or prefab");
+                if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile definitions or prefabs");
                 return;
             }
 
@@ -52,23 +58,48 @@ namespace TD.Levels
                 for (int z = -initialTileRadius; z <= initialTileRadius; z++)
                 {
                     if (x == 0 && z == 0) continue;
-
-                    Vector2Int pos = new Vector2Int(x, z);
-
                     if (x != 0 && z != 0) continue;
 
-                    int rotation = (x == 0) ? 1 : 0;
+                    Vector2Int pos = new Vector2Int(x, z);
+                    RoadTileDef tileDef;
+                    GameObject tilePrefab;
+                    int rotation;
 
-                    if (!tileMapManager.CanPlaceTile(pos, straight, rotation))
+                    if (x > 0 && z == 0)
+                    {
+                        tileDef = straight;
+                        tilePrefab = straightPrefab;
+                        rotation = 0;
+                    }
+                    else if (x < 0 && z == 0)
+                    {
+                        tileDef = turn;
+                        tilePrefab = turnPrefab;
+                        rotation = 2;
+                    }
+                    else if (x == 0 && z > 0)
+                    {
+                        tileDef = straight;
+                        tilePrefab = straightPrefab;
+                        rotation = 1;
+                    }
+                    else
+                    {
+                        tileDef = cross3;
+                        tilePrefab = cross3Prefab;
+                        rotation = 0;
+                    }
+
+                    if (!tileMapManager.CanPlaceTile(pos, tileDef, rotation))
                     {
                         if (Logs) Debug.Log($"[LevelGenerator] Skipped tile at {pos}");
                         continue;
                     }
 
-                    tileMapManager.PlaceTile(pos, straight, rotation, straightPrefab);
+                    tileMapManager.PlaceTile(pos, tileDef, rotation, tilePrefab);
                     tileCount++;
 
-                    if (Logs) Debug.Log($"[LevelGenerator] Placed Straight tile at {pos} with rotation {rotation}");
+                    if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {pos} with rotation {rotation}");
                 }
             }
 

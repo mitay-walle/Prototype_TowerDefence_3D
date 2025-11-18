@@ -68,6 +68,7 @@ namespace TD.Levels
         private Part GenerateBaseTerrain()
         {
             var part = new Part { name = "Base" };
+            float center = TileSize * 0.5f;
 
             for (int x = 0; x < TileSize; x++)
             {
@@ -79,7 +80,7 @@ namespace TD.Levels
                     {
                         var voxel = new VoxelData
                         {
-                            position = new Vector3(x, 0, z),
+                            position = new Vector3(x - center + 0.5f, 0, z - center + 0.5f),
                             size = Vector3.one,
                             colorIndex = 0,
                             emissionColorIndex = -1,
@@ -96,6 +97,7 @@ namespace TD.Levels
         private Part GenerateRoads()
         {
             var part = new Part { name = "Road" };
+            float center = TileSize * 0.5f;
 
             for (int x = 0; x < TileSize; x++)
             {
@@ -105,7 +107,7 @@ namespace TD.Levels
                     {
                         var voxel = new VoxelData
                         {
-                            position = new Vector3(x, 0.5f, z),
+                            position = new Vector3(x - center + 0.5f, 0.5f, z - center + 0.5f),
                             size = new Vector3(1f, roadHeight, 1f),
                             colorIndex = 1,
                             emissionColorIndex = -1,

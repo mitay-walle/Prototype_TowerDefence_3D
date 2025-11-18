@@ -87,33 +87,41 @@ namespace TD.Levels
             spawnPositions.Clear();
 
             var allTiles = validator.GetAllTiles();
+
             foreach (var kvp in allTiles)
             {
                 var position = kvp.Key;
                 var tileDef = kvp.Value;
 
-                if (tileDef == null) continue;
+                if (tileDef == null || position == Vector2Int.zero) continue;
+
+                int rotation = validator.GetTileRotation(position);
+                var connections = tileDef.GetRotatedConnections(rotation);
+                int connectionCount = connections.GetConnectionCount();
+
+                if (connectionCount != 1) continue;
 
                 float worldX = position.x * tileSize;
                 float worldZ = position.y * tileSize;
 
-                int rotation = validator.GetTileRotation(position);
-                var connections = tileDef.GetRotatedConnections(rotation);
-
                 if (connections.HasConnection(RoadSide.North))
                     spawnPositions.Add(new Vector3(worldX, 0, worldZ - tileSize));
-
-                if (connections.HasConnection(RoadSide.South))
+                else if (connections.HasConnection(RoadSide.South))
                     spawnPositions.Add(new Vector3(worldX, 0, worldZ + tileSize));
-
-                if (connections.HasConnection(RoadSide.East))
+                else if (connections.HasConnection(RoadSide.East))
                     spawnPositions.Add(new Vector3(worldX + tileSize, 0, worldZ));
-
-                if (connections.HasConnection(RoadSide.West))
+                else if (connections.HasConnection(RoadSide.West))
                     spawnPositions.Add(new Vector3(worldX - tileSize, 0, worldZ));
+
+                if (Logs) Debug.Log($"[TileMapManager] Dead-end spawn at {position}: {spawnPositions[spawnPositions.Count - 1]}");
             }
 
-            if (Logs) Debug.Log($"[TileMapManager] Updated spawner positions: {spawnPositions.Count}");
+            if (spawnPositions.Count == 0)
+            {
+                if (Logs) Debug.LogWarning("[TileMapManager] No dead-end spawn points found!");
+            }
+
+            if (Logs) Debug.Log($"[TileMapManager] Updated spawner positions: {spawnPositions.Count} dead-end points");
         }
 
         public bool CanPlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
