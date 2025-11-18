@@ -118,16 +118,16 @@ namespace TD.Levels
             if (x == RoadCellIndex && z == RoadCellIndex)
                 return true;
 
-            if (x == RoadCellIndex && z < RoadCellIndex && connections.HasConnection(RoadSide.North))
+            if (x == RoadCellIndex && z < RoadCellIndex && connections.HasConnection(RoadSide.South))
                 return true;
 
-            if (x == RoadCellIndex && z > RoadCellIndex && connections.HasConnection(RoadSide.South))
+            if (x == RoadCellIndex && z > RoadCellIndex && connections.HasConnection(RoadSide.North))
                 return true;
 
-            if (x < RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.West))
+            if (x < RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.East))
                 return true;
 
-            if (x > RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.East))
+            if (x > RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.West))
                 return true;
 
             return false;
