@@ -151,28 +151,32 @@ namespace TD.Editor
             foreach (var (name, connections) in tileConfigs)
             {
                 string prefabPath = $"{TilePrefabPath}/{name}.prefab";
-                
+
                 var existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
                 if (existing != null)
                 {
                     Debug.Log($"[CreateTileAssets] Prefab already exists: {name}");
                     continue;
                 }
-                
+
                 GameObject tileGo = new GameObject(name);
-                
+
                 var voxelGenerator = tileGo.AddComponent<VoxelGenerator>();
-                voxelGenerator.profile = new LevelTileGenerationProfile();
-                
+                voxelGenerator.profile = ScriptableObject.CreateInstance<LevelTileGenerationProfile>();
+
                 var tileComponent = tileGo.AddComponent<RoadTileComponent>();
                 tileComponent.Initialize(connections);
-                
+
+                voxelGenerator.GenerateMesh();
+
+                Object.DestroyImmediate(voxelGenerator);
+
                 PrefabUtility.SaveAsPrefabAsset(tileGo, prefabPath);
                 Object.DestroyImmediate(tileGo);
-                
+
                 Debug.Log($"[CreateTileAssets] Created Tile Prefab: {name}");
             }
-            
+
             Debug.Log("[CreateTileAssets] Prefabs created");
         }
     }
