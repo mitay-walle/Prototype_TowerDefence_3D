@@ -31,8 +31,16 @@ namespace TD.Levels
         private void InitializeBaseTile()
         {
             basePosition = Vector3.zero;
-            
-            var baseTileDef = ScriptableObject.CreateInstance<RoadTileDef>();
+
+            var baseTileDef = Resources.Load<RoadTileDef>("TileDefs/Cross_4");
+            if (baseTileDef == null)
+            {
+                baseTileDef = ScriptableObject.CreateInstance<RoadTileDef>();
+                #if UNITY_EDITOR
+                baseTileDef.InitializeConnections(RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West);
+                #endif
+            }
+
             validator.AddBaseTile(Vector2Int.zero, baseTileDef);
 
             spawnPositions.Clear();

@@ -67,21 +67,21 @@ namespace TD.Levels
 
                     if (x > 0 && z == 0)
                     {
-                        tileDef = straight;
-                        tilePrefab = straightPrefab;
-                        rotation = 0;
+                        tileDef = cross3;
+                        tilePrefab = cross3Prefab;
+                        rotation = 3;
                     }
                     else if (x < 0 && z == 0)
                     {
-                        tileDef = turn;
-                        tilePrefab = turnPrefab;
-                        rotation = 2;
+                        tileDef = cross3;
+                        tilePrefab = cross3Prefab;
+                        rotation = 1;
                     }
                     else if (x == 0 && z > 0)
                     {
-                        tileDef = straight;
-                        tilePrefab = straightPrefab;
-                        rotation = 1;
+                        tileDef = cross3;
+                        tilePrefab = cross3Prefab;
+                        rotation = 2;
                     }
                     else
                     {
