@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using TD.Voxels;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -179,14 +180,6 @@ namespace TD.Levels
             
             var tilePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Tiles/Straight_H.prefab");
             StartTilePlacement(availableTiles[0], tilePrefab);
-        }
-
-        private static class AssetDatabase
-        {
-            public static T LoadAssetAtPath<T>(string path) where T : Object
-            {
-                return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
-            }
         }
     }
 }

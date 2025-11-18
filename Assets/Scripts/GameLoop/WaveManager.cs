@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Monsters;
+using TD.Levels;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -310,13 +311,46 @@ namespace TD.GameLoop
 
 			onWaveCompleted?.Invoke(currentWaveIndex + 1);
 
+			StartCoroutine(TilePlacementPhase());
+		}
+
+		private IEnumerator TilePlacementPhase()
+		{
+			var tileMapManager = FindFirstObjectByType<TileMapManager>();
+			if (tileMapManager == null || TileDatabase.Instance == null)
+			{
+				ContinueToNextWave();
+				yield break;
+			}
+
+			if (Logs) Debug.Log("[WaveManager] Tile placement phase started");
+
+			var tilePrefab = TileDatabase.Instance.GetRandomTilePrefab();
+			if (tilePrefab == null)
+			{
+				ContinueToNextWave();
+				yield break;
+			}
+
+			yield return new WaitForSeconds(0.5f);
+
+			if (Logs) Debug.Log("[WaveManager] Player can now place a tile");
+
+			yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+
+			if (Logs) Debug.Log("[WaveManager] Tile placement phase completed");
+
+			ContinueToNextWave();
+		}
+
+		private void ContinueToNextWave()
+		{
 			if (currentWaveIndex + 1 >= waves.Count)
 			{
 				if (Logs) Debug.Log("[WaveManager] All waves completed!");
 				onAllWavesCompleted?.Invoke();
 			}
-
-			if (autoStartNextWave)
+			else if (autoStartNextWave)
 			{
 				Invoke(nameof(StartNextWave), autoStartDelay);
 			}

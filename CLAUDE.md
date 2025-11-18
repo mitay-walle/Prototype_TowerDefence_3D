@@ -9,11 +9,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 3. **Use Unity rename/move functions** to preserve references (never manual file operations)
 5. **Use MCP** to call `EditorApplication.ExecuteMenuItem` for automation
 6. **DON'T create .asmdef**
-7. **Wait for compilation** to complete before checking for errors
+7. **Wait for compilation and fix errors** to complete before checking for errors
 8. **Never write comments** in code (NO comments anywhere)
 9. **Use SOLID principles** within reasonable limits
-10. **Close gameplay loops first** - don't pre-optimize
 11. **Use `UniTask` instead of Coroutine**
+12. **Resources.Load<ComponentType>(string) for loading prefabs*
+13. [Seriaizable] / [SerializeReference] вместо ScriptableObject
 
 ## ⚠️ MANDATORY CODE CONVENTIONS
 
@@ -29,11 +30,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Use scripts from `Plugins` folder if need
 
 ### Code Patterns
+- Close gameplay loops first - don't pre-optimize
 - Use `{get; private set;}` pattern for properties
 - UGUI objects must be nested hierarchically inside scripts (facade pattern)
 - Use `if (Logs) Debug.Log()` for debugging/tracing
 - Refactor nested classes and structs into separate files
-- [Seriaizable] / [SerializeReference] вместо ScriptableObject
+
 - Reflection only for unity-internal access
 
 ### Naming Conventions
