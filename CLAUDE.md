@@ -74,7 +74,3 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - AI Navigation (2.0.9) - NavMesh
 - Odin Inspector (3rd party) - Editor tools
 - UniTask - Async operations
-
----
-
-**REMINDER:** NO comments in code. Use Unity functions for file operations. Always recompile and check errors.
