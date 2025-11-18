@@ -100,6 +100,7 @@ namespace TD.Levels
 
             var allTiles = validator.GetAllTiles();
             var tilesSet = new System.Collections.Generic.HashSet<Vector2Int>(allTiles.Keys);
+            var spawnPointsSet = new System.Collections.Generic.HashSet<Vector3>();
 
             foreach (var kvp in allTiles)
             {
@@ -111,35 +112,30 @@ namespace TD.Levels
                 int rotation = validator.GetTileRotation(position);
                 var connections = tileDef.GetRotatedConnections(rotation);
 
-                float worldX = position.x * tileSize;
-                float worldZ = position.y * tileSize;
+                bool hasOpenEdge = false;
 
-                if (connections.HasConnection(RoadSide.North))
-                {
-                    var neighborPos = position + Vector2Int.up;
-                    if (!tilesSet.Contains(neighborPos))
-                        spawnPositions.Add(new Vector3(worldX, 0, worldZ - tileSize));
-                }
+                if (connections.HasConnection(RoadSide.North) && !tilesSet.Contains(position + Vector2Int.up))
+                    hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.South))
-                {
-                    var neighborPos = position + Vector2Int.down;
-                    if (!tilesSet.Contains(neighborPos))
-                        spawnPositions.Add(new Vector3(worldX, 0, worldZ + tileSize));
-                }
+                if (connections.HasConnection(RoadSide.South) && !tilesSet.Contains(position + Vector2Int.down))
+                    hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.East))
-                {
-                    var neighborPos = position + Vector2Int.right;
-                    if (!tilesSet.Contains(neighborPos))
-                        spawnPositions.Add(new Vector3(worldX + tileSize, 0, worldZ));
-                }
+                if (connections.HasConnection(RoadSide.East) && !tilesSet.Contains(position + Vector2Int.right))
+                    hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.West))
+                if (connections.HasConnection(RoadSide.West) && !tilesSet.Contains(position + Vector2Int.left))
+                    hasOpenEdge = true;
+
+                if (hasOpenEdge)
                 {
-                    var neighborPos = position + Vector2Int.left;
-                    if (!tilesSet.Contains(neighborPos))
-                        spawnPositions.Add(new Vector3(worldX - tileSize, 0, worldZ));
+                    float worldX = position.x * tileSize;
+                    float worldZ = position.y * tileSize;
+                    var spawnPos = new Vector3(worldX, 0, worldZ);
+
+                    if (spawnPointsSet.Add(spawnPos))
+                    {
+                        spawnPositions.Add(spawnPos);
+                    }
                 }
             }
 

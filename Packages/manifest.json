@@ -11,6 +11,7 @@
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#",
     "com.matthewminer.consolation": "https://github.com/mminer/consolation.git",
     "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
     "com.mitay-walle.rect-transform-editor": "https://github.com/mitay-walle/com.mitay-walle.rect-transform-editor.git",
