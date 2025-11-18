@@ -61,6 +61,12 @@ namespace TD.Levels
             tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
             tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
 
+            var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
+            if (roadTileComponent != null)
+            {
+                roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+            }
+
             placedTiles[gridPosition] = tileInstance;
 
             UpdateSpawnerPositions();
