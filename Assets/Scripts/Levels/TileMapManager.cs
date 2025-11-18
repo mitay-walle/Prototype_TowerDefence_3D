@@ -87,6 +87,7 @@ namespace TD.Levels
             spawnPositions.Clear();
 
             var allTiles = validator.GetAllTiles();
+            var tilesSet = new System.Collections.Generic.HashSet<Vector2Int>(allTiles.Keys);
 
             foreach (var kvp in allTiles)
             {
@@ -97,23 +98,37 @@ namespace TD.Levels
 
                 int rotation = validator.GetTileRotation(position);
                 var connections = tileDef.GetRotatedConnections(rotation);
-                int connectionCount = connections.GetConnectionCount();
-
-                if (connectionCount != 1) continue;
 
                 float worldX = position.x * tileSize;
                 float worldZ = position.y * tileSize;
 
                 if (connections.HasConnection(RoadSide.North))
-                    spawnPositions.Add(new Vector3(worldX, 0, worldZ - tileSize));
-                else if (connections.HasConnection(RoadSide.South))
-                    spawnPositions.Add(new Vector3(worldX, 0, worldZ + tileSize));
-                else if (connections.HasConnection(RoadSide.East))
-                    spawnPositions.Add(new Vector3(worldX + tileSize, 0, worldZ));
-                else if (connections.HasConnection(RoadSide.West))
-                    spawnPositions.Add(new Vector3(worldX - tileSize, 0, worldZ));
+                {
+                    var neighborPos = position + Vector2Int.up;
+                    if (!tilesSet.Contains(neighborPos))
+                        spawnPositions.Add(new Vector3(worldX, 0, worldZ - tileSize));
+                }
 
-                if (Logs) Debug.Log($"[TileMapManager] Dead-end spawn at {position}: {spawnPositions[spawnPositions.Count - 1]}");
+                if (connections.HasConnection(RoadSide.South))
+                {
+                    var neighborPos = position + Vector2Int.down;
+                    if (!tilesSet.Contains(neighborPos))
+                        spawnPositions.Add(new Vector3(worldX, 0, worldZ + tileSize));
+                }
+
+                if (connections.HasConnection(RoadSide.East))
+                {
+                    var neighborPos = position + Vector2Int.right;
+                    if (!tilesSet.Contains(neighborPos))
+                        spawnPositions.Add(new Vector3(worldX + tileSize, 0, worldZ));
+                }
+
+                if (connections.HasConnection(RoadSide.West))
+                {
+                    var neighborPos = position + Vector2Int.left;
+                    if (!tilesSet.Contains(neighborPos))
+                        spawnPositions.Add(new Vector3(worldX - tileSize, 0, worldZ));
+                }
             }
 
             if (spawnPositions.Count == 0)
