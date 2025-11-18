@@ -36,18 +36,15 @@ namespace TD.Levels
         {
             if (Logs) Debug.Log($"[LevelGenerator] Generating initial road network (radius: {initialTileRadius})");
 
-            var straight = Resources.Load<RoadTileDef>("TileDefs/Straight");
-            var turn = Resources.Load<RoadTileDef>("TileDefs/Turn");
-            var cross3 = Resources.Load<RoadTileDef>("TileDefs/Cross_3");
+            var straight = new RoadTileDef { name = "Straight", connections = RoadConnections.North | RoadConnections.South };
+            var cross3 = new RoadTileDef { name = "Cross_3", connections = RoadConnections.North | RoadConnections.East | RoadConnections.West };
 
             var straightPrefab = LoadTilePrefab("Straight");
-            var turnPrefab = LoadTilePrefab("Turn");
             var cross3Prefab = LoadTilePrefab("Cross_3");
 
-            if (straight == null || turn == null || cross3 == null ||
-                straightPrefab == null || turnPrefab == null || cross3Prefab == null)
+            if (straightPrefab == null || cross3Prefab == null)
             {
-                if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile definitions or prefabs");
+                if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
                 return;
             }
 

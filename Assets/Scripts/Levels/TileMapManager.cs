@@ -32,14 +32,11 @@ namespace TD.Levels
         {
             basePosition = Vector3.zero;
 
-            var baseTileDef = Resources.Load<RoadTileDef>("TileDefs/Cross_4");
-            if (baseTileDef == null)
+            var baseTileDef = new RoadTileDef
             {
-                baseTileDef = ScriptableObject.CreateInstance<RoadTileDef>();
-                #if UNITY_EDITOR
-                baseTileDef.InitializeConnections(RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West);
-                #endif
-            }
+                name = "Base",
+                connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
+            };
 
             validator.AddBaseTile(Vector2Int.zero, baseTileDef);
 

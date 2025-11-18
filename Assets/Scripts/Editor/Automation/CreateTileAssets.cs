@@ -106,36 +106,7 @@ namespace TD.Editor
 
         private static void CreateTileDefinitions()
         {
-            var tileDefs = new (string name, RoadConnections connections)[]
-            {
-                ("Straight", RoadConnections.North | RoadConnections.South),
-                ("Turn", RoadConnections.North | RoadConnections.East),
-                ("Cross_3", RoadConnections.North | RoadConnections.East | RoadConnections.West),
-                ("Cross_4", RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West),
-            };
-
-            foreach (var (name, connections) in tileDefs)
-            {
-                string assetPath = $"{TileDefPath}/{name}.asset";
-                
-                var existing = AssetDatabase.LoadAssetAtPath<RoadTileDef>(assetPath);
-                if (existing != null)
-                {
-                    Debug.Log($"[CreateTileAssets] TileDef already exists: {name}");
-                    continue;
-                }
-                
-                RoadTileDef def = ScriptableObject.CreateInstance<RoadTileDef>();
-                def.InitializeConnections(connections);
-
-                AssetDatabase.CreateAsset(def, assetPath);
-                EditorUtility.SetDirty(def);
-                
-                Debug.Log($"[CreateTileAssets] Created TileDef: {name}");
-            }
-
-            AssetDatabase.SaveAssets();
-            Debug.Log("[CreateTileAssets] TileDefs saved");
+            Debug.Log("[CreateTileAssets] TileDef creation skipped (created at runtime)");
         }
 
         private static void CreateTilePrefabs()
