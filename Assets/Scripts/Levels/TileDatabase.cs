@@ -52,6 +52,14 @@ namespace TD.Levels
 			return new List<RoadTileComponent>(tilePrefabs.Values);
 		}
 
+public RoadTileComponent GetPrefabByConnections(RoadConnections connections)
+	{
+		if (tilePrefabs.TryGetValue(connections, out RoadTileComponent prefab))
+			return prefab;
+		return null;
+	}
+
+
 #if UNITY_EDITOR
 		[Button]
 		private void LoadPrefabs()

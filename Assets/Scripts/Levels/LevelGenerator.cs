@@ -51,19 +51,19 @@ namespace TD.Levels
 			generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
 
 			foreach (KeyValuePair<Vector2Int, RoadTileDef> kvp in generatedMap)
+		{
+			Vector2Int gridPosition = kvp.Key;
+			RoadTileDef tileDef = kvp.Value;
+
+			RoadTileComponent tileComponent = TileDatabase.Instance.GetPrefabByConnections(tileDef.connections);
+			if (tileComponent == null)
 			{
-				Vector2Int gridPosition = kvp.Key;
-				RoadTileDef tileDef = kvp.Value;
-
-				if (gridPosition == Vector2Int.zero)
-					continue;
-
-				GameObject prefab = LoadTilePrefab(tileDef.name);
-				if (prefab == null)
-					continue;
-
-				tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, prefab);
+				if (Logs) Debug.LogWarning($"[LevelGenerator] No prefab found for connections: {tileDef.connections}");
+				continue;
 			}
+
+			tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, tileComponent.gameObject);
+		}
 
 			MapVisualizer.LogMap(generatedMap);
 
