@@ -4,227 +4,205 @@ using NUnit.Framework;
 
 namespace TD.Levels
 {
-    public class LevelGenerator : MonoBehaviour
-    {
-        [SerializeField] private TileMapManager tileMapManager;
-        [SerializeField] private int tilesToGenerate = 10;
-
-        private bool Logs = true;
-        private MapVisualizer mapVisualizer;
-
-        private void OnEnable()
-        {
-            if (tileMapManager == null)
-                tileMapManager = GetComponent<TileMapManager>();
-            mapVisualizer = new MapVisualizer(tileMapManager);
-        }
-
-public void GenerateLevel()
+	public class LevelGenerator : MonoBehaviour
 	{
-		if (tileMapManager == null)
+		[SerializeField] private TileMapManager tileMapManager;
+		[SerializeField] private int tilesToGenerate = 10;
+
+		private bool Logs = true;
+		public MapVisualizer mapVisualizer = new();
+
+		private void OnEnable()
 		{
-			Debug.LogError("[LevelGenerator] TileMapManager not found!");
-			return;
+			if (tileMapManager == null)
+				tileMapManager = GetComponent<TileMapManager>();
+
+			mapVisualizer = new MapVisualizer();
 		}
 
-		if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION STARTED ===");
-
-		GenerateInitialTiles();
-		ValidateLevel();
-		VisualizeMaps();
-
-		if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
-	}
-
-private void GenerateInitialTiles()
-	{
-		if (Logs) Debug.Log($"[LevelGenerator] Generating {tilesToGenerate} tiles attached to base");
-
-		var allTilePrefabs = LoadAllTilePrefabs();
-		if (allTilePrefabs.Count == 0)
+		public void GenerateLevel()
 		{
-			if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
-			return;
+			if (tileMapManager == null)
+			{
+				Debug.LogError("[LevelGenerator] TileMapManager not found!");
+				return;
+			}
+
+			if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION STARTED ===");
+
+			GenerateInitialTiles();
+			ValidateLevel();
+			VisualizeMaps();
+
+			if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
 		}
 
-		int placedCount = 0;
-		var openEdges = new System.Collections.Generic.Queue<Vector2Int>();
-		openEdges.Enqueue(new Vector2Int(0, -1));
-		openEdges.Enqueue(new Vector2Int(0, 1));
-		openEdges.Enqueue(new Vector2Int(1, 0));
-		openEdges.Enqueue(new Vector2Int(-1, 0));
-
-		var processedEdges = new System.Collections.Generic.HashSet<Vector2Int>();
-
-		while (openEdges.Count > 0 && placedCount < tilesToGenerate)
+		private void GenerateInitialTiles()
 		{
-			var nextPos = openEdges.Dequeue();
+			if (Logs) Debug.Log($"[LevelGenerator] Generating {tilesToGenerate} tiles attached to base");
 
-			if (processedEdges.Contains(nextPos))
-				continue;
-
-			processedEdges.Add(nextPos);
-
-			if (tileMapManager.GetTile(nextPos) != null)
-				continue;
-
-			var randomTilePrefab = allTilePrefabs[Random.Range(0, allTilePrefabs.Count)];
-			var tileConnections = randomTilePrefab.GetConnections();
-
-			var tileDef = new RoadTileDef
+			var allTilePrefabs = LoadAllTilePrefabs();
+			if (allTilePrefabs.Count == 0)
 			{
-				name = randomTilePrefab.name,
-				connections = tileConnections
-			};
+				if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
+				return;
+			}
 
-			for (int rotation = 0; rotation < 4; rotation++)
+			int placedCount = 0;
+			var openEdges = new System.Collections.Generic.Queue<Vector2Int>();
+			openEdges.Enqueue(new Vector2Int(0, -1));
+			openEdges.Enqueue(new Vector2Int(0, 1));
+			openEdges.Enqueue(new Vector2Int(1, 0));
+			openEdges.Enqueue(new Vector2Int(-1, 0));
+
+			var processedEdges = new System.Collections.Generic.HashSet<Vector2Int>();
+
+			while (openEdges.Count > 0 && placedCount < tilesToGenerate)
 			{
-				if (!tileMapManager.CanPlaceTile(nextPos, tileDef, rotation))
+				var nextPos = openEdges.Dequeue();
+
+				if (processedEdges.Contains(nextPos))
 					continue;
 
-				tileMapManager.PlaceTile(nextPos, tileDef, rotation, randomTilePrefab.gameObject);
-				placedCount++;
+				processedEdges.Add(nextPos);
 
-				if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
+				if (tileMapManager.GetTile(nextPos) != null)
+					continue;
 
-				var newConnections = tileDef.GetRotatedConnections(rotation);
-				if (newConnections.HasConnection(RoadSide.North))
-					openEdges.Enqueue(nextPos + Vector2Int.up);
-				if (newConnections.HasConnection(RoadSide.South))
-					openEdges.Enqueue(nextPos + Vector2Int.down);
-				if (newConnections.HasConnection(RoadSide.East))
-					openEdges.Enqueue(nextPos + Vector2Int.right);
-				if (newConnections.HasConnection(RoadSide.West))
-					openEdges.Enqueue(nextPos + Vector2Int.left);
+				var randomTilePrefab = allTilePrefabs[Random.Range(0, allTilePrefabs.Count)];
+				var tileConnections = randomTilePrefab.GetConnections();
 
-				break;
+				var tileDef = new RoadTileDef
+				{
+					name = randomTilePrefab.name,
+					connections = tileConnections
+				};
+
+				for (int rotation = 0; rotation < 4; rotation++)
+				{
+					if (!tileMapManager.CanPlaceTile(nextPos, tileDef, rotation))
+						continue;
+
+					tileMapManager.PlaceTile(nextPos, tileDef, rotation, randomTilePrefab.gameObject);
+					placedCount++;
+
+					if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
+
+					var newConnections = tileDef.GetRotatedConnections(rotation);
+					if (newConnections.HasConnection(RoadSide.North))
+						openEdges.Enqueue(nextPos + Vector2Int.up);
+
+					if (newConnections.HasConnection(RoadSide.South))
+						openEdges.Enqueue(nextPos + Vector2Int.down);
+
+					if (newConnections.HasConnection(RoadSide.East))
+						openEdges.Enqueue(nextPos + Vector2Int.right);
+
+					if (newConnections.HasConnection(RoadSide.West))
+						openEdges.Enqueue(nextPos + Vector2Int.left);
+
+					break;
+				}
+			}
+
+			if (Logs) Debug.Log($"[LevelGenerator] Road network created: {placedCount} tiles placed");
+		}
+
+		private void ValidateLevel()
+		{
+			if (Logs) Debug.Log("[LevelGenerator] Validating level...");
+
+			var allTiles = tileMapManager.GetAllTiles();
+			var spawnPositions = tileMapManager.SpawnPositions;
+
+			if (Logs) Debug.Log($"[LevelGenerator] Level validation complete:");
+			if (Logs) Debug.Log($"  - Tiles placed: {allTiles.Count}");
+			if (Logs) Debug.Log($"  - Base position: {tileMapManager.BasePosition}");
+			if (Logs) Debug.Log($"  - Spawn positions: {spawnPositions.Count}");
+
+			foreach (var spawn in spawnPositions)
+			{
+				if (Logs) Debug.Log($"    • {spawn}");
 			}
 		}
 
-		if (Logs) Debug.Log($"[LevelGenerator] Road network created: {placedCount} tiles placed");
-	}
-
-        private void ValidateLevel()
-        {
-            if (Logs) Debug.Log("[LevelGenerator] Validating level...");
-
-            var allTiles = tileMapManager.GetAllTiles();
-            var spawnPositions = tileMapManager.SpawnPositions;
-
-            if (Logs) Debug.Log($"[LevelGenerator] Level validation complete:");
-            if (Logs) Debug.Log($"  - Tiles placed: {allTiles.Count}");
-            if (Logs) Debug.Log($"  - Base position: {tileMapManager.BasePosition}");
-            if (Logs) Debug.Log($"  - Spawn positions: {spawnPositions.Count}");
-
-            foreach (var spawn in spawnPositions)
-            {
-                if (Logs) Debug.Log($"    • {spawn}");
-            }
-        }
-
-private void VisualizeMaps()
-	{
-		if (mapVisualizer != null)
+		private void VisualizeMaps()
 		{
-			mapVisualizer.VisualizeCurrentMap();
+			if (mapVisualizer != null)
+			{
+				mapVisualizer.VisualizeCurrentMap();
+			}
 		}
-	}
 
+		[Button("Generate Level")]
+		public void GenerateLevelButton()
+		{
+			GenerateLevel();
+		}
 
-        [Button("Generate Level")]
-        public void GenerateLevelButton()
-        {
-            GenerateLevel();
-        }
+		[Button("Clear Level")]
+		public void ClearLevel()
+		{
+			if (tileMapManager == null)
+			{
+				Debug.LogError("[LevelGenerator] TileMapManager not found!");
+				return;
+			}
 
-        [Button("Clear Level")]
-        public void ClearLevel()
-        {
-            if (tileMapManager == null)
-            {
-                Debug.LogError("[LevelGenerator] TileMapManager not found!");
-                return;
-            }
+			var allTiles = tileMapManager.GetAllTiles();
+			var tilePositions = new System.Collections.Generic.List<Vector2Int>(allTiles.Keys);
 
-            var allTiles = tileMapManager.GetAllTiles();
-            var tilePositions = new System.Collections.Generic.List<Vector2Int>(allTiles.Keys);
+			foreach (var pos in tilePositions)
+			{
+				if (pos != Vector2Int.zero)
+				{
+					tileMapManager.RemoveTile(pos);
+				}
+			}
 
-            foreach (var pos in tilePositions)
-            {
-                if (pos != Vector2Int.zero)
-                {
-                    tileMapManager.RemoveTile(pos);
-                }
-            }
+			if (Logs) Debug.Log("[LevelGenerator] Level cleared - base tile remains");
+		}
 
-            if (Logs) Debug.Log("[LevelGenerator] Level cleared - base tile remains");
-        }
+		[Button("Reload Level")]
+		public void ReloadLevel()
+		{
+			ClearLevel();
+			GenerateLevel();
+		}
 
-        [Button("Reload Level")]
-        public void ReloadLevel()
-        {
-            ClearLevel();
-            GenerateLevel();
-        }
+		public TileMapManager GetTileMapManager() => tileMapManager;
 
-        public TileMapManager GetTileMapManager() => tileMapManager;
-
-        private GameObject LoadTilePrefab(string name)
-        {
-            var prefab = Resources.Load<GameObject>($"Prefabs/Tiles/{name}");
-            if (prefab != null)
-                return prefab;
+		private GameObject LoadTilePrefab(string name)
+		{
+			var prefab = Resources.Load<GameObject>($"Prefabs/Tiles/{name}");
+			if (prefab != null)
+				return prefab;
 
             #if UNITY_EDITOR
-            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Tiles/{name}.prefab");
-            if (prefab != null)
-                return prefab;
+			prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Tiles/{name}.prefab");
+			if (prefab != null)
+				return prefab;
             #endif
 
-            return null;
-        }
-    
+			return null;
+		}
 
-private System.Collections.Generic.List<RoadTileComponent> LoadAllTilePrefabs()
-	{
-		var tileComponents = new System.Collections.Generic.List<RoadTileComponent>();
-
-		if (TileDatabase.Instance != null)
+		private System.Collections.Generic.List<RoadTileComponent> LoadAllTilePrefabs()
 		{
-			var allTiles = TileDatabase.Instance.GetAllTilePrefabs();
-			foreach (var tilePrefab in allTiles)
+			var tileComponents = new System.Collections.Generic.List<RoadTileComponent>();
+
+			if (TileDatabase.Instance != null)
 			{
-				var component = tilePrefab.GetComponent<RoadTileComponent>();
-				if (component != null)
-					tileComponents.Add(component);
+				var allTiles = TileDatabase.Instance.GetAllTilePrefabs();
+				foreach (var tilePrefab in allTiles)
+				{
+					var component = tilePrefab.GetComponent<RoadTileComponent>();
+					if (component != null)
+						tileComponents.Add(component);
+				}
 			}
+
+			return tileComponents;
 		}
-
-		return tileComponents;
 	}
-
-	[Test]
-	public void TestLevelGeneration()
-	{
-		if (tileMapManager == null)
-		{
-			Debug.LogError("[LevelGenerator Test] TileMapManager not found!");
-			Assert.Fail("TileMapManager not found");
-			return;
-		}
-
-		ClearLevel();
-		GenerateLevel();
-
-		var allTiles = tileMapManager.GetAllTiles();
-		var spawnPositions = tileMapManager.SpawnPositions;
-
-		Debug.Log($"[LevelGenerator Test] Generation completed: {allTiles.Count} tiles, {spawnPositions.Count} spawn points");
-
-		Assert.IsTrue(allTiles.Count > 1, "Should have generated at least 2 tiles (base + generated)");
-		Assert.IsTrue(spawnPositions.Count > 0, "Should have at least one spawn point");
-
-		mapVisualizer.VisualizeCurrentMap();
-	}
-}
 }

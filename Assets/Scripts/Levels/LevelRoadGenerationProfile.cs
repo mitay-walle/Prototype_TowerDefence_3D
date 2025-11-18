@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 namespace TD.Levels
 {
 	[System.Serializable]
-	public class LevelRoadGenerationProfile : GenerationProfile
+	public class RoadLevelGeneratorProfile : GenerationProfile
 	{
 		public enum NoiseType { Perlin, Random, Voronoi, Combined }
 

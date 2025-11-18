@@ -7,13 +7,10 @@ namespace TD.Levels
 	{
 		private TileMapManager tileMapManager;
 
-		public MapVisualizer(TileMapManager tileMapManager)
-		{
-			this.tileMapManager = tileMapManager;
-		}
-
 		public void VisualizeCurrentMap()
 		{
+			tileMapManager ??= Object.FindAnyObjectByType<TileMapManager>();
+
 			if (tileMapManager == null)
 			{
 				Debug.LogError("[MapVisualizer] TileMapManager not found!");
@@ -58,13 +55,14 @@ namespace TD.Levels
 					var pos = new Vector2Int(x, z);
 					if (mapData.TryGetValue(pos, out var tile))
 					{
-						mapBuilder.Append(tile.ToString() + " ");
+						mapBuilder.Append(tile);
 					}
 					else
 					{
 						mapBuilder.Append("  ");
 					}
 				}
+
 				mapBuilder.AppendLine();
 			}
 

@@ -28,77 +28,79 @@ namespace TD.Levels
 			InitializeBaseTile();
 		}
 
-private void InitializeBaseTile()
-	{
-		basePosition = Vector3.zero;
-
-		var baseTilePrefab = TileDatabase.Instance?.GetRandomTilePrefab();
-		if (baseTilePrefab == null)
+		private void InitializeBaseTile()
 		{
-			if (Logs) Debug.LogError("[TileMapManager] TileDatabase not available, using default base tile");
-			var baseTileDef = new RoadTileDef
+			basePosition = Vector3.zero;
+
+			var baseTilePrefab = TileDatabase.Instance?.GetRandomTilePrefab();
+			if (baseTilePrefab == null)
 			{
-				position = Vector2Int.zero,
-				rotation = 0,
-				name = "Base",
-				connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
-			};
-			validator.AddBaseTile(Vector2Int.zero, baseTileDef);
-		}
-		else
-		{
-			var baseTileDef = new RoadTileDef
+				if (Logs) Debug.LogError("[TileMapManager] TileDatabase not available, using default base tile");
+				var baseTileDef = new RoadTileDef
+				{
+					position = Vector2Int.zero,
+					rotation = 0,
+					name = "Base",
+					connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
+				};
+
+				validator.AddBaseTile(Vector2Int.zero, baseTileDef);
+			}
+			else
 			{
-				position = Vector2Int.zero,
-				rotation = 0,
-				name = "Base",
-				connections = baseTilePrefab.GetConnections()
-			};
-			validator.AddBaseTile(Vector2Int.zero, baseTileDef);
+				var baseTileDef = new RoadTileDef
+				{
+					position = Vector2Int.zero,
+					rotation = 0,
+					name = "Base",
+					connections = baseTilePrefab.GetConnections()
+				};
+
+				validator.AddBaseTile(Vector2Int.zero, baseTileDef);
+			}
+
+			spawnPositions.Clear();
+			spawnPositions.Add(new Vector3(0, 0, -10));
+			spawnPositions.Add(new Vector3(10, 0, 0));
+			spawnPositions.Add(new Vector3(0, 0, 10));
+			spawnPositions.Add(new Vector3(-10, 0, 0));
+
+			if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
 		}
 
-		spawnPositions.Clear();
-		spawnPositions.Add(new Vector3(0, 0, -10));
-		spawnPositions.Add(new Vector3(10, 0, 0));
-		spawnPositions.Add(new Vector3(0, 0, 10));
-		spawnPositions.Add(new Vector3(-10, 0, 0));
-
-		if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
-	}
-
-public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
-	{
-		var result = validator.CanPlace(gridPosition, tileDef, rotation);
-
-		if (!result.isValid)
+		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
 		{
-			if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
-			return;
+			var result = validator.CanPlace(gridPosition, tileDef, rotation);
+
+			if (!result.isValid)
+			{
+				if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
+				return;
+			}
+
+			tileDef.position = gridPosition;
+			tileDef.rotation = rotation;
+
+			validator.PlaceTile(gridPosition, tileDef, rotation);
+
+			GameObject tileInstance = Instantiate(prefab, tilesParent);
+			tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
+
+			var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
+			if (roadTileComponent != null)
+			{
+				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+			}
+
+			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
+			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
+
+			placedTiles[gridPosition] = tileInstance;
+
+			UpdateSpawnerPositions();
+
+			if (Logs) Debug.Log($"[TileMapManager] Tile placed at {gridPosition}");
 		}
-
-		tileDef.position = gridPosition;
-		tileDef.rotation = rotation;
-
-		validator.PlaceTile(gridPosition, tileDef, rotation);
-
-		GameObject tileInstance = Instantiate(prefab, tilesParent);
-		tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
-
-		var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
-		if (roadTileComponent != null)
-		{
-			roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
-		}
-
-		tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
-		tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
-
-		placedTiles[gridPosition] = tileInstance;
-
-		UpdateSpawnerPositions();
-
-		if (Logs) Debug.Log($"[TileMapManager] Tile placed at {gridPosition}");
-	}
 
 		public void RemoveTile(Vector2Int gridPosition)
 		{
@@ -173,10 +175,10 @@ public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation
 			return result.isValid;
 		}
 
-public RoadTileDef? GetTile(Vector2Int gridPosition)
-	{
-		return validator.GetTile(gridPosition);
-	}
+		public RoadTileDef? GetTile(Vector2Int gridPosition)
+		{
+			return validator.GetTile(gridPosition);
+		}
 
 		public IReadOnlyDictionary<Vector2Int, RoadTileDef> GetAllTiles()
 		{
