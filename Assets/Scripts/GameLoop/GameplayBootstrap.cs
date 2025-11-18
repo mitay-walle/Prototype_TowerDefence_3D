@@ -1,6 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using TD.Levels;
 using TD.UI;
 
@@ -17,62 +17,61 @@ namespace TD.GameLoop
 
         private void Start()
         {
-            StartCoroutine(BootstrapSequence());
+            _ = BootstrapSequenceAsync();
         }
 
-        private IEnumerator BootstrapSequence()
+        private async UniTask BootstrapSequenceAsync()
         {
             if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP STARTED ===");
 
-            yield return StartCoroutine(GenerateLevel());
-            yield return StartCoroutine(BakeNavMesh());
-            yield return StartCoroutine(PlaceGameplayObjects());
-            yield return StartCoroutine(InitializeSystems());
+            await GenerateLevelAsync();
+            await BakeNavMeshAsync();
+            await PlaceGameplayObjectsAsync();
+            await InitializeSystemsAsync();
 
             if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP COMPLETE ===");
         }
 
-        private IEnumerator GenerateLevel()
+        private async UniTask GenerateLevelAsync()
         {
             if (Logs) Debug.Log("[GameplayBootstrap] Generating level...");
 
             if (levelGenerator != null)
                 levelGenerator.GenerateLevel();
 
-            yield return new WaitForSeconds(0.5f);
+            await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
         }
 
-        private IEnumerator BakeNavMesh()
+        private async UniTask BakeNavMeshAsync()
         {
             if (Logs) Debug.Log("[GameplayBootstrap] Baking NavMesh...");
 
             if (navMeshSurfaceWrapper != null)
             {
                 navMeshSurfaceWrapper.BuildNavMesh();
-                yield return new WaitForSeconds(0.5f);
+                await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
             }
             else
             {
                 if (Logs) Debug.LogWarning("[GameplayBootstrap] NavMeshSurface wrapper not found!");
-                yield return null;
             }
         }
 
-        private IEnumerator PlaceGameplayObjects()
+        private async UniTask PlaceGameplayObjectsAsync()
         {
             if (Logs) Debug.Log("[GameplayBootstrap] Placing gameplay objects...");
 
             if (levelGenerator == null)
             {
                 if (Logs) Debug.LogError("[GameplayBootstrap] LevelGenerator not found!");
-                yield break;
+                return;
             }
 
             var tileMapManager = levelGenerator.GetTileMapManager();
             if (tileMapManager == null)
             {
                 if (Logs) Debug.LogError("[GameplayBootstrap] TileMapManager not found!");
-                yield break;
+                return;
             }
 
             Vector3 basePosition = tileMapManager.BasePosition;
@@ -106,10 +105,10 @@ namespace TD.GameLoop
                 if (Logs) Debug.LogWarning("[GameplayBootstrap] WaveManager not found!");
             }
 
-            yield return null;
+            await UniTask.DelayFrame(1, cancellationToken: this.GetCancellationTokenOnDestroy());
         }
 
-        private IEnumerator InitializeSystems()
+        private async UniTask InitializeSystemsAsync()
         {
             if (Logs) Debug.Log("[GameplayBootstrap] Initializing systems...");
 
@@ -131,7 +130,7 @@ namespace TD.GameLoop
                 if (Logs) Debug.LogError("[GameplayBootstrap] GameManager not found!");
             }
 
-            yield return null;
+            await UniTask.DelayFrame(1, cancellationToken: this.GetCancellationTokenOnDestroy());
         }
 
         private bool Logs = true;

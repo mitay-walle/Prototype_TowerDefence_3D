@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using TD.Monsters;
 using TD.Levels;
@@ -59,7 +59,7 @@ namespace TD.GameLoop
 		public UnityEvent<int> onEnemyKilled;
 		public UnityEvent onAllWavesCompleted;
 
-		private Coroutine spawnCoroutine;
+		private UniTask spawnTask;
 		private bool isSpawning = false;
 
 		public int CurrentWaveNumber => currentWaveIndex + 1;
@@ -161,15 +161,10 @@ namespace TD.GameLoop
 				}
 			}
 
-			if (spawnCoroutine != null)
-			{
-				StopCoroutine(spawnCoroutine);
-			}
-
-			spawnCoroutine = StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
+			spawnTask = SpawnWaveAsync(waves[currentWaveIndex]);
 		}
 
-		private IEnumerator SpawnWaveCoroutine(WaveConfig waveConfig)
+		private async UniTask SpawnWaveAsync(WaveConfig waveConfig)
 		{
 			isSpawning = true;
 			enemiesSpawned = 0;
@@ -184,14 +179,7 @@ namespace TD.GameLoop
 
 			onWaveStarted?.Invoke(currentWaveIndex + 1);
 
-			float delayTimer = waveConfig.DelayBeforeWave;
-			while (delayTimer > 0)
-			{
-				timeUntilNextWave = delayTimer;
-				currentWaveStatus = $"Wave {currentWaveIndex + 1} - Starting in {delayTimer:F1}s";
-				delayTimer -= Time.deltaTime;
-				yield return null;
-			}
+			await UniTask.Delay((int)(waveConfig.DelayBeforeWave * 1000f), cancellationToken: this.GetCancellationTokenOnDestroy());
 
 			timeUntilNextWave = 0f;
 			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Spawning";
@@ -215,7 +203,7 @@ namespace TD.GameLoop
 
 					if (detailedLogs) Debug.Log($"[WaveManager] Spawned enemy {enemiesSpawned}/{totalEnemiesInWave} ({spawnProgress * 100:F1}%)");
 
-					yield return new WaitForSeconds(enemySpawn.spawnDelay);
+					await UniTask.Delay((int)(enemySpawn.spawnDelay * 1000f), cancellationToken: this.GetCancellationTokenOnDestroy());
 				}
 			}
 
@@ -228,7 +216,7 @@ namespace TD.GameLoop
 			while (enemiesAlive > 0)
 			{
 				currentWaveStatus = $"Wave {currentWaveIndex + 1} - Fighting ({enemiesAlive} enemies alive)";
-				yield return null;
+				await UniTask.DelayFrame(1, cancellationToken: this.GetCancellationTokenOnDestroy());
 			}
 
 			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Completed!";
@@ -311,16 +299,16 @@ namespace TD.GameLoop
 
 			onWaveCompleted?.Invoke(currentWaveIndex + 1);
 
-			StartCoroutine(TilePlacementPhase());
+			_ = TilePlacementPhase();
 		}
 
-		private IEnumerator TilePlacementPhase()
+		private async UniTask TilePlacementPhase()
 		{
 			var tileMapManager = FindFirstObjectByType<TileMapManager>();
 			if (tileMapManager == null || TileDatabase.Instance == null)
 			{
 				ContinueToNextWave();
-				yield break;
+				return;
 			}
 
 			if (Logs) Debug.Log("[WaveManager] Tile placement phase started");
@@ -329,14 +317,14 @@ namespace TD.GameLoop
 			if (tilePrefab == null)
 			{
 				ContinueToNextWave();
-				yield break;
+				return;
 			}
 
-			yield return new WaitForSeconds(0.5f);
+			await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
 
 			if (Logs) Debug.Log("[WaveManager] Player can now place a tile");
 
-			yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+			await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: this.GetCancellationTokenOnDestroy());
 
 			if (Logs) Debug.Log("[WaveManager] Tile placement phase completed");
 
@@ -358,15 +346,8 @@ namespace TD.GameLoop
 
 		public void ForceStopWave()
 		{
-			if (spawnCoroutine != null)
-			{
-				StopCoroutine(spawnCoroutine);
-				spawnCoroutine = null;
-			}
-
 			isSpawning = false;
 
-			// Destroy all enemies
 			var enemies = FindObjectsByType<MonsterHealth>(FindObjectsSortMode.None);
 			foreach (var enemy in enemies)
 			{
