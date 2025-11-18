@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__UnityMCP__create_script",
+      "mcp__UnityMCP__script_apply_edits"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

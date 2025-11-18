@@ -4,18 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 🔴 CRITICAL RULES (MUST ALWAYS FOLLOW)
 
-1. **After editing code:** ALWAYS call `TD/Automation/Force Recompile All` via MenuItem
-2. **Check compilation errors** immediately after recompile and fix them
-3. **Use Unity rename/move functions** to preserve references (never manual file operations)
-5. **Use MCP** to call `EditorApplication.ExecuteMenuItem` for automation
-6. **DON'T create .asmdef**
-7. **Wait for compilation and fix errors** to complete before checking for errors
-8. **Never write comments** in code (NO comments anywhere)
-9. **Use SOLID principles** within reasonable limits
-11. **Use `UniTask` instead of Coroutine**
-12. **Resources.Load<ComponentType>(string) for loading prefabs*
-13. [Seriaizable] / [SerializeReference] вместо ScriptableObject
-14. **CRITICAL NEVER remove old files to create again**
+1 **After editing code:** ALWAYS call `TD/Automation/Force Recompile All` via MenuItem
+2 **Check compilation errors** immediately after recompile and fix them
+3 **Use Unity rename/move functions** to preserve references (never manual file operations)
+4 **Use MCP** to call `EditorApplication.ExecuteMenuItem` for automation
+5 **DON'T create .asmdef**
+6 **Wait for compilation and fix errors** to complete before checking for errors
+7 **Never write comments** in code (NO comments anywhere)
+8 **Use SOLID principles** within reasonable limits
+9 **Use `UniTask` instead of Coroutine**
+10 **Resources.Load<ComponentType>(string) for loading prefabs*
+11 [Seriaizable] / [SerializeReference] вместо ScriptableObject
 
 ## ⚠️ MANDATORY CODE CONVENTIONS
 

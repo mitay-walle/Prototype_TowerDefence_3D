@@ -3,31 +3,29 @@ using UnityEngine;
 
 namespace TD.Levels
 {
-	public class MapVisualizer
+	public static class MapVisualizer
 	{
-		private TileMapManager tileMapManager;
-
-		public void VisualizeCurrentMap()
+		public static string LogCurrentMap()
 		{
-			tileMapManager ??= Object.FindAnyObjectByType<TileMapManager>();
+			var tileMapManager = Object.FindAnyObjectByType<TileMapManager>();
 
 			if (tileMapManager == null)
 			{
 				Debug.LogError("[MapVisualizer] TileMapManager not found!");
-				return;
+				return null;
 			}
 
 			var allTiles = tileMapManager.GetAllTiles();
 			if (allTiles.Count == 0)
 			{
 				Debug.LogWarning("[MapVisualizer] No tiles to visualize!");
-				return;
+				return null;
 			}
 
-			DrawMap(allTiles);
+			return LogMap(allTiles);
 		}
 
-		private void DrawMap(IReadOnlyDictionary<Vector2Int, RoadTileDef> tiles)
+		public static string LogMap(IReadOnlyDictionary<Vector2Int, RoadTileDef> tiles)
 		{
 			int minX = int.MaxValue;
 			int maxX = int.MinValue;
@@ -44,9 +42,6 @@ namespace TD.Levels
 
 			var mapData = new Dictionary<Vector2Int, RoadTileDef>(tiles);
 			var mapBuilder = new System.Text.StringBuilder();
-
-			mapBuilder.AppendLine("[MapVisualizer] === LEVEL MAP ===");
-			mapBuilder.AppendLine();
 
 			for (int z = maxZ; z >= minZ; z--)
 			{
@@ -66,11 +61,8 @@ namespace TD.Levels
 				mapBuilder.AppendLine();
 			}
 
-			mapBuilder.AppendLine();
-			mapBuilder.AppendLine($"Total tiles: {mapData.Count}");
-			mapBuilder.AppendLine($"Map bounds: X({minX}..{maxX}) Z({minZ}..{maxZ})");
-
 			Debug.Log(mapBuilder.ToString());
+			return mapBuilder.ToString();
 		}
 	}
 }

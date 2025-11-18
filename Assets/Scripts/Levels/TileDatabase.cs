@@ -8,11 +8,25 @@ using UnityEngine.Rendering;
 
 namespace TD.Levels
 {
+	[ExecuteAlways]
 	public class TileDatabase : MonoBehaviour
 	{
 		[SerializeField] private SerializedDictionary<RoadConnections, RoadTileComponent> tilePrefabs = new();
 
-		public static TileDatabase Instance { get; private set; }
+		public static TileDatabase _instance;
+
+		public static TileDatabase Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
+					_instance = FindAnyObjectByType<TileDatabase>();
+				}
+
+				return _instance;
+			}
+		}
 
 		private void Awake()
 		{
@@ -22,8 +36,8 @@ namespace TD.Levels
 				return;
 			}
 
-			Instance = this;
-			DontDestroyOnLoad(gameObject);
+			_instance = this;
+			if (Application.isPlaying) DontDestroyOnLoad(gameObject);
 		}
 
 		public RoadTileComponent GetRandomTilePrefab()
@@ -31,11 +45,12 @@ namespace TD.Levels
 			return tilePrefabs.Values.Random();
 		}
 
-public System.Collections.Generic.List<RoadTileComponent> GetAllTilePrefabs()
-	{
-		return new System.Collections.Generic.List<RoadTileComponent>(tilePrefabs.Values);
-	}
+		public List<RoadConnections> GetAllTileKinds() => tilePrefabs.Keys.ToList();
 
+		public List<RoadTileComponent> GetAllTilePrefabs()
+		{
+			return new List<RoadTileComponent>(tilePrefabs.Values);
+		}
 
 #if UNITY_EDITOR
 		[Button]
@@ -43,11 +58,8 @@ public System.Collections.Generic.List<RoadTileComponent> GetAllTilePrefabs()
 		{
 			tilePrefabs.Clear();
 
-			AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs/Tiles" })
-				.Select(AssetDatabase.GUIDToAssetPath)
-				.Select(AssetDatabase.LoadAssetAtPath<RoadTileComponent>)
-				.ToList()
-				.ForEach(c => tilePrefabs[c.GetConnections()] = c);
+			AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs/Tiles" }).Select(AssetDatabase.GUIDToAssetPath)
+				.Select(AssetDatabase.LoadAssetAtPath<RoadTileComponent>).ToList().ForEach(c => tilePrefabs[c.GetConnections()] = c);
 		}
 #endif
 	}

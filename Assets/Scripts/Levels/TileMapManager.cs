@@ -68,39 +68,53 @@ namespace TD.Levels
 			if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
 		}
 
-		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
+public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
+	{
+		if (!PlaceTileLogic(gridPosition, tileDef, rotation))
+			return;
+
+		PlaceTilePrefab(gridPosition, tileDef, rotation, prefab);
+	}
+
+	public bool PlaceTileLogic(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
+	{
+		var result = validator.CanPlace(gridPosition, tileDef, rotation);
+
+		if (!result.isValid)
 		{
-			var result = validator.CanPlace(gridPosition, tileDef, rotation);
-
-			if (!result.isValid)
-			{
-				if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
-				return;
-			}
-
-			tileDef.position = gridPosition;
-			tileDef.rotation = rotation;
-
-			validator.PlaceTile(gridPosition, tileDef, rotation);
-
-			GameObject tileInstance = Instantiate(prefab, tilesParent);
-			tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
-
-			var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
-			if (roadTileComponent != null)
-			{
-				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
-			}
-
-			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
-			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
-
-			placedTiles[gridPosition] = tileInstance;
-
-			UpdateSpawnerPositions();
-
-			if (Logs) Debug.Log($"[TileMapManager] Tile placed at {gridPosition}");
+			if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
+			return false;
 		}
+
+		tileDef.position = gridPosition;
+		tileDef.rotation = rotation;
+
+		validator.PlaceTile(gridPosition, tileDef, rotation);
+
+		if (Logs) Debug.Log($"[TileMapManager] Tile logic placed at {gridPosition}");
+		return true;
+	}
+
+	private void PlaceTilePrefab(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
+	{
+		GameObject tileInstance = Instantiate(prefab, tilesParent);
+		tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
+
+		var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
+		if (roadTileComponent != null)
+		{
+			roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+		}
+
+		tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
+		tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
+
+		placedTiles[gridPosition] = tileInstance;
+
+		UpdateSpawnerPositions();
+
+		if (Logs) Debug.Log($"[TileMapManager] Tile prefab instantiated at {gridPosition}");
+	}
 
 		public void RemoveTile(Vector2Int gridPosition)
 		{

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using NUnit.Framework;
@@ -10,14 +11,12 @@ namespace TD.Levels
 		[SerializeField] private int tilesToGenerate = 10;
 
 		private bool Logs = true;
-		public MapVisualizer mapVisualizer = new();
 
 		private void OnEnable()
 		{
 			if (tileMapManager == null)
 				tileMapManager = GetComponent<TileMapManager>();
 
-			mapVisualizer = new MapVisualizer();
 		}
 
 		public void GenerateLevel()
@@ -41,71 +40,32 @@ namespace TD.Levels
 		{
 			if (Logs) Debug.Log($"[LevelGenerator] Generating {tilesToGenerate} tiles attached to base");
 
-			var allTilePrefabs = LoadAllTilePrefabs();
+			var allTilePrefabs = TileDatabase.Instance.GetAllTilePrefabs();
 			if (allTilePrefabs.Count == 0)
 			{
 				if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
 				return;
 			}
 
-			int placedCount = 0;
-			var openEdges = new System.Collections.Generic.Queue<Vector2Int>();
-			openEdges.Enqueue(new Vector2Int(0, -1));
-			openEdges.Enqueue(new Vector2Int(0, 1));
-			openEdges.Enqueue(new Vector2Int(1, 0));
-			openEdges.Enqueue(new Vector2Int(-1, 0));
+			var mapGenerator = new MapGenerator(tilesToGenerate, Logs);
+			var generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
 
-			var processedEdges = new System.Collections.Generic.HashSet<Vector2Int>();
-
-			while (openEdges.Count > 0 && placedCount < tilesToGenerate)
+			foreach (var kvp in generatedMap)
 			{
-				var nextPos = openEdges.Dequeue();
+				var gridPosition = kvp.Key;
+				var tileDef = kvp.Value;
 
-				if (processedEdges.Contains(nextPos))
+				if (gridPosition == Vector2Int.zero)
 					continue;
 
-				processedEdges.Add(nextPos);
-
-				if (tileMapManager.GetTile(nextPos) != null)
+				var prefab = LoadTilePrefab(tileDef.name);
+				if (prefab == null)
 					continue;
 
-				var randomTilePrefab = allTilePrefabs[Random.Range(0, allTilePrefabs.Count)];
-				var tileConnections = randomTilePrefab.GetConnections();
-
-				var tileDef = new RoadTileDef
-				{
-					name = randomTilePrefab.name,
-					connections = tileConnections
-				};
-
-				for (int rotation = 0; rotation < 4; rotation++)
-				{
-					if (!tileMapManager.CanPlaceTile(nextPos, tileDef, rotation))
-						continue;
-
-					tileMapManager.PlaceTile(nextPos, tileDef, rotation, randomTilePrefab.gameObject);
-					placedCount++;
-
-					if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
-
-					var newConnections = tileDef.GetRotatedConnections(rotation);
-					if (newConnections.HasConnection(RoadSide.North))
-						openEdges.Enqueue(nextPos + Vector2Int.up);
-
-					if (newConnections.HasConnection(RoadSide.South))
-						openEdges.Enqueue(nextPos + Vector2Int.down);
-
-					if (newConnections.HasConnection(RoadSide.East))
-						openEdges.Enqueue(nextPos + Vector2Int.right);
-
-					if (newConnections.HasConnection(RoadSide.West))
-						openEdges.Enqueue(nextPos + Vector2Int.left);
-
-					break;
-				}
+				tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, prefab);
 			}
 
-			if (Logs) Debug.Log($"[LevelGenerator] Road network created: {placedCount} tiles placed");
+			if (Logs) Debug.Log($"[LevelGenerator] Road network created with prefabs: {generatedMap.Count - 1} tiles placed");
 		}
 
 		private void ValidateLevel()
@@ -128,10 +88,7 @@ namespace TD.Levels
 
 		private void VisualizeMaps()
 		{
-			if (mapVisualizer != null)
-			{
-				mapVisualizer.VisualizeCurrentMap();
-			}
+			MapVisualizer.LogCurrentMap();
 		}
 
 		[Button("Generate Level")]
@@ -185,24 +142,6 @@ namespace TD.Levels
             #endif
 
 			return null;
-		}
-
-		private System.Collections.Generic.List<RoadTileComponent> LoadAllTilePrefabs()
-		{
-			var tileComponents = new System.Collections.Generic.List<RoadTileComponent>();
-
-			if (TileDatabase.Instance != null)
-			{
-				var allTiles = TileDatabase.Instance.GetAllTilePrefabs();
-				foreach (var tilePrefab in allTiles)
-				{
-					var component = tilePrefab.GetComponent<RoadTileComponent>();
-					if (component != null)
-						tileComponents.Add(component);
-				}
-			}
-
-			return tileComponents;
 		}
 	}
 }
