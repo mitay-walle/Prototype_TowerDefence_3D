@@ -1,55 +1,48 @@
 using System.Collections.Generic;
+using System.Linq;
+using GameJam.Plugins.Randomize;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace TD.Levels
 {
-    public class TileDatabase : MonoBehaviour
-    {
-        [System.Serializable]
-        public class TileDatabaseEntry
-        {
-            public RoadConnections connections;
-            public GameObject prefab;
-        }
+	public class TileDatabase : MonoBehaviour
+	{
+		[SerializeField] private SerializedDictionary<RoadConnections, RoadTileComponent> tilePrefabs = new();
 
-        [SerializeField] private List<TileDatabaseEntry> tiles = new List<TileDatabaseEntry>();
+		public static TileDatabase Instance { get; private set; }
 
-        private Dictionary<RoadConnections, GameObject> tilePrefabs;
+		private void Awake()
+		{
+			if (Instance != null && Instance != this)
+			{
+				Destroy(gameObject);
+				return;
+			}
 
-        public static TileDatabase Instance { get; private set; }
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
+		public RoadTileComponent GetRandomTilePrefab()
+		{
+			return tilePrefabs.Values.Random();
+		}
 
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+#if UNITY_EDITOR
+		[Button]
+		private void LoadPrefabs()
+		{
+			tilePrefabs.Clear();
 
-            InitializePrefabs();
-        }
-
-        private void InitializePrefabs()
-        {
-            tilePrefabs = new Dictionary<RoadConnections, GameObject>();
-
-            foreach (var entry in tiles)
-            {
-                if (entry.prefab != null)
-                {
-                    tilePrefabs[entry.connections] = entry.prefab;
-                }
-            }
-        }
-
-        public GameObject GetRandomTilePrefab()
-        {
-            var keys = new List<RoadConnections>(tilePrefabs.Keys);
-            if (keys.Count == 0) return null;
-            return tilePrefabs[keys[Random.Range(0, keys.Count)]];
-        }
-    }
+			AssetDatabase.FindAssets("t:GameObject", new[] { "Assets/Prefabs/Tiles" })
+				.Select(AssetDatabase.GUIDToAssetPath)
+				.Select(AssetDatabase.LoadAssetAtPath<RoadTileComponent>)
+				.ToList()
+				.ForEach(c => tilePrefabs[c.GetConnections()] = c);
+		}
+#endif
+	}
 }
