@@ -162,12 +162,12 @@ namespace TD.Editor
                 GameObject tileGo = new GameObject(name);
 
                 var voxelGenerator = tileGo.AddComponent<VoxelGenerator>();
-                voxelGenerator.profile = ScriptableObject.CreateInstance<LevelTileGenerationProfile>();
+                voxelGenerator.profile = new LevelTileGenerationProfile();
 
                 var tileComponent = tileGo.AddComponent<RoadTileComponent>();
                 tileComponent.Initialize(connections);
 
-                voxelGenerator.GenerateMesh();
+                voxelGenerator.Generate();
 
                 Object.DestroyImmediate(voxelGenerator);
 
