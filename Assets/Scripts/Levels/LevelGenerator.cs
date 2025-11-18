@@ -1,7 +1,6 @@
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using NUnit.Framework;
 
 namespace TD.Levels
 {
@@ -9,6 +8,8 @@ namespace TD.Levels
 	{
 		[SerializeField] private TileMapManager tileMapManager;
 		[SerializeField] private int tilesToGenerate = 10;
+		[ShowInInspector, ReadOnly] MapGenerator mapGenerator;
+		[ShowInInspector, ReadOnly] Dictionary<Vector2Int, RoadTileDef> generatedMap;
 
 		private bool Logs = true;
 
@@ -16,7 +17,6 @@ namespace TD.Levels
 		{
 			if (tileMapManager == null)
 				tileMapManager = GetComponent<TileMapManager>();
-
 		}
 
 		public void GenerateLevel()
@@ -40,30 +40,32 @@ namespace TD.Levels
 		{
 			if (Logs) Debug.Log($"[LevelGenerator] Generating {tilesToGenerate} tiles attached to base");
 
-			var allTilePrefabs = TileDatabase.Instance.GetAllTilePrefabs();
+			List<RoadTileComponent> allTilePrefabs = TileDatabase.Instance.GetAllTilePrefabs();
 			if (allTilePrefabs.Count == 0)
 			{
 				if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
 				return;
 			}
 
-			var mapGenerator = new MapGenerator(tilesToGenerate, Logs);
-			var generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
+			mapGenerator = new MapGenerator(tilesToGenerate, Logs);
+			generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
 
-			foreach (var kvp in generatedMap)
+			foreach (KeyValuePair<Vector2Int, RoadTileDef> kvp in generatedMap)
 			{
-				var gridPosition = kvp.Key;
-				var tileDef = kvp.Value;
+				Vector2Int gridPosition = kvp.Key;
+				RoadTileDef tileDef = kvp.Value;
 
 				if (gridPosition == Vector2Int.zero)
 					continue;
 
-				var prefab = LoadTilePrefab(tileDef.name);
+				GameObject prefab = LoadTilePrefab(tileDef.name);
 				if (prefab == null)
 					continue;
 
 				tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, prefab);
 			}
+
+			MapVisualizer.LogMap(generatedMap);
 
 			if (Logs) Debug.Log($"[LevelGenerator] Road network created with prefabs: {generatedMap.Count - 1} tiles placed");
 		}
@@ -72,15 +74,15 @@ namespace TD.Levels
 		{
 			if (Logs) Debug.Log("[LevelGenerator] Validating level...");
 
-			var allTiles = tileMapManager.GetAllTiles();
-			var spawnPositions = tileMapManager.SpawnPositions;
+			IReadOnlyDictionary<Vector2Int, RoadTileDef> allTiles = tileMapManager.GetAllTiles();
+			List<Vector3> spawnPositions = tileMapManager.SpawnPositions;
 
 			if (Logs) Debug.Log($"[LevelGenerator] Level validation complete:");
 			if (Logs) Debug.Log($"  - Tiles placed: {allTiles.Count}");
 			if (Logs) Debug.Log($"  - Base position: {tileMapManager.BasePosition}");
 			if (Logs) Debug.Log($"  - Spawn positions: {spawnPositions.Count}");
 
-			foreach (var spawn in spawnPositions)
+			foreach (Vector3 spawn in spawnPositions)
 			{
 				if (Logs) Debug.Log($"    • {spawn}");
 			}
@@ -106,10 +108,10 @@ namespace TD.Levels
 				return;
 			}
 
-			var allTiles = tileMapManager.GetAllTiles();
-			var tilePositions = new System.Collections.Generic.List<Vector2Int>(allTiles.Keys);
+			IReadOnlyDictionary<Vector2Int, RoadTileDef> allTiles = tileMapManager.GetAllTiles();
+			List<Vector2Int> tilePositions = new System.Collections.Generic.List<Vector2Int>(allTiles.Keys);
 
-			foreach (var pos in tilePositions)
+			foreach (Vector2Int pos in tilePositions)
 			{
 				if (pos != Vector2Int.zero)
 				{
@@ -131,7 +133,7 @@ namespace TD.Levels
 
 		private GameObject LoadTilePrefab(string name)
 		{
-			var prefab = Resources.Load<GameObject>($"Prefabs/Tiles/{name}");
+			GameObject prefab = Resources.Load<GameObject>($"Prefabs/Tiles/{name}");
 			if (prefab != null)
 				return prefab;
 

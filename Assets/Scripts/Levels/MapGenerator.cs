@@ -56,12 +56,13 @@ namespace TD.Levels
 					continue;
 
 				var randomTileComponent = tileComponents[Random.Range(0, tileComponents.Count)];
-				var tileConnections = randomTileComponent;
+			var randomTileKind = tileComponents[Random.Range(0, tileComponents.Count)];
 
-				var tileDef = new RoadTileDef
-				{
-					connections = tileConnections
-				};
+			var tileDef = new RoadTileDef
+			{
+				name = randomTileKind.ToString(),
+				connections = randomTileKind
+			};
 
 				for (int rotation = 0; rotation < 4; rotation++)
 				{

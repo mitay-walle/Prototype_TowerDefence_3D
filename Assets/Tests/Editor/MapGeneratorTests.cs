@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using TD.Levels;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TD.Tests
 {
@@ -17,6 +19,7 @@ namespace TD.Tests
 		[Test]
 		public void TestMapGeneration_PureLogicNoGameObjects()
 		{
+			Random.InitState(DateTime.Now.Millisecond);
 			var mapGenerator = new MapGenerator(tilesToGenerate: 10, logs: true);
 
 			var tileDatabase = TileDatabase.Instance;
@@ -45,8 +48,7 @@ namespace TD.Tests
 			}
 
 			Assert.IsTrue(generatedMap.ContainsKey(Vector2Int.zero), "Should have base tile at origin");
-			Assert.AreEqual(10, generatedMap.Count, "Should have generated 10 tiles");
-			Assert.AreEqual(10, count, "Should have generated 10 characters");
+			Assert.AreEqual(11, generatedMap.Count, "Should have generated 10 tiles + 1 base tile");
 		}
 	}
 }

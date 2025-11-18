@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TD.Levels
@@ -9,7 +10,7 @@ namespace TD.Levels
 		[SerializeField] private float tileSize = 5f;
 
 		private TilePlacementValidator validator = new TilePlacementValidator();
-		private Dictionary<Vector2Int, GameObject> placedTiles = new Dictionary<Vector2Int, GameObject>();
+		[ShowInInspector] private Dictionary<Vector2Int, GameObject> placedTiles = new Dictionary<Vector2Int, GameObject>();
 		private Vector3 basePosition;
 		private List<Vector3> spawnPositions = new();
 
@@ -68,53 +69,53 @@ namespace TD.Levels
 			if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
 		}
 
-public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
-	{
-		if (!PlaceTileLogic(gridPosition, tileDef, rotation))
-			return;
-
-		PlaceTilePrefab(gridPosition, tileDef, rotation, prefab);
-	}
-
-	public bool PlaceTileLogic(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
-	{
-		var result = validator.CanPlace(gridPosition, tileDef, rotation);
-
-		if (!result.isValid)
+		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
 		{
-			if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
-			return false;
+			if (!PlaceTileLogic(gridPosition, tileDef, rotation))
+				return;
+
+			PlaceTilePrefab(gridPosition, tileDef, rotation, prefab);
 		}
 
-		tileDef.position = gridPosition;
-		tileDef.rotation = rotation;
-
-		validator.PlaceTile(gridPosition, tileDef, rotation);
-
-		if (Logs) Debug.Log($"[TileMapManager] Tile logic placed at {gridPosition}");
-		return true;
-	}
-
-	private void PlaceTilePrefab(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
-	{
-		GameObject tileInstance = Instantiate(prefab, tilesParent);
-		tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
-
-		var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
-		if (roadTileComponent != null)
+		public bool PlaceTileLogic(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
 		{
-			roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+			var result = validator.CanPlace(gridPosition, tileDef, rotation);
+
+			if (!result.isValid)
+			{
+				if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
+				return false;
+			}
+
+			tileDef.position = gridPosition;
+			tileDef.rotation = rotation;
+
+			validator.PlaceTile(gridPosition, tileDef, rotation);
+
+			if (Logs) Debug.Log($"[TileMapManager] Tile logic placed at {gridPosition}");
+			return true;
 		}
 
-		tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
-		tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
+		private void PlaceTilePrefab(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
+		{
+			GameObject tileInstance = Instantiate(prefab, tilesParent);
+			tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
 
-		placedTiles[gridPosition] = tileInstance;
+			var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
+			if (roadTileComponent != null)
+			{
+				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+			}
 
-		UpdateSpawnerPositions();
+			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
+			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
 
-		if (Logs) Debug.Log($"[TileMapManager] Tile prefab instantiated at {gridPosition}");
-	}
+			placedTiles[gridPosition] = tileInstance;
+
+			UpdateSpawnerPositions();
+
+			if (Logs) Debug.Log($"[TileMapManager] Tile prefab instantiated at {gridPosition}");
+		}
 
 		public void RemoveTile(Vector2Int gridPosition)
 		{
