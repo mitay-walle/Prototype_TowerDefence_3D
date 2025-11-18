@@ -31,7 +31,7 @@ namespace TD.Levels
 
         public void StartTilePlacement(RoadTileDef tileDef, GameObject tilePrefab)
         {
-            if (tileDef == null || tilePrefab == null) return;
+            if (tileDef.name == null || tilePrefab == null) return;
 
             currentTileDef = tileDef;
             currentTilePrefab = tilePrefab;
@@ -64,7 +64,7 @@ namespace TD.Levels
 
         public void PlaceTile()
         {
-            if (!isPlacingTile || currentTileDef == null) return;
+            if (!isPlacingTile || currentTileDef.name == null) return;
 
             if (!tileMapManager.CanPlaceTile(currentGridPosition, currentTileDef, currentRotation))
             {
@@ -134,7 +134,7 @@ namespace TD.Levels
 
         private void UpdateGhostAppearance()
         {
-            if (ghostTile == null || currentTileDef == null) return;
+            if (ghostTile == null || currentTileDef.name == null) return;
 
             bool canPlace = tileMapManager.CanPlaceTile(currentGridPosition, currentTileDef, currentRotation);
 
@@ -157,7 +157,7 @@ namespace TD.Levels
             ghostTile = Instantiate(ghostPrefab ?? currentTilePrefab, Vector3.zero, Quaternion.identity);
             ghostGenerator = ghostTile.GetComponent<VoxelGenerator>();
 
-            if (ghostGenerator != null && currentTileDef != null)
+            if (ghostGenerator != null && currentTileDef.name != null)
             {
                 var profile = new LevelTileGenerationProfile();
                 ghostGenerator.profile = profile;

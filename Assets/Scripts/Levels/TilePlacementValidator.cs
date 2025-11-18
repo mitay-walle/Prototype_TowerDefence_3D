@@ -37,7 +37,7 @@ namespace TD.Levels
 
         public PlacementResult CanPlace(Vector2Int position, RoadTileDef tileDef, int rotation)
         {
-            if (tileDef == null)
+            if (tileDef.name == null)
                 return PlacementResult.Invalid("Tile definition is null");
 
             if (!tileDef.IsValid)
@@ -88,10 +88,11 @@ namespace TD.Levels
             tileRotations.Remove(position);
         }
 
-        public RoadTileDef GetTile(Vector2Int position)
+        public RoadTileDef? GetTile(Vector2Int position)
         {
-            placedTiles.TryGetValue(position, out var tile);
-            return tile;
+            if (placedTiles.TryGetValue(position, out var tile))
+                return tile;
+            return null;
         }
 
         public int GetTileRotation(Vector2Int position)

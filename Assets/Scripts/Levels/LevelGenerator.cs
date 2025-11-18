@@ -16,21 +16,22 @@ namespace TD.Levels
                 tileMapManager = GetComponent<TileMapManager>();
         }
 
-        public void GenerateLevel()
-        {
-            if (tileMapManager == null)
-            {
-                Debug.LogError("[LevelGenerator] TileMapManager not found!");
-                return;
-            }
+public void GenerateLevel()
+	{
+		if (tileMapManager == null)
+		{
+			Debug.LogError("[LevelGenerator] TileMapManager not found!");
+			return;
+		}
 
-            if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION STARTED ===");
+		if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION STARTED ===");
 
-            GenerateInitialTiles();
-            ValidateLevel();
+		GenerateInitialTiles();
+		ValidateLevel();
+		VisualizeMaps();
 
-            if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
-        }
+		if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
+	}
 
 private void GenerateInitialTiles()
 	{
@@ -117,6 +118,16 @@ private void GenerateInitialTiles()
                 if (Logs) Debug.Log($"    • {spawn}");
             }
         }
+
+private void VisualizeMaps()
+	{
+		var mapVisualizer = GetComponent<MapVisualizer>();
+		if (mapVisualizer != null)
+		{
+			mapVisualizer.VisualizeCurrentMap();
+		}
+	}
+
 
         [Button("Generate Level")]
         public void GenerateLevelButton()
