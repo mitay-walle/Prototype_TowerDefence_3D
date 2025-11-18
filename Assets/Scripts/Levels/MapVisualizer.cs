@@ -6,7 +6,6 @@ namespace TD.Levels
 	public class MapVisualizer
 	{
 		private TileMapManager tileMapManager;
-		private bool Logs = true;
 
 		public MapVisualizer(TileMapManager tileMapManager)
 		{
@@ -47,37 +46,33 @@ namespace TD.Levels
 			}
 
 			var mapData = new Dictionary<Vector2Int, RoadTileDef>(tiles);
-			var lines = new List<string>();
+			var mapBuilder = new System.Text.StringBuilder();
 
-			lines.Add("[MapVisualizer] === LEVEL MAP ===");
-			lines.Add("");
+			mapBuilder.AppendLine("[MapVisualizer] === LEVEL MAP ===");
+			mapBuilder.AppendLine();
 
 			for (int z = maxZ; z >= minZ; z--)
 			{
-				string line = "";
 				for (int x = minX; x <= maxX; x++)
 				{
 					var pos = new Vector2Int(x, z);
 					if (mapData.TryGetValue(pos, out var tile))
 					{
-						line += tile.ToString() + " ";
+						mapBuilder.Append(tile.ToString() + " ");
 					}
 					else
 					{
-						line += "  ";
+						mapBuilder.Append("  ");
 					}
 				}
-				lines.Add(line);
+				mapBuilder.AppendLine();
 			}
 
-			lines.Add("");
-			lines.Add($"[MapVisualizer] Total tiles: {mapData.Count}");
-			lines.Add($"[MapVisualizer] Map bounds: X({minX}..{maxX}) Z({minZ}..{maxZ})");
+			mapBuilder.AppendLine();
+			mapBuilder.AppendLine($"Total tiles: {mapData.Count}");
+			mapBuilder.AppendLine($"Map bounds: X({minX}..{maxX}) Z({minZ}..{maxZ})");
 
-			foreach (var lineText in lines)
-			{
-				Debug.Log(lineText);
-			}
+			Debug.Log(mapBuilder.ToString());
 		}
 	}
 }
