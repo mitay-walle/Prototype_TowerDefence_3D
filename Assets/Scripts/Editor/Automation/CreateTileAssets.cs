@@ -18,45 +18,6 @@ namespace TD.Editor
             CreateTileAssetsFinal();
         }
 
-        [MenuItem("Assets/TD/Recreate Optimized Tile Assets")]
-        public static void RecreateTileAssetsMenu()
-        {
-            DeleteExistingTileAssets();
-            CreateTileAssetsFinal();
-        }
-
-        private static void DeleteExistingTileAssets()
-        {
-            var tileDefFolder = TileDefPath;
-            var guids = AssetDatabase.FindAssets("", new[] { tileDefFolder });
-
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                if (path.EndsWith(".asset"))
-                {
-                    AssetDatabase.DeleteAsset(path);
-                    Debug.Log($"[CreateTileAssets] Deleted: {path}");
-                }
-            }
-
-            var prefabFolder = TilePrefabPath;
-            guids = AssetDatabase.FindAssets("", new[] { prefabFolder });
-
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                if (path.EndsWith(".prefab"))
-                {
-                    AssetDatabase.DeleteAsset(path);
-                    Debug.Log($"[CreateTileAssets] Deleted: {path}");
-                }
-            }
-
-            AssetDatabase.SaveAssets();
-            Debug.Log("[CreateTileAssets] Old assets deleted");
-        }
-
         public static void CreateTileAssetsFinal()
         {
             Debug.Log("[CreateTileAssets] Starting tile asset creation...");
@@ -123,32 +84,63 @@ namespace TD.Editor
             {
                 string prefabPath = $"{TilePrefabPath}/{name}.prefab";
 
-                var existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-                if (existing != null)
+                var prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                GameObject tileGo;
+                bool isExisting = prefabAsset != null;
+
+                if (isExisting)
                 {
-                    Debug.Log($"[CreateTileAssets] Prefab already exists: {name}");
-                    continue;
+                    tileGo = PrefabUtility.InstantiatePrefab(prefabAsset) as GameObject;
+                }
+                else
+                {
+                    tileGo = new GameObject(name);
+                    var voxelGenerator = tileGo.AddComponent<VoxelGenerator>();
+                    voxelGenerator.profile = new LevelTileGenerationProfile();
+
+                    var tileComponent = tileGo.AddComponent<RoadTileComponent>();
+                    tileComponent.Initialize(connections);
+
+                    voxelGenerator.Generate();
+                    Object.DestroyImmediate(voxelGenerator);
                 }
 
-                GameObject tileGo = new GameObject(name);
+                var meshFilters = tileGo.GetComponentsInChildren<MeshFilter>();
 
-                var voxelGenerator = tileGo.AddComponent<VoxelGenerator>();
-                voxelGenerator.profile = new LevelTileGenerationProfile();
+                foreach (MeshFilter meshFilter in meshFilters)
+                {
+                    if (meshFilter != null && meshFilter.sharedMesh != null)
+                    {
+                        var meshCollider = meshFilter.GetComponent<MeshCollider>();
+                        if (meshCollider == null)
+                        {
+                            meshCollider = meshFilter.gameObject.AddComponent<MeshCollider>();
+                            meshCollider.convex = false;
+                            meshCollider.sharedMesh = meshFilter.sharedMesh;
+                        }
+                    }    
+                }
+                
 
-                var tileComponent = tileGo.AddComponent<RoadTileComponent>();
-                tileComponent.Initialize(connections);
+                tileGo.layer = LayerMask.NameToLayer("Tileable");
+                if (tileGo.layer == -1)
+                    tileGo.layer = 0;
 
-                voxelGenerator.Generate();
-
-                Object.DestroyImmediate(voxelGenerator);
-
-                PrefabUtility.SaveAsPrefabAsset(tileGo, prefabPath);
-                Object.DestroyImmediate(tileGo);
-
-                Debug.Log($"[CreateTileAssets] Created Tile Prefab: {name}");
+                if (isExisting)
+                {
+                    PrefabUtility.ApplyPrefabInstance(tileGo, InteractionMode.AutomatedAction);
+                    Object.DestroyImmediate(tileGo);
+                    Debug.Log($"[CreateTileAssets] Updated Tile Prefab: {name}");
+                }
+                else
+                {
+                    PrefabUtility.SaveAsPrefabAsset(tileGo, prefabPath);
+                    Object.DestroyImmediate(tileGo);
+                    Debug.Log($"[CreateTileAssets] Created Tile Prefab: {name}");
+                }
             }
 
-            Debug.Log("[CreateTileAssets] Prefabs created");
+            Debug.Log("[CreateTileAssets] Prefabs updated");
         }
     }
 }

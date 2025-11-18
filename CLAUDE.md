@@ -15,6 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 11. **Use `UniTask` instead of Coroutine**
 12. **Resources.Load<ComponentType>(string) for loading prefabs*
 13. [Seriaizable] / [SerializeReference] вместо ScriptableObject
+14. **CRITICAL NEVER remove old files to create again**
 
 ## ⚠️ MANDATORY CODE CONVENTIONS
 

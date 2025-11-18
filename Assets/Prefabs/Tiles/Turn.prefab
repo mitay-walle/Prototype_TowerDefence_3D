@@ -43,7 +43,8 @@ GameObject:
   - component: {fileID: 960967415106814919}
   - component: {fileID: 4996763277535800236}
   - component: {fileID: 2702663680124326336}
-  m_Layer: 0
+  - component: {fileID: 6947066907091302735}
+  m_Layer: 7
   m_Name: Combined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,6 +122,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6947066907091302735
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4704509602960927718}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 5269968105882854994}
 --- !u!1 &4995775003854374524
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +269,8 @@ GameObject:
   - component: {fileID: 417835364405658638}
   - component: {fileID: 4110439468909202711}
   - component: {fileID: 6459936387127524452}
-  m_Layer: 0
+  - component: {fileID: 7420997577769330993}
+  m_Layer: 9
   m_Name: Combined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,6 +348,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7420997577769330993
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7912869810238846312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3104987315374858659}
 --- !u!21 &-1594248827096300946
 Material:
   serializedVersion: 8

@@ -3,166 +3,166 @@ using UnityEngine;
 
 namespace TD.Levels
 {
-    public class TileMapManager : MonoBehaviour
-    {
-        [SerializeField] private Transform tilesParent;
-        [SerializeField] private float tileSize = 5f;
+	public class TileMapManager : MonoBehaviour
+	{
+		[SerializeField] private Transform tilesParent;
+		[SerializeField] private float tileSize = 5f;
 
-        private TilePlacementValidator validator;
-        private Dictionary<Vector2Int, GameObject> placedTiles;
-        private Vector3 basePosition;
-        private List<Vector3> spawnPositions;
+		private TilePlacementValidator validator = new TilePlacementValidator();
+		private Dictionary<Vector2Int, GameObject> placedTiles = new Dictionary<Vector2Int, GameObject>();
+		private Vector3 basePosition;
+		private List<Vector3> spawnPositions = new();
 
-        public Vector3 BasePosition => basePosition;
-        public List<Vector3> SpawnPositions => spawnPositions;
+		public Vector3 BasePosition => basePosition;
+		public List<Vector3> SpawnPositions => spawnPositions;
 
-        private void Awake()
-        {
-            if (tilesParent == null)
-                tilesParent = transform;
+		private void Awake()
+		{
+			if (tilesParent == null)
+				tilesParent = transform;
 
-            validator = new TilePlacementValidator();
-            placedTiles = new Dictionary<Vector2Int, GameObject>();
-            spawnPositions = new List<Vector3>();
+			validator = new TilePlacementValidator();
+			placedTiles = new Dictionary<Vector2Int, GameObject>();
+			spawnPositions = new List<Vector3>();
 
-            InitializeBaseTile();
-        }
+			InitializeBaseTile();
+		}
 
-        private void InitializeBaseTile()
-        {
-            basePosition = Vector3.zero;
+		private void InitializeBaseTile()
+		{
+			basePosition = Vector3.zero;
 
-            var baseTileDef = new RoadTileDef
-            {
-                name = "Base",
-                connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
-            };
+			var baseTileDef = new RoadTileDef
+			{
+				name = "Base",
+				connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
+			};
 
-            validator.AddBaseTile(Vector2Int.zero, baseTileDef);
+			validator.AddBaseTile(Vector2Int.zero, baseTileDef);
 
-            spawnPositions.Clear();
-            spawnPositions.Add(new Vector3(0, 0, -10));
-            spawnPositions.Add(new Vector3(10, 0, 0));
-            spawnPositions.Add(new Vector3(0, 0, 10));
-            spawnPositions.Add(new Vector3(-10, 0, 0));
+			spawnPositions.Clear();
+			spawnPositions.Add(new Vector3(0, 0, -10));
+			spawnPositions.Add(new Vector3(10, 0, 0));
+			spawnPositions.Add(new Vector3(0, 0, 10));
+			spawnPositions.Add(new Vector3(-10, 0, 0));
 
-            if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
-        }
+			if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
+		}
 
-        public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
-        {
-            var result = validator.CanPlace(gridPosition, tileDef, rotation);
+		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
+		{
+			var result = validator.CanPlace(gridPosition, tileDef, rotation);
 
-            if (!result.isValid)
-            {
-                if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
-                return;
-            }
+			if (!result.isValid)
+			{
+				if (Logs) Debug.LogWarning($"[TileMapManager] Cannot place tile: {result.reason}");
+				return;
+			}
 
-            validator.PlaceTile(gridPosition, tileDef, rotation);
+			validator.PlaceTile(gridPosition, tileDef, rotation);
 
-            GameObject tileInstance = Instantiate(prefab, tilesParent);
-            tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
+			GameObject tileInstance = Instantiate(prefab, tilesParent);
+			tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
 
-            var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
-            if (roadTileComponent != null)
-            {
-                roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
-            }
+			var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
+			if (roadTileComponent != null)
+			{
+				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+			}
 
-            tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
-            tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
+			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
+			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
 
-            placedTiles[gridPosition] = tileInstance;
+			placedTiles[gridPosition] = tileInstance;
 
-            UpdateSpawnerPositions();
+			UpdateSpawnerPositions();
 
-            if (Logs) Debug.Log($"[TileMapManager] Tile placed at {gridPosition}");
-        }
+			if (Logs) Debug.Log($"[TileMapManager] Tile placed at {gridPosition}");
+		}
 
-        public void RemoveTile(Vector2Int gridPosition)
-        {
-            if (!placedTiles.TryGetValue(gridPosition, out var tileGo))
-                return;
+		public void RemoveTile(Vector2Int gridPosition)
+		{
+			if (!placedTiles.TryGetValue(gridPosition, out var tileGo))
+				return;
 
-            validator.RemoveTile(gridPosition);
-            Destroy(tileGo);
-            placedTiles.Remove(gridPosition);
+			validator.RemoveTile(gridPosition);
+			Destroy(tileGo);
+			placedTiles.Remove(gridPosition);
 
-            UpdateSpawnerPositions();
+			UpdateSpawnerPositions();
 
-            if (Logs) Debug.Log($"[TileMapManager] Tile removed from {gridPosition}");
-        }
+			if (Logs) Debug.Log($"[TileMapManager] Tile removed from {gridPosition}");
+		}
 
-        private void UpdateSpawnerPositions()
-        {
-            spawnPositions.Clear();
+		private void UpdateSpawnerPositions()
+		{
+			spawnPositions.Clear();
 
-            var allTiles = validator.GetAllTiles();
-            var tilesSet = new System.Collections.Generic.HashSet<Vector2Int>(allTiles.Keys);
-            var spawnPointsSet = new System.Collections.Generic.HashSet<Vector3>();
+			var allTiles = validator.GetAllTiles();
+			var tilesSet = new System.Collections.Generic.HashSet<Vector2Int>(allTiles.Keys);
+			var spawnPointsSet = new System.Collections.Generic.HashSet<Vector3>();
 
-            foreach (var kvp in allTiles)
-            {
-                var position = kvp.Key;
-                var tileDef = kvp.Value;
+			foreach (var kvp in allTiles)
+			{
+				var position = kvp.Key;
+				var tileDef = kvp.Value;
 
-                if (tileDef == null || position == Vector2Int.zero) continue;
+				if (tileDef == null || position == Vector2Int.zero) continue;
 
-                int rotation = validator.GetTileRotation(position);
-                var connections = tileDef.GetRotatedConnections(rotation);
+				int rotation = validator.GetTileRotation(position);
+				var connections = tileDef.GetRotatedConnections(rotation);
 
-                bool hasOpenEdge = false;
+				bool hasOpenEdge = false;
 
-                if (connections.HasConnection(RoadSide.North) && !tilesSet.Contains(position + Vector2Int.up))
-                    hasOpenEdge = true;
+				if (connections.HasConnection(RoadSide.North) && !tilesSet.Contains(position + Vector2Int.up))
+					hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.South) && !tilesSet.Contains(position + Vector2Int.down))
-                    hasOpenEdge = true;
+				if (connections.HasConnection(RoadSide.South) && !tilesSet.Contains(position + Vector2Int.down))
+					hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.East) && !tilesSet.Contains(position + Vector2Int.right))
-                    hasOpenEdge = true;
+				if (connections.HasConnection(RoadSide.East) && !tilesSet.Contains(position + Vector2Int.right))
+					hasOpenEdge = true;
 
-                if (connections.HasConnection(RoadSide.West) && !tilesSet.Contains(position + Vector2Int.left))
-                    hasOpenEdge = true;
+				if (connections.HasConnection(RoadSide.West) && !tilesSet.Contains(position + Vector2Int.left))
+					hasOpenEdge = true;
 
-                if (hasOpenEdge)
-                {
-                    float worldX = position.x * tileSize;
-                    float worldZ = position.y * tileSize;
-                    var spawnPos = new Vector3(worldX, 0, worldZ);
+				if (hasOpenEdge)
+				{
+					float worldX = position.x * tileSize;
+					float worldZ = position.y * tileSize;
+					var spawnPos = new Vector3(worldX, 0, worldZ);
 
-                    if (spawnPointsSet.Add(spawnPos))
-                    {
-                        spawnPositions.Add(spawnPos);
-                    }
-                }
-            }
+					if (spawnPointsSet.Add(spawnPos))
+					{
+						spawnPositions.Add(spawnPos);
+					}
+				}
+			}
 
-            if (spawnPositions.Count == 0)
-            {
-                if (Logs) Debug.LogWarning("[TileMapManager] No dead-end spawn points found!");
-            }
+			if (spawnPositions.Count == 0)
+			{
+				if (Logs) Debug.LogWarning("[TileMapManager] No dead-end spawn points found!");
+			}
 
-            if (Logs) Debug.Log($"[TileMapManager] Updated spawner positions: {spawnPositions.Count} dead-end points");
-        }
+			if (Logs) Debug.Log($"[TileMapManager] Updated spawner positions: {spawnPositions.Count} dead-end points");
+		}
 
-        public bool CanPlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
-        {
-            var result = validator.CanPlace(gridPosition, tileDef, rotation);
-            return result.isValid;
-        }
+		public bool CanPlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
+		{
+			var result = validator.CanPlace(gridPosition, tileDef, rotation);
+			return result.isValid;
+		}
 
-        public RoadTileDef GetTile(Vector2Int gridPosition)
-        {
-            return validator.GetTile(gridPosition);
-        }
+		public RoadTileDef GetTile(Vector2Int gridPosition)
+		{
+			return validator.GetTile(gridPosition);
+		}
 
-        public IReadOnlyDictionary<Vector2Int, RoadTileDef> GetAllTiles()
-        {
-            return validator.GetAllTiles();
-        }
+		public IReadOnlyDictionary<Vector2Int, RoadTileDef> GetAllTiles()
+		{
+			return validator.GetAllTiles();
+		}
 
-        private bool Logs = true;
-    }
+		private bool Logs = true;
+	}
 }
