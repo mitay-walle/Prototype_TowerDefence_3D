@@ -28,26 +28,39 @@ namespace TD.Levels
 			InitializeBaseTile();
 		}
 
-		private void InitializeBaseTile()
-		{
-			basePosition = Vector3.zero;
+private void InitializeBaseTile()
+	{
+		basePosition = Vector3.zero;
 
+		var baseTilePrefab = TileDatabase.Instance?.GetRandomTilePrefab();
+		if (baseTilePrefab == null)
+		{
+			if (Logs) Debug.LogError("[TileMapManager] TileDatabase not available, using default base tile");
 			var baseTileDef = new RoadTileDef
 			{
 				name = "Base",
 				connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
 			};
-
 			validator.AddBaseTile(Vector2Int.zero, baseTileDef);
-
-			spawnPositions.Clear();
-			spawnPositions.Add(new Vector3(0, 0, -10));
-			spawnPositions.Add(new Vector3(10, 0, 0));
-			spawnPositions.Add(new Vector3(0, 0, 10));
-			spawnPositions.Add(new Vector3(-10, 0, 0));
-
-			if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
 		}
+		else
+		{
+			var baseTileDef = new RoadTileDef
+			{
+				name = "Base",
+				connections = baseTilePrefab.GetConnections()
+			};
+			validator.AddBaseTile(Vector2Int.zero, baseTileDef);
+		}
+
+		spawnPositions.Clear();
+		spawnPositions.Add(new Vector3(0, 0, -10));
+		spawnPositions.Add(new Vector3(10, 0, 0));
+		spawnPositions.Add(new Vector3(0, 0, 10));
+		spawnPositions.Add(new Vector3(-10, 0, 0));
+
+		if (Logs) Debug.Log($"[TileMapManager] Base initialized at {basePosition}, spawners: {spawnPositions.Count}");
+	}
 
 		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
 		{
