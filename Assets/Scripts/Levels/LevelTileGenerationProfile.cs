@@ -18,18 +18,6 @@ namespace TD.Levels
 
         [SerializeField] private RoadConnections connections = RoadConnections.None;
 
-        [Button("Toggle North")]
-        private void ToggleNorth() => connections ^= RoadConnections.North;
-
-        [Button("Toggle South")]
-        private void ToggleSouth() => connections ^= RoadConnections.South;
-
-        [Button("Toggle East")]
-        private void ToggleEast() => connections ^= RoadConnections.East;
-
-        [Button("Toggle West")]
-        private void ToggleWest() => connections ^= RoadConnections.West;
-
         protected override void Randomize()
         {
         }
@@ -51,6 +39,7 @@ namespace TD.Levels
 
         public override void Generate(VoxelGenerator generator)
         {
+            connections = generator.GetComponent<RoadTileComponent>().GetConnections();
             base.Generate(generator);
             ClearMeshes(generator.transform.parent ?? generator.transform);
 

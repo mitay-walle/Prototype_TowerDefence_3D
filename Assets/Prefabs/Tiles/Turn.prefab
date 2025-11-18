@@ -65,7 +65,7 @@ MonoBehaviour:
         roadConnectionColor: {r: 1, g: 1, b: 1, a: 1}
         roadHeight: 0.2
         roadThickness: 1
-        connections: 0
+        connections: 5
 --- !u!114 &1207577115838400251
 MonoBehaviour:
   m_ObjectHideFlags: 0
