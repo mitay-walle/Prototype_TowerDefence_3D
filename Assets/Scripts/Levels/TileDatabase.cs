@@ -31,6 +31,12 @@ namespace TD.Levels
 			return tilePrefabs.Values.Random();
 		}
 
+public System.Collections.Generic.List<RoadTileComponent> GetAllTilePrefabs()
+	{
+		return new System.Collections.Generic.List<RoadTileComponent>(tilePrefabs.Values);
+	}
+
+
 #if UNITY_EDITOR
 		[Button]
 		private void LoadPrefabs()

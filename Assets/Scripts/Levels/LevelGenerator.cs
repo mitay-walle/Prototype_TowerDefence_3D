@@ -6,7 +6,7 @@ namespace TD.Levels
     public class LevelGenerator : MonoBehaviour
     {
         [SerializeField] private TileMapManager tileMapManager;
-        [SerializeField] private int initialTileRadius = 1;
+        [SerializeField] private int tilesToGenerate = 10;
 
         private bool Logs = true;
 
@@ -32,76 +32,73 @@ namespace TD.Levels
             if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
         }
 
-        private void GenerateInitialTiles()
-        {
-            if (Logs) Debug.Log($"[LevelGenerator] Generating initial road network (radius: {initialTileRadius})");
+private void GenerateInitialTiles()
+	{
+		if (Logs) Debug.Log($"[LevelGenerator] Generating {tilesToGenerate} tiles attached to base");
 
-            var straight = new RoadTileDef { name = "Straight", connections = RoadConnections.North | RoadConnections.South };
-            var cross3 = new RoadTileDef { name = "Cross_3", connections = RoadConnections.North | RoadConnections.East | RoadConnections.West };
+		var allTilePrefabs = LoadAllTilePrefabs();
+		if (allTilePrefabs.Count == 0)
+		{
+			if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
+			return;
+		}
 
-            var straightPrefab = LoadTilePrefab("Straight");
-            var cross3Prefab = LoadTilePrefab("Cross_3");
+		int placedCount = 0;
+		var openEdges = new System.Collections.Generic.Queue<Vector2Int>();
+		openEdges.Enqueue(new Vector2Int(0, -1));
+		openEdges.Enqueue(new Vector2Int(0, 1));
+		openEdges.Enqueue(new Vector2Int(1, 0));
+		openEdges.Enqueue(new Vector2Int(-1, 0));
 
-            if (straightPrefab == null || cross3Prefab == null)
-            {
-                if (Logs) Debug.LogWarning("[LevelGenerator] Could not load tile prefabs");
-                return;
-            }
+		var processedEdges = new System.Collections.Generic.HashSet<Vector2Int>();
 
-            int tileCount = 0;
+		while (openEdges.Count > 0 && placedCount < tilesToGenerate)
+		{
+			var nextPos = openEdges.Dequeue();
 
-            for (int x = -initialTileRadius; x <= initialTileRadius; x++)
-            {
-                for (int z = -initialTileRadius; z <= initialTileRadius; z++)
-                {
-                    if (x == 0 && z == 0) continue;
-                    if (x != 0 && z != 0) continue;
+			if (processedEdges.Contains(nextPos))
+				continue;
 
-                    Vector2Int pos = new Vector2Int(x, z);
-                    RoadTileDef tileDef;
-                    GameObject tilePrefab;
-                    int rotation;
+			processedEdges.Add(nextPos);
 
-                    if (x > 0 && z == 0)
-                    {
-                        tileDef = cross3;
-                        tilePrefab = cross3Prefab;
-                        rotation = 3;
-                    }
-                    else if (x < 0 && z == 0)
-                    {
-                        tileDef = cross3;
-                        tilePrefab = cross3Prefab;
-                        rotation = 1;
-                    }
-                    else if (x == 0 && z > 0)
-                    {
-                        tileDef = cross3;
-                        tilePrefab = cross3Prefab;
-                        rotation = 2;
-                    }
-                    else
-                    {
-                        tileDef = cross3;
-                        tilePrefab = cross3Prefab;
-                        rotation = 0;
-                    }
+			if (tileMapManager.GetTile(nextPos) != null)
+				continue;
 
-                    if (!tileMapManager.CanPlaceTile(pos, tileDef, rotation))
-                    {
-                        if (Logs) Debug.Log($"[LevelGenerator] Skipped tile at {pos}");
-                        continue;
-                    }
+			var randomTilePrefab = allTilePrefabs[Random.Range(0, allTilePrefabs.Count)];
+			var tileConnections = randomTilePrefab.GetConnections();
 
-                    tileMapManager.PlaceTile(pos, tileDef, rotation, tilePrefab);
-                    tileCount++;
+			var tileDef = new RoadTileDef
+			{
+				name = randomTilePrefab.name,
+				connections = tileConnections
+			};
 
-                    if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {pos} with rotation {rotation}");
-                }
-            }
+			for (int rotation = 0; rotation < 4; rotation++)
+			{
+				if (!tileMapManager.CanPlaceTile(nextPos, tileDef, rotation))
+					continue;
 
-            if (Logs) Debug.Log($"[LevelGenerator] Initial road network created: {tileCount} tiles");
-        }
+				tileMapManager.PlaceTile(nextPos, tileDef, rotation, randomTilePrefab.gameObject);
+				placedCount++;
+
+				if (Logs) Debug.Log($"[LevelGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
+
+				var newConnections = tileDef.GetRotatedConnections(rotation);
+				if (newConnections.HasConnection(RoadSide.North))
+					openEdges.Enqueue(nextPos + Vector2Int.up);
+				if (newConnections.HasConnection(RoadSide.South))
+					openEdges.Enqueue(nextPos + Vector2Int.down);
+				if (newConnections.HasConnection(RoadSide.East))
+					openEdges.Enqueue(nextPos + Vector2Int.right);
+				if (newConnections.HasConnection(RoadSide.West))
+					openEdges.Enqueue(nextPos + Vector2Int.left);
+
+				break;
+			}
+		}
+
+		if (Logs) Debug.Log($"[LevelGenerator] Road network created: {placedCount} tiles placed");
+	}
 
         private void ValidateLevel()
         {
@@ -173,5 +170,24 @@ namespace TD.Levels
 
             return null;
         }
-    }
+    
+
+private System.Collections.Generic.List<RoadTileComponent> LoadAllTilePrefabs()
+	{
+		var tileComponents = new System.Collections.Generic.List<RoadTileComponent>();
+
+		if (TileDatabase.Instance != null)
+		{
+			var allTiles = TileDatabase.Instance.GetAllTilePrefabs();
+			foreach (var tilePrefab in allTiles)
+			{
+				var component = tilePrefab.GetComponent<RoadTileComponent>();
+				if (component != null)
+					tileComponents.Add(component);
+			}
+		}
+
+		return tileComponents;
+	}
+}
 }
