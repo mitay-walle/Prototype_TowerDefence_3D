@@ -56,6 +56,8 @@ namespace TD.Levels
                 (RoadSide.West, Vector2Int.left)
             };
 
+
+		bool hasAtLeastOneConnection = false;
             foreach (var (side, offset) in directions)
             {
                 var neighborPos = position + offset;
@@ -68,12 +70,93 @@ namespace TD.Levels
                     var oppositeSide = RoadConnectionsExtensions.GetOppositeSide(side);
                     bool neighborHasConnection = (neighborConnections & (RoadConnections)(1 << (int)oppositeSide)) != 0;
 
-                    if (hasConnection != neighborHasConnection)
-                        return PlacementResult.Invalid($"Road connection mismatch on {side}");
+                    if (hasConnection && !neighborHasConnection)
+                        return PlacementResult.Invalid($"Road on {side} but neighbor has no road back");
+
+                    if (!hasConnection && neighborHasConnection)
+                        return PlacementResult.Invalid($"No road on {side} but neighbor has road towards us");
+
+				if (hasConnection && neighborHasConnection)
+					hasAtLeastOneConnection = true;
                 }
             }
 
+            foreach (var (side, offset) in directions)
+            {
+                var neighborPos = position + offset;
+                var hasConnection = (rotatedConnections & (RoadConnections)(1 << (int)side)) != 0;
+
+                if (!placedTiles.ContainsKey(neighborPos))
+                {
+                    var tilesAroundEmpty = new (RoadSide, Vector2Int)[]
+                    {
+                        (RoadSide.North, neighborPos + Vector2Int.up),
+                        (RoadSide.South, neighborPos + Vector2Int.down),
+                        (RoadSide.East, neighborPos + Vector2Int.right),
+                        (RoadSide.West, neighborPos + Vector2Int.left)
+                    };
+
+                    foreach (var (checkSide, checkPos) in tilesAroundEmpty)
+                    {
+                        if (checkPos == position) continue;
+
+                        if (placedTiles.TryGetValue(checkPos, out var checkTile))
+                        {
+                            int checkRotation = tileRotations[checkPos];
+                            var checkConnections = checkTile.GetRotatedConnections(checkRotation);
+                            var sideFromCheckToEmpty = GetSideFromTo(checkPos, neighborPos);
+
+                            if (sideFromCheckToEmpty.HasValue && checkConnections.HasConnection(sideFromCheckToEmpty.Value))
+                            {
+                                if (!hasConnection)
+                                {
+                                    return PlacementResult.Invalid($"Cannot place tile without road on {side}: tile at {checkPos} has road pointing to empty {neighborPos}");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+		if (placedTiles.Count > 0 && !hasAtLeastOneConnection)
+			return PlacementResult.Invalid("Tile must connect to at least one existing road");
+
             return PlacementResult.Valid();
+        }
+
+        private RoadSide[] GetAdjacentSides(RoadSide side)
+        {
+            return side switch
+            {
+                RoadSide.North => new[] { RoadSide.East, RoadSide.West },
+                RoadSide.South => new[] { RoadSide.East, RoadSide.West },
+                RoadSide.East => new[] { RoadSide.North, RoadSide.South },
+                RoadSide.West => new[] { RoadSide.North, RoadSide.South },
+                _ => new RoadSide[0]
+            };
+        }
+
+        private Vector2Int GetOffset(RoadSide side)
+        {
+            return side switch
+            {
+                RoadSide.North => Vector2Int.up,
+                RoadSide.South => Vector2Int.down,
+                RoadSide.East => Vector2Int.right,
+                RoadSide.West => Vector2Int.left,
+                _ => Vector2Int.zero
+            };
+        }
+
+        private RoadSide? GetSideFromTo(Vector2Int from, Vector2Int to)
+        {
+            var delta = to - from;
+            if (delta == Vector2Int.up) return RoadSide.North;
+            if (delta == Vector2Int.down) return RoadSide.South;
+            if (delta == Vector2Int.right) return RoadSide.East;
+            if (delta == Vector2Int.left) return RoadSide.West;
+            return null;
         }
 
         public void PlaceTile(Vector2Int position, RoadTileDef tileDef, int rotation)

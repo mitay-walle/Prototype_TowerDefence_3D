@@ -11,7 +11,7 @@ namespace TD.Levels
 		[ShowInInspector, ReadOnly] MapGenerator mapGenerator;
 		[ShowInInspector, ReadOnly] Dictionary<Vector2Int, RoadTileDef> generatedMap;
 
-		private bool Logs = true;
+		[SerializeField] private bool Logs;
 
 		private void OnEnable()
 		{
@@ -31,7 +31,7 @@ namespace TD.Levels
 
 			GenerateInitialTiles();
 			ValidateLevel();
-			VisualizeMaps();
+			//VisualizeMaps();
 
 			if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
 		}
@@ -51,19 +51,19 @@ namespace TD.Levels
 			generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
 
 			foreach (KeyValuePair<Vector2Int, RoadTileDef> kvp in generatedMap)
-		{
-			Vector2Int gridPosition = kvp.Key;
-			RoadTileDef tileDef = kvp.Value;
-
-			RoadTileComponent tileComponent = TileDatabase.Instance.GetPrefabByConnections(tileDef.connections);
-			if (tileComponent == null)
 			{
-				if (Logs) Debug.LogWarning($"[LevelGenerator] No prefab found for connections: {tileDef.connections}");
-				continue;
-			}
+				Vector2Int gridPosition = kvp.Key;
+				RoadTileDef tileDef = kvp.Value;
 
-			tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, tileComponent.gameObject);
-		}
+				RoadTileComponent tileComponent = TileDatabase.Instance.GetPrefabByConnections(tileDef.connections);
+				if (tileComponent == null)
+				{
+					if (Logs) Debug.LogWarning($"[LevelGenerator] No prefab found for connections: {tileDef.connections}");
+					continue;
+				}
+
+				tileMapManager.PlaceTile(gridPosition, tileDef, tileDef.rotation, tileComponent.gameObject);
+			}
 
 			MapVisualizer.LogMap(generatedMap);
 

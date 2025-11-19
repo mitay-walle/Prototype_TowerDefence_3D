@@ -98,7 +98,7 @@ namespace InputSystemActionPrompts
         /// </summary>
         private static void Initialise()
         {
-            Debug.Log("Initialising InputDevicePromptSystem");
+            //Debug.Log("Initialising InputDevicePromptSystem");
             s_Settings =InputSystemDevicePromptSettings.GetSettings();
             
             if (s_Settings == null)

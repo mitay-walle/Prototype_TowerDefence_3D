@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace TD.Levels
@@ -7,7 +8,7 @@ namespace TD.Levels
 	{
 		public static string LogCurrentMap()
 		{
-			var tileMapManager = Object.FindAnyObjectByType<TileMapManager>();
+			TileMapManager tileMapManager = Object.FindAnyObjectByType<TileMapManager>();
 
 			if (tileMapManager == null)
 			{
@@ -15,7 +16,7 @@ namespace TD.Levels
 				return null;
 			}
 
-			var allTiles = tileMapManager.GetAllTiles();
+			IReadOnlyDictionary<Vector2Int, RoadTileDef> allTiles = tileMapManager.GetAllTiles();
 			if (allTiles.Count == 0)
 			{
 				Debug.LogWarning("[MapVisualizer] No tiles to visualize!");
@@ -32,7 +33,7 @@ namespace TD.Levels
 			int minZ = int.MaxValue;
 			int maxZ = int.MinValue;
 
-			foreach (var pos in tiles.Keys)
+			foreach (Vector2Int pos in tiles.Keys)
 			{
 				minX = Mathf.Min(minX, pos.x);
 				maxX = Mathf.Max(maxX, pos.x);
@@ -40,15 +41,19 @@ namespace TD.Levels
 				maxZ = Mathf.Max(maxZ, pos.y);
 			}
 
-			var mapData = new Dictionary<Vector2Int, RoadTileDef>(tiles);
-			var mapBuilder = new System.Text.StringBuilder();
+			Dictionary<Vector2Int, RoadTileDef> mapData = new Dictionary<Vector2Int, RoadTileDef>(tiles);
+			StringBuilder mapBuilder = new System.Text.StringBuilder();
+			var stack = Application.GetStackTraceLogType(LogType.Log);
+			Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+			Debug.Log("map generated:");
 
 			for (int z = maxZ; z >= minZ; z--)
 			{
+				mapBuilder.Clear();
 				for (int x = minX; x <= maxX; x++)
 				{
-					var pos = new Vector2Int(x, z);
-					if (mapData.TryGetValue(pos, out var tile))
+					Vector2Int pos = new Vector2Int(x, z);
+					if (mapData.TryGetValue(pos, out RoadTileDef tile))
 					{
 						mapBuilder.Append(tile);
 					}
@@ -58,10 +63,11 @@ namespace TD.Levels
 					}
 				}
 
-				mapBuilder.AppendLine();
-			}
 
-			Debug.Log(mapBuilder.ToString());
+				Debug.Log(mapBuilder.ToString());
+			}
+			Application.SetStackTraceLogType(LogType.Log, stack);
+
 			return mapBuilder.ToString();
 		}
 	}

@@ -56,7 +56,7 @@ namespace TD.Plugins.Timing
 				Time.timeScale = currentTimeScale;
 			}
 
-			Debug.Log($"timeScale {timeScale}");
+			//Debug.Log($"timeScale {timeScale}");
 		}
 
         #if UNITY_EDITOR

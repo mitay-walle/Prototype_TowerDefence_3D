@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace TD.Levels
 {
@@ -18,24 +18,37 @@ namespace TD.Levels
 		public RoadConnections GetConnections() => connections;
 
 		private void OnDrawGizmos()
+	{
+		if (!showGizmo) return;
+
+		Vector3 center = transform.position;
+		float offset = 2f;
+
+		if (connections.HasConnection(RoadSide.North))
 		{
-			if (!showGizmo) return;
-
-			Vector3 center = transform.position;
-			float offset = 2f;
-
-			if (connections.HasConnection(RoadSide.North))
-				DrawArrow(center + Vector3.forward * offset, Vector3.forward, Color.green);
-
-			if (connections.HasConnection(RoadSide.South))
-				DrawArrow(center - Vector3.forward * offset, Vector3.back, Color.red);
-
-			if (connections.HasConnection(RoadSide.East))
-				DrawArrow(center + Vector3.right * offset, Vector3.right, Color.cyan);
-
-			if (connections.HasConnection(RoadSide.West))
-				DrawArrow(center - Vector3.right * offset, Vector3.left, Color.yellow);
+			Vector3 direction = transform.rotation * Vector3.forward;
+			DrawArrow(center + direction * offset, direction, Color.green);
 		}
+
+		if (connections.HasConnection(RoadSide.South))
+		{
+			Vector3 direction = transform.rotation * Vector3.back;
+			DrawArrow(center + direction * offset, direction, Color.red);
+		}
+
+		if (connections.HasConnection(RoadSide.East))
+		{
+			Vector3 direction = transform.rotation * Vector3.right;
+			DrawArrow(center + direction * offset, direction, Color.cyan);
+		}
+
+		if (connections.HasConnection(RoadSide.West))
+		{
+			Vector3 direction = transform.rotation * Vector3.left;
+			DrawArrow(center + direction * offset, direction, Color.yellow);
+		}
+	}
+
 
 		private void DrawArrow(Vector3 position, Vector3 direction, Color color)
 		{

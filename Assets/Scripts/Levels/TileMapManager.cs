@@ -8,6 +8,7 @@ namespace TD.Levels
 	{
 		[SerializeField] private Transform tilesParent;
 		[SerializeField] private float tileSize = 5f;
+		[SerializeField] private bool Logs;
 
 		private TilePlacementValidator validator = new TilePlacementValidator();
 		[ShowInInspector] private Dictionary<Vector2Int, GameObject> placedTiles = new Dictionary<Vector2Int, GameObject>();
@@ -77,7 +78,6 @@ namespace TD.Levels
 
 			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
 			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
-			tileInstance.transform.rotation = Quaternion.Euler(0, -rotation * 90, 0);
 			placedTiles[gridPosition] = tileInstance;
 
 			UpdateSpawnerPositions();
@@ -167,7 +167,5 @@ namespace TD.Levels
 		{
 			return validator.GetAllTiles();
 		}
-
-		private bool Logs = true;
 	}
 }

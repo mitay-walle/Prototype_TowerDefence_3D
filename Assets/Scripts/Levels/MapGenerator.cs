@@ -35,62 +35,81 @@ namespace TD.Levels
 			if (logs) Debug.Log("[MapGenerator] === TILE-BASED MAP GENERATION STARTED ===");
 
 			int placedCount = 0;
-			var openEdges = new Queue<Vector2Int>();
-			openEdges.Enqueue(new Vector2Int(0, -1));
-			openEdges.Enqueue(new Vector2Int(0, 1));
-			openEdges.Enqueue(new Vector2Int(1, 0));
-			openEdges.Enqueue(new Vector2Int(-1, 0));
+			var openRoadEnds = new Queue<(Vector2Int position, RoadSide requiredConnection)>();
 
-			var processedEdges = new HashSet<Vector2Int>();
+			openRoadEnds.Enqueue((new Vector2Int(0, -1), RoadSide.North));
+			openRoadEnds.Enqueue((new Vector2Int(0, 1), RoadSide.South));
+			openRoadEnds.Enqueue((new Vector2Int(1, 0), RoadSide.West));
+			openRoadEnds.Enqueue((new Vector2Int(-1, 0), RoadSide.East));
 
-			while (openEdges.Count > 0 && placedCount < tilesToGenerate)
+			var processedPositions = new HashSet<Vector2Int>();
+
+			while (openRoadEnds.Count > 0 && placedCount < tilesToGenerate)
 			{
-				var nextPos = openEdges.Dequeue();
+				var (nextPos, requiredSide) = openRoadEnds.Dequeue();
 
-				if (processedEdges.Contains(nextPos))
+				if (processedPositions.Contains(nextPos))
 					continue;
 
-				processedEdges.Add(nextPos);
+				processedPositions.Add(nextPos);
 
 				if (validator.GetTile(nextPos) != null)
 					continue;
 
-				var randomTileComponent = tileComponents[Random.Range(0, tileComponents.Count)];
-			var randomTileKind = tileComponents[Random.Range(0, tileComponents.Count)];
+				var shuffledTiles = new List<RoadConnections>(tileComponents);
+				ShuffleList(shuffledTiles);
 
-			var tileDef = new RoadTileDef
-			{
-				name = randomTileKind.ToString(),
-				connections = randomTileKind
-			};
+				bool placed = false;
 
-				for (int rotation = 0; rotation < 4; rotation++)
+				foreach (var tileKind in shuffledTiles)
 				{
-					var canPlaceResult = validator.CanPlace(nextPos, tileDef, rotation);
-					if (!canPlaceResult.isValid)
-						continue;
+					var tileDef = new RoadTileDef
+					{
+						name = tileKind.ToString(),
+						connections = tileKind
+					};
 
-					tileDef.position = nextPos;
-					tileDef.rotation = rotation;
-					validator.PlaceTile(nextPos, tileDef, rotation);
-					placedCount++;
+					for (int rotation = 0; rotation < 4; rotation++)
+					{
+						var rotatedConnections = tileDef.GetRotatedConnections(rotation);
 
-					if (logs) Debug.Log($"[MapGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
+						if (!rotatedConnections.HasConnection(requiredSide))
+							continue;
 
-					var newConnections = tileDef.GetRotatedConnections(rotation);
-					if (newConnections.HasConnection(RoadSide.North))
-						openEdges.Enqueue(nextPos + Vector2Int.up);
+						var canPlaceResult = validator.CanPlace(nextPos, tileDef, rotation);
+						if (!canPlaceResult.isValid)
+							continue;
 
-					if (newConnections.HasConnection(RoadSide.South))
-						openEdges.Enqueue(nextPos + Vector2Int.down);
+						tileDef.position = nextPos;
+						tileDef.rotation = rotation;
+						validator.PlaceTile(nextPos, tileDef, rotation);
+						placedCount++;
+						placed = true;
 
-					if (newConnections.HasConnection(RoadSide.East))
-						openEdges.Enqueue(nextPos + Vector2Int.right);
+						if (logs) Debug.Log($"[MapGenerator] Placed {tileDef.name} at {nextPos} with rotation {rotation}");
 
-					if (newConnections.HasConnection(RoadSide.West))
-						openEdges.Enqueue(nextPos + Vector2Int.left);
+						if (rotatedConnections.HasConnection(RoadSide.North))
+							openRoadEnds.Enqueue((nextPos + Vector2Int.up, RoadSide.South));
 
-					break;
+						if (rotatedConnections.HasConnection(RoadSide.South))
+							openRoadEnds.Enqueue((nextPos + Vector2Int.down, RoadSide.North));
+
+						if (rotatedConnections.HasConnection(RoadSide.East))
+							openRoadEnds.Enqueue((nextPos + Vector2Int.right, RoadSide.West));
+
+						if (rotatedConnections.HasConnection(RoadSide.West))
+							openRoadEnds.Enqueue((nextPos + Vector2Int.left, RoadSide.East));
+
+						break;
+					}
+
+					if (placed)
+						break;
+				}
+
+				if (!placed && logs)
+				{
+					Debug.LogWarning($"[MapGenerator] Failed to place any tile at {nextPos} requiring connection on {requiredSide}");
 				}
 			}
 
@@ -108,6 +127,17 @@ namespace TD.Levels
 		{
 			validator = new TilePlacementValidator();
 			InitializeBaseTile();
+		}
+
+		private void ShuffleList<T>(List<T> list)
+		{
+			for (int i = list.Count - 1; i > 0; i--)
+			{
+				int randomIndex = Random.Range(0, i + 1);
+				T temp = list[i];
+				list[i] = list[randomIndex];
+				list[randomIndex] = temp;
+			}
 		}
 	}
 }
