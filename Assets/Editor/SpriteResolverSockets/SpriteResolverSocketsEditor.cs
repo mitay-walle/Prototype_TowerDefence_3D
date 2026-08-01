@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TD.Rendering;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
@@ -18,8 +19,13 @@ namespace TD.Rendering.Editor
 		private List<Sprite> _librarySprites = new List<Sprite>();
 		private int _selectedSpriteIndex;
 		private SpriteSocketRecord _selectedRecord;
+		private SpriteSocketRecord _selectedDirectRecord;
+		private SpriteSocketRecord _selectedMainRecord;
 		private Vector2 _socketScrollPosition;
 		private Rect _previewRect;
+		private readonly Dictionary<Sprite, string> _spriteLabels =
+			new Dictionary<Sprite, string>();
+		private string _libraryCategory;
 		private string _newSocketName = "Socket_New";
 		private string _selectedSocketName;
 		private bool _draggingSocket;
@@ -325,6 +331,7 @@ namespace TD.Rendering.Editor
 				"Socket transforms",
 				EditorStyles.boldLabel);
 			y += 22f;
+			y = DrawSocketSourceStatus(x, y, width);
 
 			Rect nameRect = new Rect(x, y, width - 48f, 20f);
 			_newSocketName = EditorGUI.TextField(nameRect, _newSocketName);
@@ -388,6 +395,54 @@ namespace TD.Rendering.Editor
 			GUI.EndScrollView();
 		}
 
+		private float DrawSocketSourceStatus(float x, float y, float width)
+		{
+			if (_selectedDirectRecord == null)
+			{
+				return y;
+			}
+
+			bool inherited = IsInheritedFromMain();
+			string sourceText;
+			if (_selectedDirectRecord.mainSprite == null)
+			{
+				sourceText = "Source: Main Library";
+			}
+			else if (inherited)
+			{
+				sourceText = string.Concat(
+					"Inherited from Main Library: ",
+					_selectedDirectRecord.mainSprite.name);
+			}
+			else
+			{
+				sourceText = string.Concat(
+					"Local Override   Main: ",
+					_selectedDirectRecord.mainSprite.name);
+			}
+
+			EditorGUI.HelpBox(
+				new Rect(x, y, width, 34f),
+				sourceText,
+				MessageType.Info);
+			y += 38f;
+
+			if (_selectedDirectRecord.mainSprite != null && !inherited)
+			{
+				if (GUI.Button(
+					new Rect(x, y, width, 20f),
+					"Revert to Main Library",
+					EditorStyles.miniButton))
+				{
+					RevertToMain();
+				}
+
+				y += 24f;
+			}
+
+			return y;
+		}
+
 		private bool DrawSocketRow(Rect rect, int index)
 		{
 			SpriteSocketTransform socket = _selectedRecord.sockets[index];
@@ -412,8 +467,15 @@ namespace TD.Rendering.Editor
 				"X",
 				EditorStyles.miniButton))
 			{
+				string socketName = socket.name;
+				EnsureLocalOverride();
+				SpriteSocketTransform localSocket = FindSocket(socketName);
 				Undo.RecordObject(_database, "Remove Sprite Socket");
-				_selectedRecord.sockets.RemoveAt(index);
+				if (localSocket != null)
+				{
+					_selectedRecord.sockets.Remove(localSocket);
+				}
+
 				_selectedSocketName = null;
 				MarkDatabaseChanged();
 				return true;
@@ -448,13 +510,21 @@ namespace TD.Rendering.Editor
 				socket.rotateWithSpriteParent);
 			if (EditorGUI.EndChangeCheck())
 			{
+				string originalName = socket.name;
+				EnsureLocalOverride();
+				SpriteSocketTransform editedSocket = FindSocket(originalName);
+				if (editedSocket == null)
+				{
+					return false;
+				}
+
 				Undo.RecordObject(_database, "Edit Sprite Socket");
-				socket.name = SpriteResolverSockets.NormalizeSocketName(name);
-				socket.localPosition = position;
-				socket.localEulerAngles = rotation;
-				socket.localScale = scale;
-				socket.rotateWithSpriteParent = rotateWithSpriteParent;
-				_selectedSocketName = socket.name;
+				editedSocket.name = SpriteResolverSockets.NormalizeSocketName(name);
+				editedSocket.localPosition = position;
+				editedSocket.localEulerAngles = rotation;
+				editedSocket.localScale = scale;
+				editedSocket.rotateWithSpriteParent = rotateWithSpriteParent;
+				_selectedSocketName = editedSocket.name;
 				MarkDatabaseChanged();
 			}
 
@@ -592,6 +662,13 @@ namespace TD.Rendering.Editor
 				{
 					if (!_undoRecorded)
 					{
+						EnsureLocalOverride();
+						socket = FindSocket(_selectedSocketName);
+						if (socket == null)
+						{
+							return;
+						}
+
 						Undo.RecordObject(_database, "Move Sprite Socket");
 						_undoRecorded = true;
 					}
@@ -683,6 +760,7 @@ namespace TD.Rendering.Editor
 
 			_database = _sockets.Database;
 			_librarySprites = GetLibrarySprites();
+			EnsureMainLinks();
 			if (_librarySprites.Count == 0)
 			{
 				_selectedRecord = null;
@@ -701,10 +779,26 @@ namespace TD.Rendering.Editor
 		private void LoadSelectedRecord()
 		{
 			_selectedRecord = null;
+			_selectedDirectRecord = null;
+			_selectedMainRecord = null;
 			Sprite sprite = GetSelectedSprite();
 			if (_database != null && sprite != null)
 			{
-				_database.TryGet(sprite, out _selectedRecord);
+				if (_database.TryGet(sprite, out _selectedDirectRecord))
+				{
+					if (_selectedDirectRecord.inheritMain &&
+						_selectedDirectRecord.mainSprite != null &&
+						_database.TryGet(
+							_selectedDirectRecord.mainSprite,
+							out _selectedMainRecord))
+					{
+						_selectedRecord = _selectedMainRecord;
+					}
+					else
+					{
+						_selectedRecord = _selectedDirectRecord;
+					}
+				}
 			}
 
 			_selectedSocketName = null;
@@ -734,6 +828,9 @@ namespace TD.Rendering.Editor
 
 			Undo.RecordObject(_database, "Refresh Sprite Sockets From Children");
 			_selectedRecord = _database.GetOrCreate(sprite);
+			_selectedDirectRecord = _selectedRecord;
+			_selectedMainRecord = null;
+			_selectedRecord.inheritMain = false;
 			if (_selectedRecord.sockets == null)
 			{
 				_selectedRecord.sockets = new List<SpriteSocketTransform>();
@@ -813,8 +910,11 @@ namespace TD.Rendering.Editor
 				return;
 			}
 
+			EnsureLocalOverride();
 			Undo.RecordObject(_database, "Add Sprite Socket");
-			_selectedRecord = _selectedRecord ?? _database.GetOrCreate(sprite);
+			_selectedRecord = _selectedDirectRecord ?? _database.GetOrCreate(sprite);
+			_selectedDirectRecord = _selectedRecord;
+			_selectedMainRecord = null;
 			if (_selectedRecord.sockets == null)
 			{
 				_selectedRecord.sockets = new List<SpriteSocketTransform>();
@@ -830,6 +930,100 @@ namespace TD.Rendering.Editor
 				MarkDatabaseChanged();
 				SaveDatabase();
 			}
+		}
+
+		private void EnsureLocalOverride()
+		{
+			if (_database == null)
+			{
+				return;
+			}
+
+			if (_selectedDirectRecord == null)
+			{
+				Sprite sprite = GetSelectedSprite();
+				if (sprite == null)
+				{
+					return;
+				}
+
+				Undo.RecordObject(_database, "Create Sprite Socket Override");
+				_selectedDirectRecord = _database.GetOrCreate(sprite);
+				_selectedDirectRecord.inheritMain = false;
+				_selectedRecord = _selectedDirectRecord;
+				_selectedMainRecord = null;
+				MarkDatabaseChanged();
+				return;
+			}
+
+			if (!IsInheritedFromMain())
+			{
+				_selectedRecord = _selectedDirectRecord;
+				return;
+			}
+
+			Undo.RecordObject(_database, "Create Sprite Socket Override");
+			_selectedDirectRecord.sockets = CloneSockets(_selectedMainRecord.sockets);
+			_selectedDirectRecord.inheritMain = false;
+			_selectedRecord = _selectedDirectRecord;
+			_selectedMainRecord = null;
+			MarkDatabaseChanged();
+		}
+
+		private void RevertToMain()
+		{
+			if (_database == null ||
+				_selectedDirectRecord == null ||
+				_selectedDirectRecord.mainSprite == null ||
+				IsInheritedFromMain())
+			{
+				return;
+			}
+
+			Undo.RecordObject(_database, "Revert Sprite Sockets To Main");
+			_selectedDirectRecord.sockets = new List<SpriteSocketTransform>();
+			_selectedDirectRecord.inheritMain = true;
+			MarkDatabaseChanged();
+			SaveDatabase();
+			LoadSelectedRecord();
+			Repaint();
+		}
+
+		private bool IsInheritedFromMain()
+		{
+			return _selectedDirectRecord != null &&
+				_selectedDirectRecord.inheritMain &&
+				_selectedMainRecord != null &&
+				_selectedRecord == _selectedMainRecord;
+		}
+
+		private static List<SpriteSocketTransform> CloneSockets(
+			List<SpriteSocketTransform> sourceSockets)
+		{
+			var sockets = new List<SpriteSocketTransform>();
+			if (sourceSockets == null)
+			{
+				return sockets;
+			}
+
+			foreach (SpriteSocketTransform source in sourceSockets)
+			{
+				if (source == null)
+				{
+					continue;
+				}
+
+				sockets.Add(new SpriteSocketTransform
+				{
+					name = source.name,
+					localPosition = source.localPosition,
+					localEulerAngles = source.localEulerAngles,
+					localScale = source.localScale,
+					rotateWithSpriteParent = source.rotateWithSpriteParent
+				});
+			}
+
+			return sockets;
 		}
 
 		private SpriteSocketTransform FindSocket(string socketName)
@@ -884,6 +1078,8 @@ namespace TD.Rendering.Editor
 		private List<Sprite> GetLibrarySprites()
 		{
 			var sprites = new List<Sprite>();
+			_spriteLabels.Clear();
+			_libraryCategory = null;
 			if (_sockets == null)
 			{
 				return sprites;
@@ -902,10 +1098,15 @@ namespace TD.Rendering.Editor
 				return sprites;
 			}
 
-			string category = resolver.GetCategory();
-			foreach (string label in libraryAsset.GetCategoryLabelNames(category))
+			_libraryCategory = resolver.GetCategory();
+			foreach (string label in libraryAsset.GetCategoryLabelNames(_libraryCategory))
 			{
-				AddSprite(sprites, libraryAsset.GetSprite(category, label));
+				Sprite sprite = spriteLibrary.GetSprite(_libraryCategory, label);
+				AddSprite(sprites, sprite);
+				if (sprite != null)
+				{
+					_spriteLabels[sprite] = label;
+				}
 			}
 
 			return sprites;
@@ -985,5 +1186,130 @@ namespace TD.Rendering.Editor
 				sprites.Add(sprite);
 			}
 		}
+
+		private bool TryGetMainLibrarySprite(Sprite sprite, out Sprite mainLibrarySprite)
+		{
+			mainLibrarySprite = null;
+			if (sprite == null ||
+				string.IsNullOrEmpty(_libraryCategory) ||
+				!_spriteLabels.TryGetValue(sprite, out string label))
+			{
+				return false;
+			}
+
+			SpriteResolver resolver = _sockets == null
+				? null
+				: _sockets.GetComponent<SpriteResolver>();
+			SpriteLibrary spriteLibrary = resolver == null
+				? null
+				: resolver.spriteLibrary;
+			SpriteLibraryAsset libraryAsset = spriteLibrary == null
+				? null
+				: spriteLibrary.spriteLibraryAsset;
+			SpriteLibraryAsset mainLibrary = FindMainLibrary(libraryAsset);
+			if (mainLibrary == null)
+			{
+				return false;
+			}
+
+			mainLibrarySprite = mainLibrary.GetSprite(_libraryCategory, label);
+			return mainLibrarySprite != null && mainLibrarySprite != sprite;
+		}
+
+		private void EnsureMainLinks()
+		{
+			if (_database == null)
+			{
+				return;
+			}
+
+			bool undoRecorded = false;
+			foreach (Sprite sprite in _librarySprites)
+			{
+				if (!TryGetMainLibrarySprite(sprite, out Sprite mainSprite) ||
+					!_database.TryGet(mainSprite, out _))
+				{
+					continue;
+				}
+
+				if (!_database.TryGet(sprite, out SpriteSocketRecord record))
+				{
+					if (!undoRecorded)
+					{
+						Undo.RecordObject(_database, "Link Sprite Sockets To Main Library");
+						undoRecorded = true;
+					}
+
+					record = _database.GetOrCreate(sprite);
+				}
+
+				if (record.mainSprite == mainSprite)
+				{
+					continue;
+				}
+
+				if (!undoRecorded)
+				{
+					Undo.RecordObject(_database, "Link Sprite Sockets To Main Library");
+					undoRecorded = true;
+				}
+
+				record.mainSprite = mainSprite;
+				record.inheritMain = true;
+			}
+
+			if (undoRecorded)
+			{
+				MarkDatabaseChanged();
+				SaveDatabase();
+			}
+		}
+
+		private static SpriteLibraryAsset FindMainLibrary(SpriteLibraryAsset libraryAsset)
+		{
+			if (libraryAsset == null)
+			{
+				return null;
+			}
+
+			string assetPath = AssetDatabase.GetAssetPath(libraryAsset);
+			if (string.IsNullOrEmpty(assetPath))
+			{
+				return null;
+			}
+
+			UnityEngine.Object[] sourceObjects =
+				InternalEditorUtility.LoadSerializedFileAndForget(assetPath);
+			if (sourceObjects == null)
+			{
+				return null;
+			}
+
+			foreach (UnityEngine.Object sourceObject in sourceObjects)
+			{
+				if (sourceObject == null)
+				{
+					continue;
+				}
+
+				var serializedSource = new SerializedObject(sourceObject);
+				SerializedProperty mainGuidProperty =
+					serializedSource.FindProperty("m_PrimaryLibraryGUID");
+				if (mainGuidProperty == null ||
+					string.IsNullOrEmpty(mainGuidProperty.stringValue))
+				{
+					continue;
+				}
+
+				string mainPath =
+					AssetDatabase.GUIDToAssetPath(mainGuidProperty.stringValue);
+				return string.IsNullOrEmpty(mainPath)
+					? null
+					: AssetDatabase.LoadAssetAtPath<SpriteLibraryAsset>(mainPath);
+			}
+
+			return null;
+		}
+
 	}
 }

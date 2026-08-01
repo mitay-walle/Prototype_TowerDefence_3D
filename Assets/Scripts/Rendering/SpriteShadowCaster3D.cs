@@ -93,7 +93,12 @@ namespace TD.Rendering
         private void OnDestroy()
         {
             if (_mesh != null)
-                Destroy(_mesh);
+            {
+                if (Application.isPlaying)
+                    Destroy(_mesh);
+                else
+                    DestroyImmediate(_mesh);
+            }
         }
     }
 }

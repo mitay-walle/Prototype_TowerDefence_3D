@@ -409,7 +409,7 @@ public sealed class BillboardAssetCreator : EditorWindow
 
         string directory = Path.GetDirectoryName(prefabPath).Replace("\\", "/");
         string baseName = Path.GetFileNameWithoutExtension(prefabPath);
-        string libraryPath = string.Concat(directory, "/", baseName, "_SpriteLibrary.spriteLib");
+        string libraryPath = string.Concat(directory, "/SpriteLibrary ", baseName, ".spriteLib");
 
         if (!ConfirmOverwrite(prefabPath, libraryPath))
         {
@@ -624,7 +624,7 @@ public sealed class BillboardAssetCreator : EditorWindow
             string folderName = Path.GetFileName(folderPath.TrimEnd('/'));
             if (!string.IsNullOrEmpty(folderName) && !string.Equals(folderName, "Assets", StringComparison.Ordinal))
             {
-                return string.Concat(folderName, "_SpriteBillboard");
+                return folderName;
             }
         }
 

@@ -30,6 +30,24 @@ namespace TD.Rendering
 			return false;
 		}
 
+		public bool TryGetEffective(Sprite sprite, out SpriteSocketRecord record)
+		{
+			if (TryGet(sprite, out record))
+			{
+				if (record.inheritMain &&
+					record.mainSprite != null &&
+					record.mainSprite != sprite &&
+					TryGet(record.mainSprite, out SpriteSocketRecord mainRecord))
+				{
+					record = mainRecord;
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
 #if UNITY_EDITOR
 		public SpriteSocketRecord GetOrCreate(Sprite sprite)
 		{

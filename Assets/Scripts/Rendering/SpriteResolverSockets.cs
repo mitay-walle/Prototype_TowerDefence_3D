@@ -46,10 +46,12 @@ namespace TD.Rendering
 			Sprite currentSprite = _spriteRenderer.sprite;
 			if (currentSprite == null ||
 				_database == null ||
-				!_database.TryGet(currentSprite, out SpriteSocketRecord record) ||
+				!_database.TryGetEffective(
+					currentSprite,
+					out SpriteSocketRecord record) ||
 				record.sockets == null)
 			{
-				_appliedSprite = currentSprite;
+				_appliedSprite = null;
 				_appliedParentRotation = GetSpriteParentRotation();
 				_hasAppliedParentRotation = true;
 				return;
