@@ -70,16 +70,24 @@ namespace TD.Towers
                 return;
             }
 
-            Vector3 flatDirection = Vector3.ProjectOnPlane(direction, Vector3.up);
-            if (flatDirection.sqrMagnitude < 0.0001f)
+            Vector3 objectUp = transform.up;
+            Vector3 flatWorldDirection = Vector3.ProjectOnPlane(direction, objectUp);
+            if (flatWorldDirection.sqrMagnitude < 0.0001f)
             {
                 return;
             }
 
-            flatDirection.Normalize();
-            resolver.transform.rotation = Quaternion.LookRotation(flatDirection, Vector3.up);
+            flatWorldDirection.Normalize();
+            Vector3 localDirection = new Vector3(
+                Vector3.Dot(flatWorldDirection, transform.right),
+                0f,
+                Vector3.Dot(flatWorldDirection, transform.forward));
+            Vector3 worldFacingDirection =
+                (transform.right * localDirection.x + transform.forward * localDirection.z).normalized;
 
-            int directionIndex = GetDirectionIndex(flatDirection);
+            resolver.transform.rotation = Quaternion.LookRotation(worldFacingDirection, objectUp);
+
+            int directionIndex = GetDirectionIndex(localDirection);
             if (directionIndex == previousDirection)
             {
                 return;

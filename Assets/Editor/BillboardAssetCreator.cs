@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using TD.Rendering;
 using TD.Towers;
 using UnityEditor;
 using UnityEditor.U2D.Animation;
@@ -19,6 +20,8 @@ public sealed class BillboardAssetCreator : EditorWindow
     private const string PreferencesPrefix = "TD.BillboardAssetCreator.";
     private const string SourceFolderPreference = PreferencesPrefix + "SourceFolder";
     private const string MaterialPreference = PreferencesPrefix + "Material";
+    private const string ShadowMaterialPreference = PreferencesPrefix + "ShadowMaterial";
+    private const string DefaultShadowMaterialPath = "Assets/Materials/Tower Shadow.mat";
 
     private static readonly string[] DirectionNames =
     {
@@ -48,6 +51,7 @@ public sealed class BillboardAssetCreator : EditorWindow
 
     private DefaultAsset _sourceFolder;
     private Material _spriteMaterial;
+    private Material _shadowMaterial;
     private string _scanError;
 
     [MenuItem("TD/Art/Create Billboard Prefab From Sprites")]
@@ -116,7 +120,7 @@ public sealed class BillboardAssetCreator : EditorWindow
 
         for (int index = 0; index < ImageCount; index++)
         {
-            DrawMatchLinks(index);
+            DrawMatchFields(index);
         }
 
         EditorGUILayout.Space(4f);
@@ -124,6 +128,17 @@ public sealed class BillboardAssetCreator : EditorWindow
         _spriteMaterial = (Material)EditorGUILayout.ObjectField(
             "Sprite material (optional)",
             _spriteMaterial,
+            typeof(Material),
+            false);
+        if (EditorGUI.EndChangeCheck())
+        {
+            SavePreferences();
+        }
+
+        EditorGUI.BeginChangeCheck();
+        _shadowMaterial = (Material)EditorGUILayout.ObjectField(
+            "Shadow material (3D)",
+            _shadowMaterial,
             typeof(Material),
             false);
         if (EditorGUI.EndChangeCheck())
@@ -178,6 +193,16 @@ public sealed class BillboardAssetCreator : EditorWindow
             _spriteMaterial = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
         }
 
+        string shadowMaterialPath = EditorPrefs.GetString(ShadowMaterialPreference, string.Empty);
+        if (!string.IsNullOrEmpty(shadowMaterialPath))
+        {
+            _shadowMaterial = AssetDatabase.LoadAssetAtPath<Material>(shadowMaterialPath);
+        }
+
+        if (_shadowMaterial == null)
+        {
+            _shadowMaterial = AssetDatabase.LoadAssetAtPath<Material>(DefaultShadowMaterialPath);
+        }
     }
 
     private void SavePreferences()
@@ -188,41 +213,33 @@ public sealed class BillboardAssetCreator : EditorWindow
         EditorPrefs.SetString(
             MaterialPreference,
             _spriteMaterial == null ? string.Empty : AssetDatabase.GetAssetPath(_spriteMaterial));
+        EditorPrefs.SetString(
+            ShadowMaterialPreference,
+            _shadowMaterial == null ? string.Empty : AssetDatabase.GetAssetPath(_shadowMaterial));
     }
 
-    private void DrawMatchLinks(int index)
+    private void DrawMatchFields(int index)
     {
+        if (_matches[index].Count <= 1)
+        {
+            Sprite sprite = _matches[index].Count == 1 ? _matches[index][0] : null;
+            EditorGUILayout.ObjectField(
+                DirectionNames[index],
+                sprite,
+                typeof(Sprite),
+                false);
+            return;
+        }
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(DirectionNames[index], GUILayout.Width(110f));
-
-        if (_matches[index].Count == 0)
+        for (int matchIndex = 0; matchIndex < _matches[index].Count; matchIndex++)
         {
-            EditorGUILayout.LabelField("Not found", EditorStyles.miniLabel);
-        }
-        else
-        {
-            if (_matches[index].Count > 1)
-            {
-                EditorGUILayout.LabelField("Ambiguous:", GUILayout.Width(70f));
-            }
-
-            for (int matchIndex = 0; matchIndex < _matches[index].Count; matchIndex++)
-            {
-                Sprite sprite = _matches[index][matchIndex];
-                GUIContent content = new GUIContent(
-                    sprite.name,
-                    AssetDatabase.GetAssetPath(sprite));
-                if (GUILayout.Button(content, EditorStyles.linkLabel))
-                {
-                    Selection.activeObject = sprite;
-                    EditorGUIUtility.PingObject(sprite);
-                }
-
-                if (matchIndex < _matches[index].Count - 1)
-                {
-                    EditorGUILayout.LabelField(",", GUILayout.Width(8f));
-                }
-            }
+            EditorGUILayout.ObjectField(
+                GUIContent.none,
+                _matches[index][matchIndex],
+                typeof(Sprite),
+                false);
         }
 
         EditorGUILayout.EndHorizontal();
@@ -344,6 +361,11 @@ public sealed class BillboardAssetCreator : EditorWindow
     private bool HasAllInputs()
     {
         if (!string.IsNullOrEmpty(_scanError))
+        {
+            return false;
+        }
+
+        if (_shadowMaterial == null)
         {
             return false;
         }
@@ -573,11 +595,17 @@ public sealed class BillboardAssetCreator : EditorWindow
         shadowObject.transform.SetParent(root.transform, false);
         SpriteRenderer shadowRenderer = shadowObject.AddComponent<SpriteRenderer>();
         shadowRenderer.sprite = sprites[0];
-        shadowRenderer.sharedMaterial = _spriteMaterial;
-        shadowRenderer.color = new Color(0f, 0f, 0f, 0.35f);
-        shadowRenderer.sortingOrder = -1;
+        shadowRenderer.sharedMaterial = _shadowMaterial;
+        shadowRenderer.enabled = false;
         SpriteResolver shadowResolver = shadowObject.AddComponent<SpriteResolver>();
         shadowResolver.SetCategoryAndLabel(DirectionCategory, DirectionLabels[0]);
+
+        SpriteShadowCaster3D shadowCaster = shadowObject.AddComponent<SpriteShadowCaster3D>();
+        SerializedObject serializedShadowCaster = new SerializedObject(shadowCaster);
+        serializedShadowCaster.FindProperty("shadowMaterial").objectReferenceValue = _shadowMaterial;
+        serializedShadowCaster.ApplyModifiedPropertiesWithoutUndo();
+        shadowCaster.enabled = false;
+        shadowCaster.enabled = true;
 
         DirectionalSpriteBillboard controller = root.AddComponent<DirectionalSpriteBillboard>();
         SerializedObject serializedController = new SerializedObject(controller);
