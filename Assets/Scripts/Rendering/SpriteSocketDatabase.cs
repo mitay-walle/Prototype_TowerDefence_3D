@@ -34,7 +34,7 @@ namespace TD.Rendering
 		{
 			if (TryGet(sprite, out record))
 			{
-				if (record.inheritMain &&
+				if ((record.sockets == null || record.sockets.Count == 0) &&
 					record.mainSprite != null &&
 					record.mainSprite != sprite &&
 					TryGet(record.mainSprite, out SpriteSocketRecord mainRecord))
