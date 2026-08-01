@@ -10,8 +10,6 @@ namespace TD.Rendering
 		[SerializeField] private List<SpriteSocketRecord> _records =
 			new List<SpriteSocketRecord>();
 
-		public IReadOnlyList<SpriteSocketRecord> Records => _records;
-
 		public bool TryGet(Sprite sprite, out SpriteSocketRecord record)
 		{
 			record = null;

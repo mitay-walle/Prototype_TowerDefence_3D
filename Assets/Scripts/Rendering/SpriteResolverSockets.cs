@@ -16,6 +16,8 @@ namespace TD.Rendering
 
 		private SpriteRenderer _spriteRenderer;
 		private Sprite _appliedSprite;
+		private Quaternion _appliedParentRotation;
+		private bool _hasAppliedParentRotation;
 
 		public SpriteSocketDatabase Database => _database;
 
@@ -28,11 +30,13 @@ namespace TD.Rendering
 		{
 			CacheComponents();
 			_appliedSprite = null;
+			_hasAppliedParentRotation = false;
 		}
 
 		private void OnValidate()
 		{
 			_appliedSprite = null;
+			_hasAppliedParentRotation = false;
 		}
 
 		private void LateUpdate()
@@ -40,27 +44,39 @@ namespace TD.Rendering
 			CacheComponents();
 
 			Sprite currentSprite = _spriteRenderer.sprite;
-			if (currentSprite == _appliedSprite)
-			{
-				return;
-			}
-
-			_appliedSprite = currentSprite;
 			if (currentSprite == null ||
 				_database == null ||
 				!_database.TryGet(currentSprite, out SpriteSocketRecord record) ||
 				record.sockets == null)
 			{
+				_appliedSprite = currentSprite;
+				_appliedParentRotation = GetSpriteParentRotation();
+				_hasAppliedParentRotation = true;
 				return;
 			}
 
+			bool spriteChanged = currentSprite != _appliedSprite;
+			bool parentRotationChanged = !_hasAppliedParentRotation ||
+				Quaternion.Angle(
+					_appliedParentRotation,
+					GetSpriteParentRotation()) > 0.001f;
+			if (!spriteChanged &&
+				(!HasSocketsUsingSpriteParentRotation(record) || !parentRotationChanged))
+			{
+				return;
+			}
+
+			_appliedSprite = currentSprite;
 			foreach (SpriteSocketTransform socketData in record.sockets)
 			{
 				if (socketData != null && TryGetSocket(socketData.name, out Transform socket))
 				{
-					socketData.ApplyTo(socket);
+					socketData.ApplyTo(socket, GetSpriteParent());
 				}
 			}
+
+			_appliedParentRotation = GetSpriteParentRotation();
+			_hasAppliedParentRotation = true;
 		}
 
 		public bool TryGetSocket(string socketName, out Transform socket)
@@ -174,6 +190,29 @@ namespace TD.Rendering
 			{
 				_spriteRenderer = GetComponent<SpriteRenderer>();
 			}
+		}
+
+		private Transform GetSpriteParent()
+		{
+			return transform.parent == null ? transform : transform.parent;
+		}
+
+		private Quaternion GetSpriteParentRotation()
+		{
+			return GetSpriteParent().rotation;
+		}
+
+		private static bool HasSocketsUsingSpriteParentRotation(SpriteSocketRecord record)
+		{
+			foreach (SpriteSocketTransform socketData in record.sockets)
+			{
+				if (socketData != null && socketData.rotateWithSpriteParent)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

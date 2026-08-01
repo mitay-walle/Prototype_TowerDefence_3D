@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
+  m_Library:
+  - m_Name: Direction
+    m_Hash: 1018909456
+    m_CategoryList: []
+    m_OverrideEntries:
+    - m_Name: East
+      m_Hash: 400640276
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: f563a2756af8f5e418f783ea03bc548a, type: 3}
+    - m_Name: North-East
+      m_Hash: 1025672015
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: d4c5c7681f3457c428e5e45087bcf0b7, type: 3}
+    - m_Name: North
+      m_Hash: 501948358
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 24111b9d364cfc64d8d9bcaff0b5c7ee, type: 3}
+    - m_Name: North-West
+      m_Hash: 3912839
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 7c1b903e4572ff24da4215a2ad45cfd3, type: 3}
+    - m_Name: West
+      m_Hash: 720928476
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: cbbc1479499d59e419eb40e3bca52ce2, type: 3}
+    - m_Name: South-West
+      m_Hash: 414103494
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: d9e1c873862580a43ba69d8bfc013d0a, type: 3}
+    - m_Name: South
+      m_Hash: 13916784
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 7bde20ce1b4d4524087ff8961ebad54a, type: 3}
+    - m_Name: South-East
+      m_Hash: 632782862
+      m_Sprite: {fileID: 0}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: d37f264470128964a9e7ef1c2a2aab0e, type: 3}
+    m_FromMain: 0
+    m_EntryOverrideCount: 0
+  m_PrimaryLibraryGUID: 
+  m_ModificationHash: 639211570406726083
+  m_Version: 1
