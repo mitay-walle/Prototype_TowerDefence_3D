@@ -35,12 +35,22 @@ namespace TD.Rendering.Editor
 		private void OnEnable()
 		{
 			_sockets = (SpriteResolverSockets)target;
+			Undo.undoRedoPerformed += OnUndoRedoPerformed;
 			Refresh();
 		}
 
 		private void OnDisable()
 		{
+			Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 			SaveDatabase();
+		}
+
+		private void OnUndoRedoPerformed()
+		{
+			_changesPending = false;
+			_database = _sockets == null ? null : _sockets.Database;
+			LoadSelectedRecord();
+			Repaint();
 		}
 
 		public override void OnInspectorGUI()
