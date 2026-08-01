@@ -23,6 +23,46 @@ MonoBehaviour:
   blurType: 0
   injectionPoint: 600
   shader: {fileID: 4800000, guid: bb11bdc2e8aaf4c80b5315f3778d7ad4, type: 3}
+--- !u!114 &-2881898432816185866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e151b410d49e0c43baf9d3f7c3556c9, type: 3}
+  m_Name: PixelRendererFeature
+  m_EditorClassIdentifier: Assembly-CSharp-firstpass::PixelRendererFeature
+  m_Active: 0
+  settings:
+    width: 640
+    height: 360
+    outlineMaterial: {fileID: 2100000, guid: 61d77b0acb1a4d2479b7f73500cf593b, type: 2}
+    compositeMaterial: {fileID: 2100000, guid: 25ffe5f110fd9a34a86ce64a5498ab9a, type: 2}
+    upscaleMaterial: {fileID: 2100000, guid: 3aa9b113e29784946a0a0616f17c960f, type: 2}
+    lineTint: {r: 0.05, g: 0.05, b: 0.08, a: 1}
+    creaseTint: {r: 1, g: 0.55, b: 0.1, a: 1}
+    flipPalettes: 0
+    lineDarken: 0.4
+    creaseBrighten: 0.3
+    lineOverlay: 0
+    lineAlpha: 1
+    creaseOverlay: 1
+    creaseAlpha: 1
+    convexCutoff: 0.1
+    creaseFeather: 0
+    concaveCutoff: 0.01
+    concaveZCutoff: 0.648
+    kernelRadius: 0.96
+    zDeltaCutoff: 0.325
+    angleZCutoff: 0
+    angleZScale: 0
+    depthDiffLow: 0.216
+    depthDiffHigh: 0.326
+    normalSmoothLow: 0.348
+    normalSmoothHigh: 0.84
 --- !u!114 &-2864588672367839831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,10 +110,11 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  - {fileID: 7916101213331497899}
   - {fileID: -3802795414687951716}
   - {fileID: -2864588672367839831}
-  m_RendererFeatureMap: ad6b866f10d7b46caba3a9ba1ca4db6d9c540aeab7c139cba935e89bc7ef3ed8
+  - {fileID: -2881898432816185866}
+  - {fileID: 7916101213331497899}
+  m_RendererFeatureMap: ad6b866f10d7b46c9c540aeab7c139cba935e89bc7ef3ed8f67d3cf1a47001d8aba3a9ba1ca4db6d
   m_UseNativeRenderPass: 1
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 3
@@ -113,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   m_Settings:
     AOMethod: 0
     Downsample: 0
