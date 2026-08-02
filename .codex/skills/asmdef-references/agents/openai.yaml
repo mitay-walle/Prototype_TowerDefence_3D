@@ -1,0 +1,4 @@
+interface:
+  display_name: "ASMDEF References"
+  short_description: "Fill Unity asmdef references safely"
+  default_prompt: "Use $asmdef-references to fill missing Unity asmdef references for scripts I changed."

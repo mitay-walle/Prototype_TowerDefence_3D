@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture KISS Reviewer"
+  short_description: "Review Outcasts ownership, DI, and KISS before code changes."
+  default_prompt: "Use $code-style to review or plan Outcasts C# changes. Start with an ownership audit: source of truth, runtime owner, DI/provider path, and shortcuts that must not be used. Flag fallback state, lazy repair, duplicate entry points, scene-wide service lookups, and speculative abstractions before smaller issues."

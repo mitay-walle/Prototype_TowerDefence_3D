@@ -1,0 +1,4 @@
+interface:
+  display_name: "Saving"
+  short_description: "Outcasts save/load system workflows"
+  default_prompt: "Use $saving to add or review persisted game state in Outcasts."

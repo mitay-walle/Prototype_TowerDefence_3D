@@ -1,0 +1,4 @@
+interface:
+  display_name: "Localization Tables"
+  short_description: "Add Unity Localization table entries"
+  default_prompt: "Use $localization-table-authoring to add or repair Unity Localization table entries."

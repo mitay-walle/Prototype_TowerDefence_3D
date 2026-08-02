@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Prefab Localization"
+  short_description: "Add localization to Unity UI prefabs"
+  default_prompt: "Use this skill when adding or reviewing localization bindings in Unity UI prefabs."

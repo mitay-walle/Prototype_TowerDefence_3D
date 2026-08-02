@@ -20,13 +20,18 @@ namespace TD.Interactions
 		[SerializeField] private float minZoom = 5f;
 		[SerializeField] private float maxZoom = 20f;
 
+		[SerializeField] private float rotationSpeed = 0.2f;
+
 		[SerializeField] private float gamepadMoveSpeed = 15f;
 		[SerializeField] private float gamepadZoomSpeed = 8f;
 
 		private Transform target;
 		private CinemachineCamera virtualCamera;
+		private CinemachineOrbitalFollow orbitalFollow;
 		private Vector3 dragStartPoint;
 		private bool isDragging = false;
+		private bool isRotating = false;
+		private Vector2 rotationLastMousePosition;
 		private bool isUsingGamepad = false;
 
 		private Camera mainCamera;
@@ -34,7 +39,8 @@ namespace TD.Interactions
 		private void Awake()
 		{
 			virtualCamera = GetComponent<CinemachineCamera>();
-			target = (virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body) as CinemachinePositionComposer).FollowTarget;
+			orbitalFollow = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body) as CinemachineOrbitalFollow;
+			target = orbitalFollow.FollowTarget;
 			mainCamera = Camera.main;
 			DisablerList.Init(hasEntries => enabled = !hasEntries);
 		}
@@ -53,6 +59,7 @@ namespace TD.Interactions
 			{
 				HandleEdgeScrolling();
 				HandleDragging();
+				HandleRotation();
 				HandleZoom();
 				HandleKeyboardMovement();
 			}
@@ -80,7 +87,7 @@ namespace TD.Interactions
 
 			if (Mouse.current != null)
 			{
-				if (Mouse.current.delta.ReadValue().sqrMagnitude > 0.1f || Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed)
+				if (Mouse.current.delta.ReadValue().sqrMagnitude > 0.1f || Mouse.current.leftButton.isPressed || Mouse.current.rightButton.isPressed || Mouse.current.middleButton.isPressed)
 				{
 					if (isUsingGamepad)
 					{
@@ -121,8 +128,7 @@ namespace TD.Interactions
 
 			Vector2 leftStick = gamepad.leftStick.ReadValue();
 			Vector3 direction = new Vector3(leftStick.x, 0, leftStick.y);
-			(virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body) as CinemachinePositionComposer).FollowTarget.position +=
-				direction * gamepadMoveSpeed * Time.deltaTime;
+			target.position += direction * gamepadMoveSpeed * Time.deltaTime;
 		}
 
 		private void HandleGamepadZoom()
@@ -134,12 +140,8 @@ namespace TD.Interactions
 
 			if (Mathf.Abs(rightStickY) > 0.01f)
 			{
-				CinemachineComponentBase component = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
-				if (component is CinemachinePositionComposer framingTransposer)
-				{
-					framingTransposer.CameraDistance = Mathf.Clamp(framingTransposer.CameraDistance - rightStickY * gamepadZoomSpeed * Time.deltaTime,
-						minZoom, maxZoom);
-				}
+				orbitalFollow.Radius = Mathf.Clamp(orbitalFollow.Radius - rightStickY * gamepadZoomSpeed * Time.deltaTime,
+					minZoom, maxZoom);
 			}
 		}
 
@@ -151,7 +153,7 @@ namespace TD.Interactions
 
 		private void HandleEdgeScrolling()
 		{
-			if (Mouse.current.rightButton.isPressed) return;
+			if (Mouse.current.rightButton.isPressed || Mouse.current.middleButton.isPressed) return;
 			if (!IsCursorInsideGameView()) return;
 
 			Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -213,17 +215,39 @@ namespace TD.Interactions
 			}
 		}
 
+		private void HandleRotation()
+		{
+			if (Mouse.current == null) return;
+
+			if (Mouse.current.middleButton.wasPressedThisFrame)
+			{
+				isRotating = true;
+				rotationLastMousePosition = Mouse.current.position.ReadValue();
+			}
+
+			if (!Mouse.current.middleButton.isPressed)
+			{
+				isRotating = false;
+				return;
+			}
+
+			if (!isRotating) return;
+
+			Vector2 mousePosition = Mouse.current.position.ReadValue();
+			float angle = (mousePosition.x - rotationLastMousePosition.x) * rotationSpeed;
+			rotationLastMousePosition = mousePosition;
+			if (Mathf.Approximately(angle, 0f)) return;
+
+			orbitalFollow.HorizontalAxis.Value += angle;
+		}
+
 		private void HandleZoom()
 		{
 			float scrollValue = Mouse.current.scroll.ReadValue().y;
 			if (scrollValue != 0)
 			{
-				CinemachineComponentBase component = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
-				if (component is CinemachinePositionComposer framingTransposer)
-				{
-					framingTransposer.CameraDistance = Mathf.Clamp(framingTransposer.CameraDistance - scrollValue * zoomSpeed * Time.deltaTime,
-						minZoom, maxZoom);
-				}
+				orbitalFollow.Radius = Mathf.Clamp(orbitalFollow.Radius - scrollValue * zoomSpeed * Time.deltaTime,
+					minZoom, maxZoom);
 			}
 		}
 

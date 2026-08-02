@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity Recompile"
+  short_description: "Force Unity script recompilation"
+  default_prompt: "Use $unity-recompile-menuitem to force Unity script recompilation and report console errors."

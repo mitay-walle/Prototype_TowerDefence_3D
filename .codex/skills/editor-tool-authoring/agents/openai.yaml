@@ -1,0 +1,4 @@
+interface:
+  display_name: "Editor Tool Authoring"
+  short_description: "Build long-lived Unity Editor tools"
+  default_prompt: "Use $editor-tool-authoring to build or modify long-lived Outcasts Unity Editor tools. Search GitHub/package sources first, choose the smallest suitable Odin attributes, [Button] actions, [SerializeReference] editor polymorphism, Attribute Processor, InspectorWindow, SceneView tool, overlay, gizmo, handle, EditorWindow, debug panel, asset browser, or authoring utility, avoid CustomEditor by default, keep UI minimal with short readable window titles, preserve Undo through Odin or SerializedObject/SerializedProperty when possible, add icons for new SO/MonoBehaviour types, use [Delayed] for expensive Inspector inputs, and emit concise Debug.Log summaries for explicit actions."

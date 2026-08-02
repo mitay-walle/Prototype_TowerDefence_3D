@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Prefab Authoring"
+  short_description: "Author and rearrange Unity UI prefabs"
+  default_prompt: "Use $ui-prefab-authoring to edit a Unity UI prefab without breaking layout, input, or nested Canvas setup."

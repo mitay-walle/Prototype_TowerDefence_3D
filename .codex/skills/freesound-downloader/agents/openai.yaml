@@ -1,0 +1,4 @@
+interface:
+  display_name: "Freesound Downloader"
+  short_description: "Download original Freesound audio via OAuth"
+  default_prompt: "Use $freesound-downloader to download an original Freesound sound into a Unity audio folder."

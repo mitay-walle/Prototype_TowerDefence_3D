@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity Validate Script"
+  short_description: "Validate Unity C# scripts sequentially"
+  default_prompt: "Use $mcp-unity-validate-script to validate changed Unity C# scripts before recompiling."

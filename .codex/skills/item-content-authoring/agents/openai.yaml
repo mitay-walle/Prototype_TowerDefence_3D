@@ -1,0 +1,4 @@
+interface:
+  display_name: "Item Content Authoring"
+  short_description: "Create and wire Outcasts item content from existing assets."
+  default_prompt: "Use this skill when adding or wiring Outcasts item configs, icons, pickup models, localization, or item database entries from existing project content."

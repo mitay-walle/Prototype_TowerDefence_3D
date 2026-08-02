@@ -1,0 +1,4 @@
+interface:
+  display_name: "Voiceover"
+  short_description: "Generate and place voiced dialogue clips"
+  default_prompt: "Use $voiceover to generate, name, import, and time voiced dialogue clips."

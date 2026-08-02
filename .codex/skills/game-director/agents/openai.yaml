@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Director"
+  short_description: "Plan and audit gameplay against Outcasts docs."
+  default_prompt: "Use $game-director to turn Outcasts design docs into scoped gameplay implementation tasks."

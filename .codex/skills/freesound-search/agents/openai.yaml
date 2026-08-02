@@ -1,0 +1,4 @@
+interface:
+  display_name: "Freesound Search"
+  short_description: "Search Freesound candidates with size limits"
+  default_prompt: "Use $freesound-search to find lightweight Freesound audio candidates from rough keywords."

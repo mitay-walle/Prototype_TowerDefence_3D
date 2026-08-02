@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cutscene Authoring"
+  short_description: "Create scene Timeline cutscenes"
+  default_prompt: "Use $cutscene-authoring to create a scene cutscene matching the existing Outcasts Timeline setup."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Writing"
+  short_description: "Unity test authoring and execution"
+  default_prompt: "Use $test-writing to add or update Unity tests and report results in the console."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity Find In File"
+  short_description: "Search Unity files without MCP batch"
+  default_prompt: "Use $mcp-unity-find-in-file to search Unity files with direct mcp__unityMCP.find_in_file calls, not batch_execute."

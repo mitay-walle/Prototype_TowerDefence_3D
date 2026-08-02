@@ -50,7 +50,7 @@ namespace TD.Towers
 #endif
         private void LateUpdate()
         {
-            Camera targetCamera = Camera.current;
+            Camera targetCamera = Camera.current ?? Camera.main;
             if (targetCamera != null)
             {
                 UpdateBillboard(_colorResolver, targetCamera.transform.position - transform.position, ref _colorDirection);

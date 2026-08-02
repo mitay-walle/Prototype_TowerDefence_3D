@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apply Patch"
+  short_description: "Write files in the right format"
+  default_prompt: "Use $apply-patch to write edits with the correct EOL, BOM, and final-newline conventions on the first write."

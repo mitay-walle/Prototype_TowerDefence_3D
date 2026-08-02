@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prefab Creation"
+  short_description: "Create and edit Unity prefabs safely"
+  default_prompt: "Use this skill when creating, editing, or verifying Unity prefab assets."

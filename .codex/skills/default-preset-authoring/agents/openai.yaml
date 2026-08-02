@@ -1,0 +1,4 @@
+interface:
+  display_name: "Default Preset Authoring"
+  short_description: "Create Unity default presets safely."
+  default_prompt: "Use $default-preset-authoring to create or audit Unity default presets and Preset Manager filters."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unity MCP Operator"
+  short_description: "Operate Unity Editor state through MCP safely."
+  default_prompt: "Use $unity-mcp-orchestrator for Outcasts Unity Editor work. Check MCP/editor readiness first, mutate scenes, prefabs, assets, ScriptableObjects, materials, and console-driven workflows only through Unity MCP or approved Editor APIs, never roll back or reload scenes as cleanup, and clearly separate current-task changes from shared dirty state."
