@@ -19,6 +19,9 @@ namespace TD.GameLoop
 		private const string TOOLTIP_AUTO_DELAY = "Delay in seconds before auto-starting next wave";
 		private const string TOOLTIP_DETAILED_LOGS = "Show detailed spawn logs for each enemy";
 
+		public const int ResourceCacheAmount = 5;
+		public const int BountyContractBonus = 15;
+
 		[SerializeField] private bool Logs = true;
 		[Tooltip(TOOLTIP_DETAILED_LOGS)]
 		[SerializeField] private bool detailedLogs = false;
@@ -372,13 +375,13 @@ namespace TD.GameLoop
 			switch (choice)
 			{
 				case RewardOfferChoice.ResourceCache:
-					ResourceManager.Instance?.AddCurrency(75);
+					ResourceManager.Instance?.AddCurrency(ResourceCacheAmount);
 					break;
 				case RewardOfferChoice.EmergencyRepairs:
 					FindFirstObjectByType<PlayerBase>()?.Repair(10);
 					break;
 				case RewardOfferChoice.BountyContract:
-					nextCompletionRewardBonus = 50;
+					nextCompletionRewardBonus = BountyContractBonus;
 					break;
 			}
 

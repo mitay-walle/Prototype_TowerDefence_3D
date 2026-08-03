@@ -13,14 +13,14 @@ namespace TD.GameLoop
         [SerializeField] private bool Logs = false;
         public static ResourceManager Instance { get; private set; }
 
-        [SerializeField] private int startingCurrency = 500;
+        [SerializeField] private int startingCurrency = 50;
 
         [Tooltip(TOOLTIP_PASSIVE_INCOME)]
-        [SerializeField] private int passiveIncomePerWave = 100;
+        [SerializeField] private int passiveIncomePerWave = 5;
         [Tooltip(TOOLTIP_ENABLE_INCOME)]
         [SerializeField] private bool enablePassiveIncome = true;
 
-        [SerializeField] private int currentCurrency;
+        private int currentCurrency;
 
         public UnityEvent<int> onCurrencyChanged;
         public UnityEvent<int> onCurrencyGained;

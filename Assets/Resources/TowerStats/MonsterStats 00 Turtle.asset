@@ -96,7 +96,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     RoundToInt: 0
   InstantReward:
-    BaseValue: 5
+    BaseValue: 2
     Growth:
       serializedVersion: 2
       m_Curve:

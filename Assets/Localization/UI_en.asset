@@ -235,7 +235,7 @@ MonoBehaviour:
   - m_Id: 105501076944314368
     m_Localized: 'Resource Cache
 
-      +75 currency now'
+      +5 currency now'
     m_Metadata:
       m_Items: []
   - m_Id: 105501076944314369
@@ -247,7 +247,7 @@ MonoBehaviour:
   - m_Id: 105501076944314370
     m_Localized: 'Bounty Contract
 
-      +50 next wave reward'
+      +15 next wave reward'
     m_Metadata:
       m_Items: []
   references:
