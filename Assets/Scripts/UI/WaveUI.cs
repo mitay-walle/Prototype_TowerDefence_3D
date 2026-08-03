@@ -17,10 +17,14 @@ namespace TD.UI
 		[SerializeField] private Button resourceCacheButton;
 		[SerializeField] private Button emergencyRepairsButton;
 		[SerializeField] private Button bountyContractButton;
+		[SerializeField] private GameObject challengeModifierPanel;
+		[SerializeField] private TMP_Text challengeModifierTitleText;
+		[SerializeField] private Button reinforcedHordeButton;
 
 		private TMP_Text resourceCacheText;
 		private TMP_Text emergencyRepairsText;
 		private TMP_Text bountyContractText;
+		private TMP_Text reinforcedHordeText;
 
 		private void Start()
 		{
@@ -47,6 +51,12 @@ namespace TD.UI
 				bountyContractText = bountyContractButton.GetComponentInChildren<TMP_Text>(true);
 			}
 
+			if (reinforcedHordeButton != null)
+			{
+				reinforcedHordeButton.onClick.AddListener(OnReinforcedHordeClicked);
+				reinforcedHordeText = reinforcedHordeButton.GetComponentInChildren<TMP_Text>(true);
+			}
+
 			UpdateUI();
 		}
 
@@ -61,6 +71,7 @@ namespace TD.UI
 			if (waveManager == null) return;
 
 			UpdateRewardOffer(waveManager);
+			UpdateChallengeModifier(waveManager);
 
 			var gameManager = GameManager.Instance;
 			bool canStart = gameManager != null && gameManager.CurrentState == GameState.Preparation;
@@ -150,6 +161,38 @@ namespace TD.UI
 			}
 		}
 
+		private void UpdateChallengeModifier(WaveManager waveManager)
+		{
+			bool isActive = waveManager.ActiveChallengeModifier == ChallengeModifier.ReinforcedHorde;
+			bool showPanel = waveManager.CanSelectChallengeModifier || isActive;
+			if (challengeModifierPanel != null)
+			{
+				challengeModifierPanel.SetActive(showPanel);
+			}
+
+			if (!showPanel)
+			{
+				return;
+			}
+
+			if (challengeModifierTitleText != null)
+			{
+				challengeModifierTitleText.text = GetLocalizedText(
+					isActive ? "wave.challenge.active" : "wave.challenge.header");
+			}
+
+			if (reinforcedHordeText != null)
+			{
+				reinforcedHordeText.text = GetLocalizedText(
+					isActive ? "wave.challenge.reinforced_horde_active" : "wave.challenge.reinforced_horde");
+			}
+
+			if (reinforcedHordeButton != null)
+			{
+				reinforcedHordeButton.interactable = waveManager.CanSelectChallengeModifier;
+			}
+		}
+
 		private string BuildUpcomingWaveInfo(WaveConfig waveConfig)
 		{
 			if (waveConfig == null)
@@ -206,6 +249,11 @@ namespace TD.UI
 			WaveManager.Instance?.SelectRewardOffer((int)RewardOfferChoice.BountyContract);
 		}
 
+		private void OnReinforcedHordeClicked()
+		{
+			WaveManager.Instance?.SelectChallengeModifier(ChallengeModifier.ReinforcedHorde);
+		}
+
 		private void OnDestroy()
 		{
 			if (startWaveButton != null)
@@ -226,6 +274,11 @@ namespace TD.UI
 			if (bountyContractButton != null)
 			{
 				bountyContractButton.onClick.RemoveListener(OnBountyContractClicked);
+			}
+
+			if (reinforcedHordeButton != null)
+			{
+				reinforcedHordeButton.onClick.RemoveListener(OnReinforcedHordeClicked);
 			}
 		}
 	}

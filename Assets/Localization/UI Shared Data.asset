@@ -199,6 +199,22 @@ MonoBehaviour:
     m_Key: wave.reward.bounty_contract
     m_Metadata:
       m_Items: []
+  - m_Id: 105645023171698688
+    m_Key: wave.challenge.header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613248
+    m_Key: wave.challenge.reinforced_horde
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613249
+    m_Key: wave.challenge.active
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613250
+    m_Key: wave.challenge.reinforced_horde_active
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

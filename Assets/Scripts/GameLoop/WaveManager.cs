@@ -21,6 +21,9 @@ namespace TD.GameLoop
 
 		public const int ResourceCacheAmount = 5;
 		public const int BountyContractBonus = 15;
+		public const float ReinforcedHordeEnemyCountFactor = 1.25f;
+		public const float ReinforcedHordeEnemyHealthFactor = 1.25f;
+		public const float ReinforcedHordeCompletionRewardFactor = 1.5f;
 
 		[SerializeField] private bool Logs = true;
 		[Tooltip(TOOLTIP_DETAILED_LOGS)]
@@ -70,6 +73,7 @@ namespace TD.GameLoop
 		private bool isSpawning = false;
 		private bool rewardOfferPending;
 		private int nextCompletionRewardBonus;
+		private ChallengeModifier activeChallengeModifier;
 		private InputAction startWaveAction;
 
 		public int CurrentWaveNumber => currentWaveIndex + 1;
@@ -78,7 +82,29 @@ namespace TD.GameLoop
 		public bool IsSpawning => isSpawning;
 		public bool IsWaveActive => enemiesAlive > 0 || isSpawning;
 		public bool IsRewardOfferPending => rewardOfferPending;
+		public ChallengeModifier ActiveChallengeModifier => activeChallengeModifier;
+		public bool CanSelectChallengeModifier => currentWaveIndex < 0 && activeChallengeModifier == ChallengeModifier.None;
+		public float EnemyCountFactor => activeChallengeModifier == ChallengeModifier.ReinforcedHorde
+			? ReinforcedHordeEnemyCountFactor
+			: 1f;
+		public float EnemyHealthFactor => activeChallengeModifier == ChallengeModifier.ReinforcedHorde
+			? ReinforcedHordeEnemyHealthFactor
+			: 1f;
+		public float CompletionRewardFactor => activeChallengeModifier == ChallengeModifier.ReinforcedHorde
+			? ReinforcedHordeCompletionRewardFactor
+			: 1f;
 		public int EnemiesAlive => enemiesAlive;
+
+		public void SelectChallengeModifier(ChallengeModifier modifier)
+		{
+			if (!CanSelectChallengeModifier || modifier != ChallengeModifier.ReinforcedHorde)
+				return;
+
+			activeChallengeModifier = modifier;
+
+			if (Logs) Debug.Log($"[WaveManager] Challenge modifier selected: {modifier}");
+		}
+
 		public int EnemiesSpawned => enemiesSpawned;
 		public int TotalEnemiesInWave => totalEnemiesInWave;
 		public float WaveProgress => totalEnemiesInWave > 0 ? (float)enemiesSpawned / totalEnemiesInWave : 0f;
@@ -220,7 +246,7 @@ namespace TD.GameLoop
 		{
 			isSpawning = true;
 			enemiesSpawned = 0;
-			totalEnemiesInWave = waveConfig.GetTotalEnemyCount();
+			totalEnemiesInWave = GetTotalEnemyCount(waveConfig);
 			spawnProgress = 0f;
 			currentWaveStatus = $"Wave {currentWaveIndex + 1} - Waiting to start";
 
@@ -239,7 +265,7 @@ namespace TD.GameLoop
 			int spawnGroupIndex = 0;
 			foreach (var enemySpawn in waveConfig.EnemySpawns)
 			{
-				int count = Mathf.RoundToInt(enemySpawn.count * waveConfig.CountScaling * Mathf.Pow(difficultyScalingPerLoop, currentLoopCount));
+				int count = GetScaledEnemyCount(enemySpawn, waveConfig);
 				spawnGroupIndex++;
 
 				if (Logs)
@@ -290,7 +316,7 @@ namespace TD.GameLoop
 			if (enemyHealth != null)
 			{
 				float scaledHealth = enemyHealth.MaxHealth * enemySpawn.healthMultiplier * waveConfig.HealthScaling *
-				                     Mathf.Pow(difficultyScalingPerLoop, currentLoopCount);
+				                     Mathf.Pow(difficultyScalingPerLoop, currentLoopCount) * EnemyHealthFactor;
 
 				enemyHealth.Initialize(scaledHealth);
 
@@ -319,6 +345,23 @@ namespace TD.GameLoop
 			enemiesAlive++;
 		}
 
+		private int GetTotalEnemyCount(WaveConfig waveConfig)
+		{
+			int total = 0;
+			foreach (var enemySpawn in waveConfig.EnemySpawns)
+			{
+				total += GetScaledEnemyCount(enemySpawn, waveConfig);
+			}
+
+			return total;
+		}
+
+		private int GetScaledEnemyCount(EnemySpawnData enemySpawn, WaveConfig waveConfig)
+		{
+			return Mathf.RoundToInt(enemySpawn.count * waveConfig.CountScaling *
+				Mathf.Pow(difficultyScalingPerLoop, currentLoopCount) * EnemyCountFactor);
+		}
+
 		private Transform GetSpawnPoint()
 		{
 			if (randomizeSpawnPoint)
@@ -344,7 +387,7 @@ namespace TD.GameLoop
 
 		private void OnWaveCompleted(WaveConfig waveConfig)
 		{
-			int completionReward = waveConfig.CompletionReward + nextCompletionRewardBonus;
+			int completionReward = Mathf.RoundToInt((waveConfig.CompletionReward + nextCompletionRewardBonus) * CompletionRewardFactor);
 			nextCompletionRewardBonus = 0;
 
 			if (Logs) Debug.Log($"[WaveManager] Wave {currentWaveIndex + 1} completed! Reward: {completionReward}");

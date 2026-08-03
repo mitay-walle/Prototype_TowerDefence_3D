@@ -250,6 +250,28 @@ MonoBehaviour:
       +15 next wave reward'
     m_Metadata:
       m_Items: []
+  - m_Id: 105645023171698688
+    m_Localized: Choose a run modifier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613248
+    m_Localized: 'Reinforced Horde
+
+      Enemy count x1.25 | HP x1.25 | Wave reward
+      x1.5'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613249
+    m_Localized: Active run modifier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105645023234613250
+    m_Localized: 'Reinforced Horde active
+
+      Enemy count x1.25 | HP x1.25 | Wave
+      reward x1.5'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
