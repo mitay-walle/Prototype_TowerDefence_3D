@@ -15,30 +15,41 @@ namespace TD.Interactions
 		public RenderingLayerMask defaultRenderingLayer = 1;
 		public RenderingLayerMask hoveredRenderingLayer = 2;
 		public RenderingLayerMask selectedRenderingLayer = 4;
+		[SerializeField] private InputActionAsset inputActions;
 
 		private ITargetable currentSelected;
 		private ITargetable currentHovered;
 		private Camera cam;
 		private InputAction selectAction;
+		private InputAction interactAction;
+		private InputAction pointAction;
 		private bool isMouseActive = true;
 
 		void Awake()
 		{
-			selectAction = new InputAction(binding: "<Mouse>/leftButton");
-			selectAction.AddBinding("<Gamepad>/buttonSouth");
-			selectAction.performed += OnSelect;
+			if (inputActions == null)
+			{
+				Debug.LogError("SelectionSystem requires the project InputSystem_Actions asset.");
+				return;
+			}
+
+			selectAction = inputActions.FindAction("UI/Click", true);
+			interactAction = inputActions.FindAction("Player/Interact", true);
+			pointAction = inputActions.FindAction("UI/Point", true);
+			interactAction.performed += OnSelect;
 			cam = Camera.main;
 		}
 
 		void OnDestroy()
 		{
-			selectAction.performed -= OnSelect;
-			selectAction.Dispose();
+			if (interactAction != null) interactAction.performed -= OnSelect;
 		}
 
-		void OnEnable() => selectAction.Enable();
-
-		void OnDisable() => selectAction.Disable();
+		void OnEnable()
+		{
+			selectAction?.Enable();
+			interactAction?.Enable();
+		}
 
 		void Update()
 		{
@@ -49,26 +60,29 @@ namespace TD.Interactions
 			}
 
 			UpdateInputDevice();
+			if (selectAction != null && selectAction.WasPressedThisFrame() &&
+				(EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
+			{
+				isMouseActive = true;
+				SelectCurrent();
+			}
+
 			UpdateHover();
 		}
 
 		private void UpdateInputDevice()
 		{
-			if (Mouse.current != null && Mouse.current.delta.ReadValue().sqrMagnitude > 0.1f)
+			if (pointAction?.activeControl?.device is Pointer)
 			{
 				isMouseActive = true;
-			}
-			else if (Gamepad.current != null && Gamepad.current.leftStick.ReadValue().sqrMagnitude > 0.1f)
-			{
-				isMouseActive = false;
 			}
 		}
 
 		private Ray GetRay()
 		{
-			if (isMouseActive && Mouse.current != null)
+			if (isMouseActive && pointAction != null)
 			{
-				return cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+				return cam.ScreenPointToRay(pointAction.ReadValue<Vector2>());
 			}
 			else
 			{
@@ -115,7 +129,7 @@ namespace TD.Interactions
 
 		private void OnSelect(InputAction.CallbackContext context)
 		{
-			if (context.control.device is Mouse)
+			if (context.control.device is Pointer)
 			{
 				isMouseActive = true;
 			}
@@ -124,6 +138,11 @@ namespace TD.Interactions
 				isMouseActive = false;
 			}
 
+			SelectCurrent();
+		}
+
+		private void SelectCurrent()
+		{
 			Ray ray = GetRay();
 
 			if (Physics.SphereCast(ray, spherecastRadius, out RaycastHit hit, maxRayDistance, raycastMask))
@@ -145,7 +164,7 @@ namespace TD.Interactions
 			}
 			else
 			{
-				if (!isMouseActive || !EventSystem.current.IsPointerOverGameObject())
+				if (!isMouseActive || EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject())
 				{
 					DeselectCurrent();
 				}

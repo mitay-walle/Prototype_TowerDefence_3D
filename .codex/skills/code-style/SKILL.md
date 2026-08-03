@@ -1,6 +1,6 @@
 ---
 name: code-style
-description: Project C# code style and engineering rules for project-owned C# under Assets/Scripts only. Use when writing or reviewing C# code in Assets/Scripts, choosing type layout, SaveData/state/facade naming, runtime/editor boundaries, or general architecture there. For BehaviourInject DI/context/provider/injection work, use `$behaviourinject`.
+description: Project C# code style and engineering rules for project-owned C# under Assets/Scripts only. Use when writing or reviewing C# code in Assets/Scripts, choosing type layout, SaveData/state/facade naming, runtime/editor boundaries, or KISS/SOLID and general architecture there. For BehaviourInject DI/context/provider/injection work, use `$behaviourinject`.
 ---
 
 # Code Style
@@ -15,7 +15,9 @@ Mandatory gate: before creating any Unity C# `.cs` script under `Assets/Scripts`
 
 For BehaviourInject DI, context lifecycle, providers, injected views/controllers, commands, events, factories, or execution order, load `$behaviourinject`. For Unity test authoring and test helper `MonoBehaviour` placement, load `$test-writing`. For prefab asset creation, prefab edits, UI prefab hierarchy, RectTransform layout, TextMeshPro components, UI layers, Canvas/CanvasScaler/GraphicRaycaster, or prefab migration work, load `$prefab-creation` and `$ui-prefab-authoring` instead of keeping those rules here.
 
-When a task requires choosing between a direct implementation and extra state, fallback behavior, helper abstractions, services, DTOs, events, factories, or public API, also read `references/KISS.md` before writing code.
+When a task requires choosing between a direct implementation and extra state, fallback behavior, helper abstractions, services, DTOs, events, factories, or public API, read `references/KISS.md` before writing code.
+
+When a task involves responsibilities, interfaces, inheritance, polymorphism, or dependency direction, read `references/SOLID.md` before choosing the design.
 
 When changing or extending one of the project's large polymorphic systems, also read `references/ProjectPolymorphicAbstractions.md` before choosing the abstraction boundary.
 
@@ -25,17 +27,17 @@ When replacing serialized types, changing serialized data shape, converting list
 
 Apply rules in this order. Higher-priority rules win when guidance conflicts, and lower-priority rules never justify violating P0.
 
-P0 - KISS and single entry point:
+P0 - Focused changes and explicit ownership:
 
-- KISS is mandatory: choose the smallest direct solution that satisfies the current task, avoid speculative layers, and keep diffs focused.
+- Keep changes focused on the current task and avoid speculative layers.
 - Before adding any new field, serialized option, runtime flag, fallback state, helper method, or behavior switch, identify the existing source of truth and runtime owner. If one exists, use it directly instead of adding local mirror state.
 - Do not add local state for availability, completion, save/load, quest flags, interaction gating, or UI visibility unless the current bug cannot be expressed through the existing owner and the reason is explicit in the change.
 - Every workflow and subsystem must have one explicit runtime entry point. If an owner already exists, fix that owner instead of adding a second entry point.
 - Never fix a missing side effect by replaying another workflow's setup or state transition from a new call path. A method rename does not make a second entry point acceptable.
-- KISS ownership audit compares runtime workflows, not class names. Before adding behavior to an existing owner, trace the sequence of runtime steps it would execute and search sibling owners for the same or materially overlapping sequence.
+- Ownership audit compares runtime workflows, not class names. Before adding behavior to an existing owner, trace the sequence of runtime steps it would execute and search sibling owners for the same or materially overlapping sequence.
 - Do not add a general workflow to a specialized owner. If the requested behavior is a generalized form of behavior already owned by one or more specialized owners, extract or reuse one shared workflow owner first, then keep specialized owners responsible only for their domain-specific before/after effects.
 - Do not add extra files, layers, services, factories, DTOs, events, generalized helpers, fallback paths, lazy initialization, or rescue flows unless the current task has a demonstrated need.
-- If a requested change appears to require violating KISS or single entry point, stop and explain the tradeoff before implementing.
+- If a requested change appears to require a second entry point, speculative layer, or duplicated state, stop and explain the tradeoff before implementing.
 
 P1 - Runtime ownership and lifecycle: dependencies, initialization, save/load, DI, command execution, and Unity lifecycle must follow the explicit owner chain.
 

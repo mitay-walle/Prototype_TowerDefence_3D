@@ -18,6 +18,31 @@ namespace TD.Levels
 		public Vector3 BasePosition => basePosition;
 		public List<Vector3> SpawnPositions => spawnPositions;
 
+		public Vector2Int WorldToGrid(Vector3 worldPosition)
+		{
+			return new Vector2Int(
+				Mathf.RoundToInt(worldPosition.x / tileSize),
+				Mathf.RoundToInt(worldPosition.z / tileSize));
+		}
+
+		public Vector3 GridToWorld(Vector2Int gridPosition)
+		{
+			return new Vector3(gridPosition.x * tileSize, 0f, gridPosition.y * tileSize);
+		}
+
+		public bool TryGetGridPoint(Ray ray, out Vector3 worldPoint)
+		{
+			var gridPlane = new Plane(Vector3.up, GridToWorld(Vector2Int.zero));
+			if (!gridPlane.Raycast(ray, out float distance) || distance < 0f)
+			{
+				worldPoint = default;
+				return false;
+			}
+
+			worldPoint = ray.GetPoint(distance);
+			return true;
+		}
+
 		private void Awake()
 		{
 			if (tilesParent == null)
@@ -76,7 +101,7 @@ namespace TD.Levels
 				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
 			}
 
-			tileInstance.transform.position = new Vector3(gridPosition.x * tileSize, 0, gridPosition.y * tileSize);
+			tileInstance.transform.position = GridToWorld(gridPosition);
 			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
 			placedTiles[gridPosition] = tileInstance;
 
@@ -133,9 +158,7 @@ namespace TD.Levels
 
 				if (hasOpenEdge)
 				{
-					float worldX = position.x * tileSize;
-					float worldZ = position.y * tileSize;
-					var spawnPos = new Vector3(worldX, 0, worldZ);
+					var spawnPos = GridToWorld(position);
 
 					if (spawnPointsSet.Add(spawnPos))
 					{

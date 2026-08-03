@@ -45,7 +45,32 @@ namespace TD.Voxels
 			if (found)
 			{
 				combined = found.gameObject;
-				DestroyImmediate(combined.GetComponent<MeshFilter>().sharedMesh);
+				var previousMeshFilter = combined.GetComponent<MeshFilter>();
+				var previousMeshRenderer = combined.GetComponent<MeshRenderer>();
+
+				if (combined.TryGetComponent<MeshCollider>(out var previousCollider))
+				{
+					previousCollider.sharedMesh = null;
+				}
+
+				if (previousMeshFilter != null)
+				{
+					DestroyGeneratedObject(previousMeshFilter.sharedMesh);
+					previousMeshFilter.sharedMesh = null;
+				}
+
+				if (previousMeshRenderer != null)
+				{
+					foreach (var previousMaterial in previousMeshRenderer.sharedMaterials)
+					{
+						if (previousMaterial != voxelMaterial)
+						{
+							DestroyGeneratedObject(previousMaterial);
+						}
+					}
+
+					previousMeshRenderer.sharedMaterials = System.Array.Empty<Material>();
+				}
 			}
 			else
 			{
@@ -90,7 +115,13 @@ namespace TD.Voxels
 				materials.Add(mat);
 			}
 
-			finalMesh.CombineMeshes(submeshCombines.ToArray(), false, false);
+			var combineInstances = submeshCombines.ToArray();
+			finalMesh.CombineMeshes(combineInstances, false, false);
+			foreach (var combineInstance in combineInstances)
+			{
+				DestroyGeneratedObject(combineInstance.mesh);
+			}
+
 			combinedMF.mesh = finalMesh;
 			combinedMR.sharedMaterials = materials.ToArray();
 			finalMesh.RecalculateBounds();
@@ -103,6 +134,30 @@ namespace TD.Voxels
 			EditorUtility.SetDirty(combinedMR);
 			EditorUtility.SetDirty(combinedMF);
 		#endif
+		}
+
+		private void DestroyGeneratedObject(Object target)
+		{
+			if (target == null)
+			{
+				return;
+			}
+
+#if UNITY_EDITOR
+			if (AssetDatabase.Contains(target))
+			{
+				return;
+			}
+#endif
+
+			if (Application.isPlaying)
+			{
+				Destroy(target);
+			}
+			else
+			{
+				DestroyImmediate(target);
+			}
 		}
 
 		private List<VoxelData> OptimizeVoxels(List<VoxelData> voxels)

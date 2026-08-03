@@ -77,9 +77,7 @@ After writing the script:
 
 ### 4) Invoke the MenuItem via MCP
 
-Call the menu item with `mcp__unityMCP.execute_menu_item(menu_path=MenuPath, unity_instance="<target Name@hash>")`. If the exposed schema does not accept `unity_instance`, stop and report that MCP routing is blocked for concurrent Unity work.
-
-If MCP is unavailable or `execute_menu_item` cannot accept `unity_instance`, ask the user to reconnect/enable MCP or approve a weaker non-Editor fallback. Do not silently replace Editor execution with file-only checks.
+Call the menu item with `mcp__unityMCP.execute_menu_item(menu_path=MenuPath)`. With one Unity Editor, omit `unity_instance`; when multiple Unity Editors or projects are active, add `unity_instance="<target Name@hash>"` if the schema supports it. If MCP is unavailable, ask the user to reconnect/enable MCP or approve a weaker non-Editor fallback. Do not silently replace Editor execution with file-only checks.
 
 ### 5) Verify results
 

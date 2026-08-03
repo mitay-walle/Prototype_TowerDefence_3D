@@ -4,6 +4,7 @@ using TD.GameLoop;
 using TD.Towers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace TD.UI
@@ -34,21 +35,46 @@ namespace TD.UI
 		[SerializeField, Required] private TextMeshProUGUI consoleMessagesText;
 		[SerializeField, Required] private int maxConsoleLines = 5;
 		[SerializeField, Required] private float messageDisplayDuration = 5f;
+		[SerializeField] private TextMeshProUGUI controlsText;
+		[SerializeField] private InputActionAsset inputActions;
+		[SerializeField] private GameObject pausePanel;
+		[SerializeField] private GameObject settingsPanel;
+		[SerializeField] private GameObject rebindPanel;
+		[SerializeField] private Button resumeButton;
+		[SerializeField] private Button settingsButton;
+		[SerializeField] private Button rebindButton;
+		[SerializeField] private Button backToPauseButton;
+		[SerializeField] private Button backToSettingsButton;
 
 		private TowerPlacementSystem placementSystem;
+		private PlayerInput playerInput;
+		private Component rebindActionUI;
+		private Button triggerRebindButton;
+		private Button resetRebindButton;
 		private List<ConsoleMessage> consoleMessages = new List<ConsoleMessage>();
 
 		public void Initialize()
 		{
 			placementSystem = FindFirstObjectByType<TowerPlacementSystem>();
+			ResolvePauseControls();
 
 			SetupEventListeners();
 			UpdateUI();
+			playerInput = FindFirstObjectByType<PlayerInput>();
+			if (playerInput != null)
+			{
+				playerInput.onControlsChanged += OnControlsChanged;
+			}
+
+			InputSystem.onActionChange += OnActionChange;
+			UpdateControlHints();
 
 			if (gameOverPanel != null)
 			{
 				gameOverPanel.SetActive(false);
 			}
+
+			HidePausePanels();
 
 			if (mainHUDGroup == null)
 			{
@@ -57,6 +83,28 @@ namespace TD.UI
 
 			Application.logMessageReceived += OnLogMessage;
 			TowerShopUI.Initialize();
+		}
+
+		private void ResolvePauseControls()
+		{
+			var uiRoot = transform.parent == null ? null : transform.parent.Find("PauseMenuUI");
+			if (uiRoot == null) return;
+
+			if (pausePanel == null) pausePanel = uiRoot.Find("PausePanel")?.gameObject;
+			if (settingsPanel == null) settingsPanel = uiRoot.Find("SettingsPanel")?.gameObject;
+			if (rebindPanel == null) rebindPanel = uiRoot.Find("RebindPanel")?.gameObject;
+			if (resumeButton == null) resumeButton = uiRoot.Find("PausePanel/ResumeButton")?.GetComponent<Button>();
+			if (settingsButton == null) settingsButton = uiRoot.Find("PausePanel/SettingsButton")?.GetComponent<Button>();
+			if (rebindButton == null) rebindButton = uiRoot.Find("SettingsPanel/RebindButton")?.GetComponent<Button>();
+			if (backToPauseButton == null) backToPauseButton = uiRoot.Find("SettingsPanel/BackToPauseButton")?.GetComponent<Button>();
+			if (backToSettingsButton == null) backToSettingsButton = uiRoot.Find("RebindPanel/BackToSettingsButton")?.GetComponent<Button>();
+
+			var inputBindingSettings = uiRoot.Find("RebindPanel/InputBindingSettings");
+			if (inputBindingSettings == null) return;
+
+			if (rebindActionUI == null) rebindActionUI = inputBindingSettings.GetComponent("UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI");
+			if (triggerRebindButton == null) triggerRebindButton = inputBindingSettings.Find("TriggerRebindButton")?.GetComponent<Button>();
+			if (resetRebindButton == null) resetRebindButton = inputBindingSettings.Find("ResetToDefaultButton")?.GetComponent<Button>();
 		}
 
 		private void SetupEventListeners()
@@ -93,6 +141,8 @@ namespace TD.UI
 			{
 				GameManager.Instance.onGameOver.AddListener(OnGameOver);
 				GameManager.Instance.onVictory.AddListener(OnVictory);
+				GameManager.Instance.onGamePaused.AddListener(OnGamePaused);
+				GameManager.Instance.onGameUnpaused.AddListener(OnGameUnpaused);
 			}
 
 			// Buttons
@@ -110,6 +160,14 @@ namespace TD.UI
 			{
 				quitButton.onClick.AddListener(OnQuitButtonClicked);
 			}
+
+			if (resumeButton != null) resumeButton.onClick.AddListener(OnResumeButtonClicked);
+			if (settingsButton != null) settingsButton.onClick.AddListener(OnSettingsButtonClicked);
+			if (rebindButton != null) rebindButton.onClick.AddListener(OnRebindButtonClicked);
+			if (backToPauseButton != null) backToPauseButton.onClick.AddListener(OnBackToPauseButtonClicked);
+			if (backToSettingsButton != null) backToSettingsButton.onClick.AddListener(OnBackToSettingsButtonClicked);
+			if (triggerRebindButton != null && rebindActionUI != null) triggerRebindButton.onClick.AddListener(OnStartRebindButtonClicked);
+			if (resetRebindButton != null && rebindActionUI != null) resetRebindButton.onClick.AddListener(OnResetRebindButtonClicked);
 		}
 
 		private void Update()
@@ -118,6 +176,36 @@ namespace TD.UI
 			UpdateStartWaveButton();
 			UpdateHUDVisibility();
 			UpdateConsoleMessages();
+		}
+
+		private void UpdateControlHints()
+		{
+			if (controlsText == null || inputActions == null) return;
+
+			var moveBinding = GetBindingDisplayString("Player/Move");
+			var zoomBinding = GetBindingDisplayString("Player/Zoom");
+			var rotateBinding = GetBindingDisplayString("UI/MiddleClick");
+			var selectBinding = GetBindingDisplayString("UI/Click");
+			controlsText.text =
+				"Движение: " + moveBinding + "\n" +
+				"Зум: " + zoomBinding + "\n" +
+				"Поворот: " + rotateBinding + "\n" +
+				"Выбор: " + selectBinding;
+		}
+
+		private string GetBindingDisplayString(string actionName)
+		{
+			var action = inputActions.FindAction(actionName, false);
+			return action == null ? "—" : action.GetBindingDisplayString();
+		}
+
+		private void OnControlsChanged(PlayerInput changedPlayerInput) => UpdateControlHints();
+		private void OnActionChange(object action, InputActionChange change)
+		{
+			if (change == InputActionChange.BoundControlsChanged)
+			{
+				UpdateControlHints();
+			}
 		}
 
 		private void UpdateConsoleMessages()
@@ -272,8 +360,48 @@ namespace TD.UI
 		private void OnEnemySpawned(int totalSpawned) => UpdateWaveDisplay();
 		private void OnEnemyKilled(int remaining) => UpdateWaveDisplay();
 		private void OnBaseHealthChanged(int newHealth) => UpdateBaseHealth();
-		private void OnGameOver() => ShowGameOverPanel("Game Over!", "Your base has been destroyed!");
-		private void OnVictory() => ShowGameOverPanel("Victory!", "You have defended your base!");
+		private void OnGamePaused() => ShowPausePanel();
+		private void OnGameUnpaused() => HidePausePanels();
+
+		private void ShowPausePanel()
+		{
+			if (pausePanel != null) pausePanel.SetActive(true);
+			if (settingsPanel != null) settingsPanel.SetActive(false);
+			if (rebindPanel != null) rebindPanel.SetActive(false);
+		}
+
+		private void HidePausePanels()
+		{
+			if (pausePanel != null) pausePanel.SetActive(false);
+			if (settingsPanel != null) settingsPanel.SetActive(false);
+			if (rebindPanel != null) rebindPanel.SetActive(false);
+		}
+
+		private void ShowSettingsPanel()
+		{
+			if (pausePanel != null) pausePanel.SetActive(false);
+			if (settingsPanel != null) settingsPanel.SetActive(true);
+			if (rebindPanel != null) rebindPanel.SetActive(false);
+		}
+
+		private void ShowRebindPanel()
+		{
+			if (pausePanel != null) pausePanel.SetActive(false);
+			if (settingsPanel != null) settingsPanel.SetActive(false);
+			if (rebindPanel != null) rebindPanel.SetActive(true);
+		}
+
+		private void OnGameOver()
+		{
+			HidePausePanels();
+			ShowGameOverPanel("Game Over!", "Your base has been destroyed!");
+		}
+
+		private void OnVictory()
+		{
+			HidePausePanels();
+			ShowGameOverPanel("Victory!", "You have defended your base!");
+		}
 
 		private void ShowGameOverPanel(string title, string message)
 		{
@@ -291,10 +419,23 @@ namespace TD.UI
 		private void OnStartWaveButtonClicked() => WaveManager.Instance?.StartNextWave();
 		private void OnRestartButtonClicked() => GameManager.Instance?.RestartGame();
 		private void OnQuitButtonClicked() => GameManager.Instance?.QuitGame();
+		private void OnResumeButtonClicked() => GameManager.Instance?.TogglePause();
+		private void OnSettingsButtonClicked() => ShowSettingsPanel();
+		private void OnRebindButtonClicked() => ShowRebindPanel();
+		private void OnBackToPauseButtonClicked() => ShowPausePanel();
+		private void OnBackToSettingsButtonClicked() => ShowSettingsPanel();
+		private void OnStartRebindButtonClicked() => rebindActionUI?.SendMessage("StartInteractiveRebind", SendMessageOptions.DontRequireReceiver);
+		private void OnResetRebindButtonClicked() => rebindActionUI?.SendMessage("ResetToDefault", SendMessageOptions.DontRequireReceiver);
 
 		private void OnDestroy()
 		{
 			Application.logMessageReceived -= OnLogMessage;
+			InputSystem.onActionChange -= OnActionChange;
+
+			if (playerInput != null)
+			{
+				playerInput.onControlsChanged -= OnControlsChanged;
+			}
 
 			if (ResourceManager.Instance != null)
 			{
@@ -319,7 +460,17 @@ namespace TD.UI
 			{
 				GameManager.Instance.onGameOver.RemoveListener(OnGameOver);
 				GameManager.Instance.onVictory.RemoveListener(OnVictory);
+				GameManager.Instance.onGamePaused.RemoveListener(OnGamePaused);
+				GameManager.Instance.onGameUnpaused.RemoveListener(OnGameUnpaused);
 			}
+
+			if (resumeButton != null) resumeButton.onClick.RemoveListener(OnResumeButtonClicked);
+			if (settingsButton != null) settingsButton.onClick.RemoveListener(OnSettingsButtonClicked);
+			if (rebindButton != null) rebindButton.onClick.RemoveListener(OnRebindButtonClicked);
+			if (backToPauseButton != null) backToPauseButton.onClick.RemoveListener(OnBackToPauseButtonClicked);
+			if (backToSettingsButton != null) backToSettingsButton.onClick.RemoveListener(OnBackToSettingsButtonClicked);
+			if (triggerRebindButton != null && rebindActionUI != null) triggerRebindButton.onClick.RemoveListener(OnStartRebindButtonClicked);
+			if (resetRebindButton != null && rebindActionUI != null) resetRebindButton.onClick.RemoveListener(OnResetRebindButtonClicked);
 		}
 	}
 }

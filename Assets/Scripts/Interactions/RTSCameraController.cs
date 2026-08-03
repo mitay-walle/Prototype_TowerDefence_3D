@@ -6,6 +6,7 @@ using UnityEditor;
 using System.Runtime.CompilerServices;
 using Unity.Cinemachine;
 using TD.Plugins.Runtime;
+using UnityEngine.EventSystems;
 
 [assembly: InternalsVisibleTo("PlayModeTests")]
 [assembly: InternalsVisibleTo("EditorModeTests")]
@@ -276,6 +277,25 @@ public class RTSCameraController : MonoBehaviour
             return;
         }
 
+        if (TD.GameLoop.GameManager.Instance != null && TD.GameLoop.GameManager.Instance.IsPaused)
+        {
+            if (_isRotating)
+            {
+                if (MouseLockOnRotate) LockMouse(false);
+                _isRotating = false;
+                OnRotateStopped?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (_isDragging)
+            {
+                _isDragging = false;
+                OnMouseDragStopped?.Invoke(this, EventArgs.Empty);
+            }
+
+            CancelTargetLock();
+            return;
+        }
+
         UpdateCinemachineBrain();
         _currentMousePosition = _inputProvider.MousePosition();
 
@@ -318,11 +338,22 @@ public class RTSCameraController : MonoBehaviour
 
     internal void HandleCameraInput()
     {
-        HandleScreenSideMove(_currentMousePosition);
-        HandleMouseDrag(_currentMousePosition);
-        HandleZoom();
-        HandleRotation();
+        bool pointerOverUI = IsPointerOverUI();
+        if (!pointerOverUI)
+        {
+            HandleScreenSideMove(_currentMousePosition);
+            HandleZoom();
+        }
+
+        if (!pointerOverUI || _isDragging || _isRotating)
+        {
+            HandleMouseDrag(_currentMousePosition);
+            HandleRotation();
+        }
     }
+
+    internal bool IsPointerOverUI()
+        => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
     internal void HandleMovement()
     {

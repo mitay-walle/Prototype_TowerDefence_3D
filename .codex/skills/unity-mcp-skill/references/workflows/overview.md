@@ -23,9 +23,9 @@ Common workflows and patterns for effective Unity-MCP usage.
 
 ## Setup & Verification
 
-### Outcasts MCP Routing
+### Unity MCP Routing
 
-Before using any project-scoped Unity MCP command in these workflows, resolve the Outcasts `Name@hash` from `mcpforunity://instances` and pass it as `unity_instance` on every tool/resource call. For `batch_execute`, include `unity_instance` in every nested command's `params`. If a required call cannot accept `unity_instance`, stop and report MCP routing is blocked. Never use global active-instance routing as a fallback.
+With one Unity Editor, use typed Unity MCP commands directly and do not require `mcpforunity://instances` or `unity_instance`. For multiple Unity Editors or projects, resolve the matching `Name@hash` from `mcpforunity://instances` and pass it as `unity_instance` on every tool/resource call whose schema supports it; include it in every nested `batch_execute` command. If a required multi-Editor call cannot accept `unity_instance`, stop that concurrent operation. Never use global active-instance routing as a fallback.
 
 ### Initial Connection Verification
 
@@ -39,8 +39,8 @@ Before using any project-scoped Unity MCP command in these workflows, resolve th
 # 3. Check active scene
 # Read mcpforunity://editor/state → active_scene
 
-# 4. List available instances (multi-instance)
-# Read mcpforunity://instances
+# 4. Only for multi-instance work, list available instances
+# Read mcpforunity://instances when more than one Unity Editor or project is active
 ```
 
 ### Before Any Operation

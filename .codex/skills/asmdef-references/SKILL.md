@@ -28,7 +28,7 @@ Do not create new `.asmdef` files for ordinary systems just to organize folders.
    ```powershell
    python scripts/asmdef_refs.py add --target Target.Assembly --reference Referenced.Assembly --apply
    ```
-6. Verify Unity compilation through the Editor/MCP when available, using explicit `unity_instance="<target Name@hash>"` routing. If MCP is unavailable or the exposed schema cannot be routed per call, stop and ask the user to reconnect/fix MCP before doing Editor-owned verification. Do not use `set_active_instance`.
+6. Verify Unity compilation through the Editor/MCP when available. With one Unity Editor for the workspace, call typed MCP directly and omit `unity_instance`; with multiple Unity Editors or projects, pass explicit `unity_instance="<target Name@hash>"` routing when the schema supports it. If MCP is unavailable, reconnect/fix MCP before doing Editor-owned verification. Do not use `set_active_instance` as a substitute for a typed call.
 
 ## Rules
 

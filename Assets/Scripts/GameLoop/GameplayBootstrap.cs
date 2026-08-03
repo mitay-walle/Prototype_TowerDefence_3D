@@ -40,7 +40,7 @@ namespace TD.GameLoop
 			if (levelGenerator != null)
 				levelGenerator.GenerateLevel();
 
-			await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
+			return;
 		}
 
 		private async UniTask BakeNavMeshAsync()
@@ -49,8 +49,13 @@ namespace TD.GameLoop
 
 			if (navMeshSurfaceWrapper != null)
 			{
-				navMeshSurfaceWrapper.BuildNavMesh();
-				await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
+				if (!navMeshSurfaceWrapper.BuildNavMesh())
+				{
+					Debug.LogError("[GameplayBootstrap] NavMesh rebuild did not produce NavMesh data!");
+					return;
+				}
+
+				await UniTask.CompletedTask;
 			}
 			else
 			{
@@ -106,7 +111,7 @@ namespace TD.GameLoop
 				if (Logs) Debug.LogWarning("[GameplayBootstrap] WaveManager not found!");
 			}
 
-			await UniTask.DelayFrame(1, cancellationToken: this.GetCancellationTokenOnDestroy());
+			await UniTask.CompletedTask;
 		}
 
 		private async UniTask InitializeSystemsAsync()
@@ -131,7 +136,7 @@ namespace TD.GameLoop
 				if (Logs) Debug.LogError("[GameplayBootstrap] GameManager not found!");
 			}
 
-			await UniTask.DelayFrame(1, cancellationToken: this.GetCancellationTokenOnDestroy());
+			await UniTask.CompletedTask;
 		}
 	}
 }

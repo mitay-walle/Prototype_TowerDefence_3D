@@ -37,7 +37,7 @@ The MenuItem should refresh the AssetDatabase before requesting compilation and 
 
 ## MCP Availability
 
-If the needed MCP tool is not exposed, run one targeted `tool_search` for `Unity MCP execute_menu_item read_console validate_script`. If it remains unavailable, check the Unity process before claiming the Editor is closed, then ask the user to reconnect/enable MCP or approve weaker log/file verification. Do not use `set_active_instance` as a fallback.
+If the needed MCP tool is not exposed, run one targeted `tool_search` for `Unity MCP execute_menu_item read_console validate_script`. If it remains unavailable, check the Unity process before claiming the Editor is closed, then ask the user to reconnect/enable MCP or approve weaker log/file verification. Do not use `set_active_instance` as a substitute for the typed call.
 
 Do not silently replace this workflow with Editor log inspection. Use log-only fallback only after user approval.
 

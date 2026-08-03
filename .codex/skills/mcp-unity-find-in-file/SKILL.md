@@ -15,7 +15,7 @@ Call `mcp__unityMCP.find_in_file` directly. Never wrap it in `mcp__unityMCP.batc
 1. Choose the narrowest URI that contains the target.
 2. Call the tool directly with bounded results:
    ```text
-   mcp__unityMCP.find_in_file(uri="Assets/Scripts/Foo.cs", pattern="public void \\w+", max_results=50, ignore_case=false, unity_instance="<target Name@hash>")
+   mcp__unityMCP.find_in_file(uri="Assets/Scripts/Foo.cs", pattern="public void \\w+", max_results=50, ignore_case=false)
    ```
 3. For multiple files or patterns, issue separate direct calls.
 4. Before Unity MCP text edits, treat results as locators and verify exact content/SHA through the available script tools.

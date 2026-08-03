@@ -1,21 +1,24 @@
-﻿using UnityEngine;
+﻿using Unity.AI.Navigation;
+using UnityEngine;
 
 namespace TD.GameLoop
 {
 	public class NavMeshSurfaceWrapper : MonoBehaviour
 	{
-		public void BuildNavMesh()
+		private NavMeshSurface navMeshSurface;
+
+		private void Awake()
 		{
-			var surfaces = FindObjectsOfType<Component>();
-			foreach (var surface in surfaces)
-			{
-				if (surface.GetType().Name == "NavMeshSurface")
-				{
-					var method = surface.GetType().GetMethod("BuildNavMesh");
-					method?.Invoke(surface, null);
-					break;
-				}
-			}
+			navMeshSurface = GetComponent<NavMeshSurface>();
+		}
+
+		public bool BuildNavMesh()
+		{
+			if (navMeshSurface == null)
+				return false;
+
+			navMeshSurface.BuildNavMesh();
+			return navMeshSurface.navMeshData != null;
 		}
 	}
 }

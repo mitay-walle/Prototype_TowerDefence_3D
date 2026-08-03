@@ -3,6 +3,7 @@ using TD.Plugins.Timing;
 using TD.Towers;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,7 @@ namespace TD.GameLoop
 		[SerializeField] private float gameOverDelay = 2f;
 		[SerializeField] private GameState currentState = GameState.Initial;
 		[SerializeField] private SerializedDictionary<GameState, GameObject> _stateGameObjecs = new();
+		[SerializeField] private InputActionAsset inputActions;
 
 		public UnityEvent<GameState> onGameStateChanged;
 		public UnityEvent onGameStarted;
@@ -33,6 +35,9 @@ namespace TD.GameLoop
 
 		private GameState PlayingState => WaveManager.Instance.IsWaveActive ? GameState.WaveActive : GameState.WavePreparing;
 		private PlayerBase playerBase;
+		private InputActionMap playerActionMap;
+		private InputAction restartAction;
+		private InputAction pauseAction;
 
 		private void Awake()
 		{
@@ -43,6 +48,50 @@ namespace TD.GameLoop
 			}
 
 			Instance = this;
+
+			if (inputActions != null)
+			{
+				playerActionMap = inputActions.FindActionMap("Player", true);
+				restartAction = inputActions.FindAction("Player/Restart", true);
+				pauseAction = inputActions.FindAction("UI/Cancel", true);
+			}
+		}
+
+		private void OnEnable()
+		{
+			if (restartAction != null)
+			{
+				restartAction.Enable();
+				restartAction.performed += OnRestartInput;
+			}
+
+			if (pauseAction != null)
+			{
+				pauseAction.Enable();
+				pauseAction.performed += OnPauseInput;
+			}
+		}
+
+		private void OnDisable()
+		{
+			if (restartAction != null) restartAction.performed -= OnRestartInput;
+			if (pauseAction != null) pauseAction.performed -= OnPauseInput;
+		}
+
+		private void OnRestartInput(InputAction.CallbackContext context)
+		{
+			if (context.performed && IsGameOver)
+			{
+				RestartGame();
+			}
+		}
+
+		private void OnPauseInput(InputAction.CallbackContext context)
+		{
+			if (context.performed && !IsGameOver)
+			{
+				TogglePause();
+			}
 		}
 
 		public void Initialize()
@@ -91,6 +140,7 @@ namespace TD.GameLoop
 
 		void StartGame()
 		{
+			playerActionMap?.Enable();
 			ChangeState(GameState.WavePreparing);
 			onGameStarted?.Invoke();
 			TimeControl.Instance.Pause.Remove(this);
@@ -100,6 +150,7 @@ namespace TD.GameLoop
 		{
 			if (IsPaused) return;
 
+			playerActionMap?.Disable();
 			ChangeState(GameState.Paused);
 
 			onGamePaused?.Invoke();
@@ -110,6 +161,7 @@ namespace TD.GameLoop
 		{
 			if (!IsPaused) return;
 
+			playerActionMap?.Enable();
 			TimeControl.Instance.Pause.Remove(this);
 			ChangeState(PlayingState);
 			onGameUnpaused?.Invoke();

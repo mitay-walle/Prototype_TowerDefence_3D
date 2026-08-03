@@ -8,6 +8,9 @@ Unity-проект Tower Defence на Unity `6000.3.7f1`.
 - Runtime-код находится в `Assets/Scripts`; asmdef для проектного кода не добавлять.
 - Основные пространства имён: `TD.GameLoop`, `TD.Levels`, `TD.Towers`, `TD.Monsters`, `TD.Weapons`, `TD.UI`, `TD.Stats`, `TD.Interactions`, `TD.Voxels`.
 - Общие Codex skills хранятся вне репозитория; проектные workflow skills — в `.codex/skills/`. Не копируй общие skills в проект.
+- Role-профили task-агентов находятся в `.agents/`: `game-director.md`, `read-only-gameplay-architect.md`, `gameplay-designer.md`, `gameplay-systems-programmer.md`, `gameplay-tester.md`, `ui-designer.md`, `unity-editor-tools-programmer.md`, `project-auditor.md`. Используй подходящий профиль как routing instruction вместе с этим `AGENTS.md` и нужными project-local skills.
+- Для gameplay direction и декомпозиции используй `.agents/game-director.md`; для read-only owner review — `.agents/read-only-gameplay-architect.md`; для authored map/rewards/roles — `.agents/gameplay-designer.md`; для runtime systems — `.agents/gameplay-systems-programmer.md`; для UI feedback — `.agents/ui-designer.md`; для tests — `.agents/gameplay-tester.md`; для editor tooling — `.agents/unity-editor-tools-programmer.md`; для project structure — `.agents/project-auditor.md`.
+- `.agents` задаёт только роль и границы агента. Источниками истины остаются текущие код, сцена, prefab, assets, `Assets/Documentation/GAMEPLAY_REFERENCES.md` и этот `AGENTS.md`.
 - `Assets/Plugins`, `Assets/SerializeInterfaces` и сторонние пакеты не менять без явной необходимости.
 
 ## Что это за игра
@@ -41,6 +44,8 @@ Unity-проект Tower Defence на Unity `6000.3.7f1`.
 - Не запускай `msbuild`: компиляция Unity-проекта выполняется через Unity Editor/MCP.
 - Не откатывай, не удаляй, не нормализуй и не перезаписывай dirty/untracked изменения, созданные не в текущем ходе. Считай их работой пользователя, адаптируйся к ним и сообщай о конфликтах.
 - Не создавай git worktree, если пользователь явно не попросил об этом.
+- Не используй fallback: если основной путь недоступен или не сработал, остановись и сообщи о блокере; обходной или запасной путь допустим только по явному запросу пользователя.
+- Работай в одной основной репе проекта: не создавай и не используй Codex worktree, detached checkout или параллельный task-space без явного запроса пользователя. Отдельные task-чаты выполняй последовательно в этой же основной репе.
 - Если пользователь просит запомнить правило, обновляй проектный документ или project-local skill, а не ad-hoc memory note.
 
 ## Сцены и ассеты
@@ -62,13 +67,22 @@ Unity-проект Tower Defence на Unity `6000.3.7f1`.
 ## Editor automation и проверка
 
 - В начале Unity-задачи проверь доступность Unity MCP и предпочитай MCP для scene, prefab, asset, import, console и MenuItem операций.
-- Если Unity MCP недоступен, явно сообщи это. Если операция требует состояния Unity Editor, остановись и запроси подключение MCP или разрешение на более слабую проверку.
+
+- Unity Editor может быть открыт на основном worktree, пока Codex работает в detached worktree того же проекта; перед project-scoped проверкой сверяй project root и хэши целевых файлов, а расхождение явно фиксируй в отчёте.
+- Формулировка «запускай задачи» означает: создай отдельный Codex task/chat для каждой указанной задачи; не считать продолжение текущего чата запуском, если пользователь не уточнил обратное.
+- После завершения отдельной задачи слей её изменения в основной рабочий space, проверь итог и удали task-space/worktree; не оставляй завершённые task-spaces без явной причины.
+- Если Unity Editor запущен, а Unity MCP недоступен, сначала самостоятельно восстанови или перезапусти MCP server доступными штатными средствами и повторно проверь подключение. Не перекладывай это действие на пользователя. Если после этого MCP всё ещё недоступен, явно сообщи точную причину блокера; если операция требует состояния Unity Editor, остановись.
 - Для изменённых C# используй `mcp-unity-validate-script`, затем дождись автоматической компиляции Unity. Меню `TD/Automation/Force Recompile All` используй, если автоматическая компиляция явно зависла, нужна принудительная диагностика или пользователь попросил об этом.
 - После компиляции проверь Console на ошибки до дальнейшей диагностики.
 - Для editor-инструментов используй `Assets/Editor` или подпапку `Editor`; меню проекта начинается с `TD/`.
 - Тесты находятся в `Assets/Tests/Editor` и запускаются через Unity Test Runner. `total=0` не считается успешным прохождением.
 - Runtime-изменения дополнительно проверяй коротким Play Mode smoke-тестом основной сцены. Если Unity/Play Mode не запускался, явно укажи это в результате.
 - При отчёте отделяй подтверждённые проверки от предположений и не объявляй систему рабочей только по компиляции.
+
+## Unity MCP allocator safety
+
+- Do not use generic `manage_gameobject.get_components`, `get_component`, or reflection-based `component_properties`/`set_component_property` operations for routine Unity work in this project. Prefer narrow typed MCP tools, Unity Editor APIs, or purpose-built MenuItems.
+- If Console reports `TLS Allocator ALLOC_TEMP_TLS`, `ALLOC_TEMP_MAIN`, or `ValidTRS()` after a GameObject/Component MCP call, stop all further GameObject/Component MCP calls and Play/Save attempts. Clearing Console is not a fix; restart Unity before continuing. Do not edit `Library/PackageCache`.
 
 ## Odin Inspector
 

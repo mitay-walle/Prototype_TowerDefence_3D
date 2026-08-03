@@ -25,7 +25,7 @@ If creating a temporary Editor MenuItem, also use:
 
 1. Identify the table collection and key(s) from the error, asset, prefab, or code path.
 2. Search `Assets/Localization` and the referencing assets with `rg`; compare shared data IDs with locale table IDs.
-3. Resolve the target Unity MCP instance and check `mcpforunity://custom-tools` before mutating Unity assets.
+3. With one Unity Editor, use the typed Unity MCP tools directly and do not resolve an instance. Resolve the target Unity MCP instance and check `mcpforunity://custom-tools` only when multiple Unity Editors or projects are active.
 4. Prefer Unity Editor APIs over raw `.asset` YAML edits:
    - Use `LocalizationEditorSettings.GetStringTableCollection(tableName)`.
    - Use `collection.SharedData.GetEntry(key) ?? collection.SharedData.AddKey(key)`.

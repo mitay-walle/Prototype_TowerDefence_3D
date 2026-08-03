@@ -15,8 +15,9 @@ Before forcing Unity script recompilation, validate changed Unity C# scripts und
 1. Collect changed `.cs` scripts under `Assets/`, prioritizing files Codex edited directly.
 2. Call one validation per file:
    ```text
-   mcp__unityMCP.validate_script(uri="Assets/Scripts/Foo.cs", level="standard", include_diagnostics=true, unity_instance="<target Name@hash>")
+   mcp__unityMCP.validate_script(uri="Assets/Scripts/Foo.cs", level="standard", include_diagnostics=true)
    ```
+   With one Unity Editor, omit `unity_instance`; with multiple Unity Editors or projects, add it only when the exposed schema supports per-call routing.
 3. Fix syntax or semantic errors before recompiling.
 4. Load `$code-style` and review the changed scripts against project style, ownership, DI, localization, lifecycle, and public API rules. Treat code-style violations as validation failures even when `validate_script` reports no diagnostics.
 5. When validation and `$code-style` review pass, or only known external-reference errors remain, run `$unity-recompile-menuitem` and read Unity console errors.

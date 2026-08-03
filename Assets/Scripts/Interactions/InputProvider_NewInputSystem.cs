@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,38 +5,72 @@ namespace TD.Interactions
 {
 public class InputProvider_NewInputSystem : MonoBehaviour, IRTSCInputProvider
 {
-    private RTSCC_InputActions inputActions;
+    private PlayerInput playerInput;
+    private InputAction moveAction;
+    private InputAction lookAction;
+    private InputAction rotateAction;
+    private InputAction dragAction;
+    private InputAction playerZoomAction;
+    private InputAction scrollWheelAction;
+    private InputAction pointAction;
+    private InputAction heightUpAction;
+    private InputAction heightDownAction;
+    private InputAction rotateRightAction;
+    private InputAction rotateLeftAction;
 
-    private void Awake()
+    private void Start()
     {
-        inputActions = new RTSCC_InputActions();
-        inputActions.Enable();
+        playerInput = GetComponent<PlayerInput>();
+        if (playerInput == null)
+        {
+            Debug.LogError("InputProvider_NewInputSystem requires a PlayerInput component on the same GameObject.");
+            return;
+        }
+
+        var actions = playerInput.actions;
+        moveAction = actions.FindAction("Player/Move", true);
+        lookAction = actions.FindAction("Player/Look", true);
+        rotateAction = actions.FindAction("UI/MiddleClick", true);
+        dragAction = actions.FindAction("UI/RightClick", true);
+        playerZoomAction = actions.FindAction("Player/Zoom", true);
+        scrollWheelAction = actions.FindAction("UI/ScrollWheel", true);
+        pointAction = actions.FindAction("UI/Point", true);
+        heightUpAction = actions.FindAction("Player/Tooltip Click", true);
+        heightDownAction = actions.FindAction("Player/Tooltip Click1", true);
+        rotateRightAction = actions.FindAction("Player/Next", true);
+        rotateLeftAction = actions.FindAction("Player/Previous", true);
+
+        actions.FindActionMap("Player", true).Enable();
+        actions.FindActionMap("UI", true).Enable();
     }
 
     private void OnDestroy()
     {
-        inputActions?.Disable();
-        inputActions?.Dispose();
+        playerInput?.actions?.Disable();
     }
 
-    public bool DragButtonInput() => inputActions.RTSCC.Drag.IsPressed();
+    public bool DragButtonInput() => dragAction != null && dragAction.IsPressed();
 
-    public Vector2 MouseInput() => inputActions.RTSCC.Mouse.ReadValue<Vector2>();
+    public Vector2 MouseInput() => lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
 
-    public Vector2 MousePosition() => inputActions.RTSCC.Position.ReadValue<Vector2>();
+    public Vector2 MousePosition() => pointAction?.ReadValue<Vector2>() ?? Vector2.zero;
 
-    public Vector2 MovementInput() => inputActions.RTSCC.Move.ReadValue<Vector2>();
+    public Vector2 MovementInput() => moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
 
-    public bool RotationButtonInput() => inputActions.RTSCC.Rotate.IsPressed();
+    public bool RotationButtonInput() => rotateAction != null && rotateAction.IsPressed();
 
-    public float ZoomInput() => inputActions.RTSCC.Zoom.ReadValue<float>();
+    public float ZoomInput()
+    {
+        float scrollWheelInput = scrollWheelAction?.ReadValue<Vector2>().y ?? 0f;
+        return scrollWheelInput != 0f ? scrollWheelInput : playerZoomAction?.ReadValue<float>() ?? 0f;
+    }
 
-    public bool HeightUpButtonInput() => inputActions.RTSCC.HeightUp.IsPressed();
+    public bool HeightUpButtonInput() => heightUpAction != null && heightUpAction.IsPressed();
 
-    public bool HeightDownButtonInput() => inputActions.RTSCC.HeightDown.IsPressed();
+    public bool HeightDownButtonInput() => heightDownAction != null && heightDownAction.IsPressed();
 
-    public bool RotateRightButtonInput() => inputActions.RTSCC.RotateRight.IsPressed();
+    public bool RotateRightButtonInput() => rotateRightAction != null && rotateRightAction.IsPressed();
 
-    public bool RotateLeftButtonInput() => inputActions.RTSCC.RotateLeft.IsPressed();
+    public bool RotateLeftButtonInput() => rotateLeftAction != null && rotateLeftAction.IsPressed();
 }
 }

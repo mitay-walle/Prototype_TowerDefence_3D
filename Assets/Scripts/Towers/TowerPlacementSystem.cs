@@ -15,7 +15,7 @@ namespace TD.Towers
 	{
 		[SerializeField] private InputActionReference _submit;
 		[SerializeField] private InputActionReference _cancel;
-		[SerializeField] private LayerMask groundMask = -1;
+		[SerializeField] private TD.Levels.TileMapManager _tileMapManager;
 		[SerializeField] private LayerMask intersectMask = -1;
 		public Material ghostMaterial;
 		private GameObject ghostInstance;
@@ -61,14 +61,14 @@ namespace TD.Towers
 			if (mousePosition == Vector2.zero) return;
 
 			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-			if (Physics.Raycast(ray, out var hit, 500f, groundMask))
-			{
-				Vector3 p = hit.point;
-				p = new Vector3(Mathf.Round(p.x), p.y + 1, Mathf.Round(p.z));
-				Physics.Raycast(new Ray(p, Vector3.down), out var hit2, 100, groundMask);
-				p = hit2.point;
-				ghostInstance.GetComponent<Rigidbody>().position = p;
-			}
+			if (_tileMapManager == null || !_tileMapManager.TryGetGridPoint(ray, out var hitPoint))
+				return;
+
+			var gridPosition = _tileMapManager.WorldToGrid(hitPoint);
+			if (!_tileMapManager.GetTile(gridPosition).HasValue)
+				return;
+
+			ghostInstance.GetComponent<Rigidbody>().position = _tileMapManager.GridToWorld(gridPosition);
 
 			if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
 			{

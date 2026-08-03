@@ -1,6 +1,8 @@
 using Sirenix.OdinInspector;
+using TD.GameLoop;
+using TD.Interactions;
 using TD.Voxels;
-using UnityEditor;
+using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,10 +11,11 @@ namespace TD.Levels
     public class TilePlacementSystem : MonoBehaviour
     {
         [SerializeField] private Camera mainCamera;
-        [SerializeField] private LayerMask groundMask;
         [SerializeField] private GameObject ghostPrefab;
         [SerializeField] private TileMapManager tileMapManager;
         [SerializeField] private RoadTileDef[] availableTiles;
+        [SerializeField] private InputActionAsset inputActions;
+        [SerializeField] private NavMeshSurfaceWrapper navMeshSurfaceWrapper;
 
         private GameObject ghostTile;
         private RoadTileDef currentTileDef;
@@ -21,12 +24,43 @@ namespace TD.Levels
         private Vector2Int currentGridPosition;
         private VoxelGenerator ghostGenerator;
         private bool isPlacingTile;
+
+        public bool IsPlacing => isPlacingTile;
         private bool Logs;
+        private IRTSCInputProvider inputProvider;
+        private InputAction clickAction;
+        private InputAction rightClickAction;
+        private InputAction submitAction;
+        private InputAction cancelAction;
+        private InputAction rotateAction;
+        private InputAction restartAction;
 
         private void OnEnable()
         {
             if (tileMapManager == null)
                 tileMapManager = GetComponent<TileMapManager>();
+
+            if (navMeshSurfaceWrapper == null)
+                navMeshSurfaceWrapper = FindAnyObjectByType<NavMeshSurfaceWrapper>();
+
+            if (mainCamera != null)
+                inputProvider = mainCamera.GetComponentInParent<IRTSCInputProvider>();
+
+            if (inputActions == null) return;
+
+            clickAction = inputActions.FindAction("UI/Click", true);
+            rightClickAction = inputActions.FindAction("UI/RightClick", true);
+            submitAction = inputActions.FindAction("UI/Submit", true);
+            cancelAction = inputActions.FindAction("UI/Cancel", true);
+            rotateAction = inputActions.FindAction("Player/Build", true);
+            restartAction = inputActions.FindAction("Player/Restart", true);
+
+            clickAction.Enable();
+            rightClickAction.Enable();
+            submitAction.Enable();
+            cancelAction.Enable();
+            rotateAction.Enable();
+            restartAction.Enable();
         }
 
         public void StartTilePlacement(RoadTileDef tileDef, GameObject tilePrefab)
@@ -73,6 +107,11 @@ namespace TD.Levels
             }
 
             tileMapManager.PlaceTile(currentGridPosition, currentTileDef, currentRotation, currentTilePrefab);
+            if (navMeshSurfaceWrapper != null && !navMeshSurfaceWrapper.BuildNavMesh())
+            {
+                Debug.LogError("[TilePlacement] NavMesh rebuild did not produce NavMesh data!");
+            }
+
             CancelPlacement();
 
             if (Logs) Debug.Log($"[TilePlacement] Tile placed at {currentGridPosition}");
@@ -88,28 +127,37 @@ namespace TD.Levels
 
         private void HandleInput()
         {
-            if (Mouse.current != null)
+            if (clickAction != null && clickAction.WasPressedThisFrame() &&
+                (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
             {
-                if (Mouse.current.leftButton.wasPressedThisFrame)
-                    PlaceTile();
-
-                if (Mouse.current.rightButton.wasPressedThisFrame)
-                    RotateTile();
-
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                    CancelPlacement();
+                PlaceTile();
             }
 
-            if (Gamepad.current != null)
+            if (rightClickAction != null && rightClickAction.WasPressedThisFrame() &&
+                (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
             {
-                if (Gamepad.current.aButton.wasPressedThisFrame)
-                    PlaceTile();
+                RotateTile();
+            }
 
-                if (Gamepad.current.bButton.wasPressedThisFrame)
-                    RotateTile();
+            if (submitAction != null && submitAction.WasPressedThisFrame())
+            {
+                PlaceTile();
+            }
 
-                if (Gamepad.current.yButton.wasPressedThisFrame)
-                    CancelPlacement();
+            if (rotateAction != null && rotateAction.WasPressedThisFrame())
+            {
+                RotateTile();
+            }
+
+            if (cancelAction != null && cancelAction.WasPressedThisFrame() &&
+                cancelAction.activeControl?.device is Keyboard)
+            {
+                CancelPlacement();
+            }
+
+            if (restartAction != null && restartAction.WasPressedThisFrame())
+            {
+                CancelPlacement();
             }
         }
 
@@ -117,19 +165,19 @@ namespace TD.Levels
         {
             if (mainCamera == null || ghostTile == null) return;
 
-            Vector2 mousePos = Mouse.current?.position.ReadValue() ?? Vector2.zero;
+            if (inputProvider == null) return;
+
+            Vector2 mousePos = inputProvider.MousePosition();
             Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask))
-            {
-                Vector3 hitPoint = hit.point;
-                currentGridPosition = new Vector2Int(Mathf.RoundToInt(hitPoint.x / 5f), Mathf.RoundToInt(hitPoint.z / 5f));
+            if (tileMapManager == null || !tileMapManager.TryGetGridPoint(ray, out var hitPoint))
+                return;
 
-                ghostTile.transform.position = new Vector3(currentGridPosition.x * 5f, 0, currentGridPosition.y * 5f);
-                ghostTile.transform.rotation = Quaternion.Euler(0, currentRotation * 90, 0);
+            currentGridPosition = tileMapManager.WorldToGrid(hitPoint);
+			ghostTile.transform.position = tileMapManager.GridToWorld(currentGridPosition);
+			ghostTile.transform.rotation = Quaternion.Euler(0, currentRotation * 90, 0);
 
-                UpdateGhostAppearance();
-            }
+			UpdateGhostAppearance();
         }
 
         private void UpdateGhostAppearance()
@@ -176,10 +224,11 @@ namespace TD.Levels
         [Button("Test Placement")]
         private void TestPlacement()
         {
-            if (availableTiles.Length == 0) return;
-            
-            var tilePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Tiles/Straight_H.prefab");
-            StartTilePlacement(availableTiles[0], tilePrefab);
+            if (availableTiles.Length == 0 || TileDatabase.Instance == null) return;
+
+            var tilePrefab = TileDatabase.Instance.GetPrefabByConnections(availableTiles[0].connections);
+            if (tilePrefab != null)
+                StartTilePlacement(availableTiles[0], tilePrefab.gameObject);
         }
     }
 }

@@ -75,7 +75,8 @@ manage_scene(action="get_build_settings") # Build settings
 manage_scene(action="create", name="NewScene", path="Assets/Scenes/")
 # Existing-scene edits in Outcasts: load additively and set the target loaded scene active.
 # Use the current typed schema's additive/load_mode and active-scene parameters when available;
-# if the schema cannot do this with per-call unity_instance routing, stop instead of replacing loaded scenes.
+# if multiple Unity Editors are active and the schema cannot do this with per-call unity_instance routing, stop instead of replacing loaded scenes.
+# With one Unity Editor, use the schema directly without instance routing.
 manage_scene(action="load", path="Assets/Scenes/Main.unity", load_mode="additive")
 manage_scene(action="save")
 ```

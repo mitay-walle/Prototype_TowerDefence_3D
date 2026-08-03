@@ -4,7 +4,7 @@ Complete reference for all MCP tools. Each tool includes parameters, types, and 
 
 > **Template warning:** Examples in this file are skill templates and may be inaccurate for some Unity versions, packages, or project setups. Validate parameters and payload shapes against your active tool schema and runtime behavior.
 >
-> **Outcasts routing requirement:** Every executable Unity MCP call copied from this reference must include `unity_instance="<Outcasts Name@hash>"` when the exposed schema supports it. For `batch_execute`, include `unity_instance` inside each nested command's `params`. Treat examples without that argument as abbreviated documentation, not ready-to-run commands.
+> **Unity MCP routing:** These examples are usable with one Unity Editor without instance discovery or a `unity_instance` argument. For multiple Unity Editors or projects, add `unity_instance="<target Name@hash>"` whenever the exposed schema supports it; for `batch_execute`, add it inside every nested command's `params`. Treat the active schema as authoritative.
 
 ## Table of Contents
 
@@ -83,13 +83,11 @@ Do not route direct-only tools through `batch_execute`:
 
 ### set_active_instance
 
-Global session routing command. For Outcasts project work, do not call this tool and do not use it as a fallback when a resource or tool cannot accept `unity_instance`.
-
-Use per-call `unity_instance="Outcasts@..."` routing instead. If a project-scoped call cannot accept `unity_instance`, stop and report MCP routing is blocked; do not use global active-instance routing as a fallback.
+Global session routing command. Do not use it as a substitute for a typed Unity MCP call. With one Unity Editor, omit instance routing entirely. With multiple Unity Editors or projects, use per-call `unity_instance="<target Name@hash>"` when the schema supports it; if concurrent routing cannot be expressed, stop that multi-Editor operation.
 
 ```python
-# Do not use for Outcasts project work.
-# Instead, pass unity_instance="Outcasts@abc123" to every routed MCP call.
+# With one Unity Editor, omit unity_instance.
+# With multiple Editors, pass the matching unity_instance to each routed call when supported.
 ```
 
 ### refresh_unity

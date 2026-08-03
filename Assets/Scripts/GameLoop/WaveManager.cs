@@ -5,6 +5,7 @@ using TD.Monsters;
 using TD.Levels;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace TD.GameLoop
 {
@@ -36,6 +37,7 @@ namespace TD.GameLoop
 		[SerializeField] private bool autoStartNextWave = false;
 		[Tooltip(TOOLTIP_AUTO_DELAY)]
 		[SerializeField] private float autoStartDelay = 3f;
+		[SerializeField] private InputActionAsset inputActions;
 
 		[SerializeField] private int currentWaveIndex = -1;
 		[SerializeField] private int currentLoopCount = 0;
@@ -61,6 +63,7 @@ namespace TD.GameLoop
 
 		private UniTask spawnTask;
 		private bool isSpawning = false;
+		private InputAction startWaveAction;
 
 		public int CurrentWaveNumber => currentWaveIndex + 1;
 		public int TotalWaves => waves.Count;
@@ -88,6 +91,32 @@ namespace TD.GameLoop
 			}
 
 			Instance = this;
+
+			if (inputActions != null)
+			{
+				startWaveAction = inputActions.FindAction("Player/Start Wave", true);
+			}
+		}
+
+		private void OnEnable()
+		{
+			if (startWaveAction == null) return;
+
+			startWaveAction.Enable();
+			startWaveAction.performed += OnStartWaveInput;
+		}
+
+		private void OnDisable()
+		{
+			if (startWaveAction != null) startWaveAction.performed -= OnStartWaveInput;
+		}
+
+		private void OnStartWaveInput(InputAction.CallbackContext context)
+		{
+			if (context.performed && waves.Count > 0 && !IsWaveActive)
+			{
+				StartNextWave();
+			}
 		}
 
 		private void Start()
@@ -305,7 +334,8 @@ namespace TD.GameLoop
 		private async UniTask TilePlacementPhase()
 		{
 			var tileMapManager = FindFirstObjectByType<TileMapManager>();
-			if (tileMapManager == null || TileDatabase.Instance == null)
+			var tilePlacementSystem = FindFirstObjectByType<TilePlacementSystem>();
+			if (tileMapManager == null || TileDatabase.Instance == null || tilePlacementSystem == null)
 			{
 				ContinueToNextWave();
 				return;
@@ -322,9 +352,17 @@ namespace TD.GameLoop
 
 			await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
 
+			var tileDefinition = new RoadTileDef
+			{
+				connections = tilePrefab.GetConnections(),
+				name = tilePrefab.name
+			};
+			tilePlacementSystem.StartTilePlacement(tileDefinition, tilePrefab.gameObject);
+
 			if (Logs) Debug.Log("[WaveManager] Player can now place a tile");
 
-			await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: this.GetCancellationTokenOnDestroy());
+			await UniTask.WaitUntil(() => !tilePlacementSystem.IsPlacing,
+				cancellationToken: this.GetCancellationTokenOnDestroy());
 
 			if (Logs) Debug.Log("[WaveManager] Tile placement phase completed");
 
