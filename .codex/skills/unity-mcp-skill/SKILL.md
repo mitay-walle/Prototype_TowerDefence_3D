@@ -142,7 +142,7 @@ Replace `960,388` with the measured button center for the current UI. Require al
   "physicsRaycast": {"hit": false, "objectName": null, "objectPath": null, "hitPoint": null},
   "selectedGameplayObject": null,
   "selectedGameplayObjectPath": null,
-  "owner": {"gameState": null, "activeChallengeModifier": null, "canSelectChallengeModifier": false, "buttonActive": false, "buttonLabel": null, "buttonInteractable": false},
+  "owner": {"gameState": null, "activeChallengeModifier": null, "canSelectChallengeModifier": false, "buttonPath": null, "buttonActive": false, "buttonLabel": null, "buttonInteractable": false},
   "placement": {"isPlacing": false, "hasSelectedChoice": false, "selectedChoiceIndex": 0, "choiceCount": 0}
 }
 ```
