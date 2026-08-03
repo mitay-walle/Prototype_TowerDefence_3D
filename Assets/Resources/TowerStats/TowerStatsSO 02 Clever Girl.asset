@@ -16,6 +16,33 @@ MonoBehaviour:
   upgradeRules:
   - rid: 7300525397335605574
   Cost: 33
+  UpgradeCost:
+    BaseValue: 20
+    Growth:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 7
+        inSlope: 0.20000005
+        outSlope: 0.20000005
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    RoundToInt: 1
   Damage:
     BaseValue: 5
     Growth:
@@ -178,33 +205,24 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RoundToInt: 1
-  UpgradeCost:
-    BaseValue: 20
-    Growth:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 7
-        inSlope: 0.20000005
-        outSlope: 0.20000005
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    RoundToInt: 1
+  Role:
+    m_TableReference:
+      m_TableCollectionName: UI
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: tower.role.scaling
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  DefensiveIdentity:
+    m_TableReference:
+      m_TableCollectionName: UI
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: tower.defense.scaling
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2

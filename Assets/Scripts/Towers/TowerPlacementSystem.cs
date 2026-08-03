@@ -145,7 +145,7 @@ namespace TD.Towers
 				//rb.isKinematic = true;
 			}
 
-			ghostInstance.GetComponent<Tower>().TowerStatsVisual.Show(currentPrefab.GetComponent<Tower>().Stats);
+			ghostInstance.GetComponent<Tower>().TowerStatsVisual.Show(ghostInstance.GetComponent<Tower>());
 		}
 
 		void PlaceTower(CallbackContext obj) => PlaceTower();

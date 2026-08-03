@@ -205,6 +205,24 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     RoundToInt: 1
+  Role:
+    m_TableReference:
+      m_TableCollectionName: UI
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: tower.role.area
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  DefensiveIdentity:
+    m_TableReference:
+      m_TableCollectionName: UI
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: tower.defense.area
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   BalanceProfile: {fileID: 11400000, guid: df48896ae206d104191bb73ce83148cb, type: 2}
   references:
     version: 2

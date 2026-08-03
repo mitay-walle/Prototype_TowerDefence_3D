@@ -48,6 +48,7 @@ namespace TD.Towers
 		private List<MonsterHealth> enemiesInRange = new List<MonsterHealth>();
 
 		public TowerStats Stats => stats;
+		public float EffectiveRange => stats.Range + Mathf.Max(0f, transform.position.y);
 		public MonsterHealth CurrentTarget => currentTarget;
 		public bool HasTarget => currentTarget != null && currentTarget.IsAlive;
 		private Collider[] colliders = new Collider[500];
@@ -82,7 +83,7 @@ namespace TD.Towers
 		{
 			enemiesInRange.Clear();
 
-			int inRangeCount = Physics.OverlapSphereNonAlloc(transform.position, stats.Range, colliders);
+			int inRangeCount = Physics.OverlapSphereNonAlloc(transform.position, EffectiveRange, colliders);
 			for (var i = 0; i < inRangeCount; i++)
 			{
 				Collider col = colliders[i];
@@ -99,7 +100,7 @@ namespace TD.Towers
 			if (HasTarget)
 			{
 				float distanceToTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
-				if (distanceToTarget > stats.Range)
+				if (distanceToTarget > EffectiveRange)
 				{
 					LoseTarget();
 				}
@@ -361,7 +362,7 @@ namespace TD.Towers
 
 		public void OnSelected()
 		{
-			TowerStatsVisual.Show(Stats);
+			TowerStatsVisual.Show(this);
 			if (Logs) Debug.Log($"[Turret] {name} OnSelected");
 		}
 
@@ -375,7 +376,7 @@ namespace TD.Towers
 			if (stats == null || !showRange) return;
 
 			Gizmos.color = rangeColor;
-			Gizmos.DrawWireSphere(transform.position, stats.Range);
+			Gizmos.DrawWireSphere(transform.position, EffectiveRange);
 
 			if (HasTarget)
 			{
@@ -410,13 +411,13 @@ namespace TD.Towers
 			{
 				Stats.Damage.ValueInt,
 				Stats.FireRate.ValueInt,
-				Stats.Range.ValueInt,
+				EffectiveRange,
 				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
 				Stats.statsSO.Role.GetLocalizedString(),
 				Stats.statsSO.DefensiveIdentity.GetLocalizedString(),
-
-				//CanUpgrade() ? Stats.UpgradeCost.ValueInt : "-",
+				CanUpgrade() ? Stats.UpgradeCost.ValueInt : "-",
+				Stats.currentGrade,
 			},
 		};
 

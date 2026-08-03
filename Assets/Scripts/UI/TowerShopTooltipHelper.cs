@@ -22,7 +22,7 @@ namespace TD.UI
 			{
 				tower.Stats.statsSO.Damage.BaseValueInt,
 				tower.Stats.statsSO.FireRate.BaseValueInt,
-				tower.Stats.statsSO.Range.BaseValueInt,
+				tower.EffectiveRange,
 				tower.Stats.statsSO.ProjectileSpeed.BaseValueInt,
 				tower.TargetPriority.ToString(),
 				tower.Stats.statsSO.Cost,

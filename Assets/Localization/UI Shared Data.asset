@@ -159,6 +159,30 @@ MonoBehaviour:
     m_Key: wave.info.preparing
     m_Metadata:
       m_Items: []
+  - m_Id: 105482538066108416
+    m_Key: tower.role.generalist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274240
+    m_Key: tower.defense.generalist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274241
+    m_Key: tower.role.area
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274242
+    m_Key: tower.defense.area
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274243
+    m_Key: tower.role.scaling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274244
+    m_Key: tower.defense.scaling
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -30,32 +30,24 @@ MonoBehaviour:
   - m_Id: 681279741952
     m_Localized: '<b>Stats:</b>
 
-      <br><br><br><br><line-height=-100%>
+      Damage: {0}
 
-      Damage:
-      <alpha=#00>{0}<alpha=#FF>
-
-      Fire Rate: <alpha=#00>{1}/s<alpha=#FF>
+      Fire Rate: {1}/s
 
       Range:
-      <alpha=#00>{2}<alpha=#FF>
+      {2:F1}
 
-      Priority: <alpha=#00>{3}<alpha=#FF>
+      Priority: {3}
 
-      <align=right></line-height>
+      Role: {5}
 
-      {3}<alpha=#FF>
-
-      {2:F1}<alpha=#FF>
-
-      {1:F2}/s<alpha=#FF>
-
-      {0}<alpha=#FF></align>
-
+      Defensive identity: {6}
 
 
       Target:
-      {4}'
+      {4}
+
+      Upgrade: {7} (grade {8})'
     m_Metadata:
       m_Items:
       - rid: 7300525384985477567
@@ -92,43 +84,26 @@ MonoBehaviour:
   - m_Id: 681283936260
     m_Localized: '<b>Stats:</b>
 
-      <br><br><br><br><br><line-height=-100%>
+      Damage: {0}
 
-      Damage:
-      <alpha=#00>{0}<alpha=#FF>
-
-      Fire Rate: <alpha=#00>{1}/s<alpha=#FF>
+      Fire Rate: {1:F2}/s
 
       Range:
-      <alpha=#00>{2:F1}<alpha=#FF>
-
-      Projectile Speed: <alpha=#00>{3}<alpha=#FF>
-
-      Priority:
-      <alpha=#00>{4}<alpha=#FF>
-
-      <align=right></line-height>
-
-      {4}
-
-      {3}
-
       {2:F1}
 
-      {1:F2}/s
+      Projectile Speed: {3}
 
-      {0}</align>
+      Priority: {4}
+
+      Role: {7}
+
+      Defensive
+      identity: {8}
 
 
+      <b>Cost:</b> {5}
 
-      <b>Cost:</b>
-      <style="Gold">{5}</style>
-
-      <br>
-
-      <b>Sell:</b> <style="Gold">{6}</style>
-
-'
+      <b>Sell:</b> {6}'
     m_Metadata:
       m_Items:
       - rid: 7300525384985477567
@@ -227,6 +202,30 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 105480028626608138
     m_Localized: Preparing wave {0}/{1}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538066108416
+    m_Localized: Close-range generalist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274240
+    m_Localized: An affordable tower for the early line and single targets.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274241
+    m_Localized: Area control
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274242
+    m_Localized: 'Place it on dense routes: area damage pays off against groups.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274243
+    m_Localized: Scaling specialist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105482538091274244
+    m_Localized: Needs time and upgrades, but reaches a high development ceiling.
     m_Metadata:
       m_Items: []
   references:
