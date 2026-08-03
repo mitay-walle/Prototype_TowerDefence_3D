@@ -330,6 +330,8 @@ namespace TD.Towers
 
 		public void UpgradeSpendingCost()
 		{
+			if (!CanUpgrade()) return;
+
 			int currentTowerCost = Stats.UpgradeCost;
 			if (ResourceManager.Instance != null && currentTowerCost > 0)
 			{
@@ -341,6 +343,7 @@ namespace TD.Towers
 			}
 
 			Upgrade();
+			GetComponent<TooltipWorldBridge>()?.RefreshTooltipIfNeed();
 		}
 
 		public void UpgradeFree()
@@ -410,6 +413,8 @@ namespace TD.Towers
 				Stats.Range.ValueInt,
 				TargetPriority.ToString(),
 				CurrentTarget != null ? CurrentTarget.name : "-",
+				Stats.statsSO.Role.GetLocalizedString(),
+				Stats.statsSO.DefensiveIdentity.GetLocalizedString(),
 
 				//CanUpgrade() ? Stats.UpgradeCost.ValueInt : "-",
 			},

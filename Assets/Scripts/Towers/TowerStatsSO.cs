@@ -5,6 +5,7 @@ using TD.Stats;
 using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace TD.Towers
 {
@@ -21,6 +22,9 @@ namespace TD.Towers
 		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry CritChance = new BaseStatEntry(0.1f, 1.2f);
 		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry ProjectileSpeed = new BaseStatEntry(10, 1.2f);
 		[OnValueChanged("OnStatsChangedEditor", true), VerticalGroup("Stats")] public BaseStatEntry RotateSpeed = new BaseStatEntry(180, 1.2f);
+
+		[VerticalGroup("Identity")] public LocalizedString Role = new LocalizedString();
+		[VerticalGroup("Identity")] public LocalizedString DefensiveIdentity = new LocalizedString();
 
 		[VerticalGroup("External")] [HideInInlineEditors] public TowerBalanceProfileSO BalanceProfile;
 		[VerticalGroup("External")] [HideIf("@TestGrade<=1"), ShowInInspector] public TowerStatsRuntime Simulator => TowerStatsSimulator.simStats;

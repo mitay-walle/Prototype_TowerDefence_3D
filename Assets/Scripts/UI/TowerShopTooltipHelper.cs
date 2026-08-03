@@ -26,7 +26,9 @@ namespace TD.UI
 				tower.Stats.statsSO.ProjectileSpeed.BaseValueInt,
 				tower.TargetPriority.ToString(),
 				tower.Stats.statsSO.Cost,
-				tower.SellValue
+				tower.SellValue,
+				tower.Stats.statsSO.Role.IsEmpty ? string.Empty : tower.Stats.statsSO.Role.GetLocalizedString(),
+				tower.Stats.statsSO.DefensiveIdentity.IsEmpty ? string.Empty : tower.Stats.statsSO.DefensiveIdentity.GetLocalizedString()
 			};
 
 			hoverTooltip.title = tower.Title;
