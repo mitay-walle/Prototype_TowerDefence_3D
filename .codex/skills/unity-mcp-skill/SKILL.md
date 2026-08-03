@@ -131,8 +131,25 @@ Use this protocol for a real UI click in the running Gameplay scene:
 
 Replace `960,388` with the measured button center for the current UI. Require all three results to report `callSucceeded=true` and matching `actual_position`.
 
-4. Read back the owner state and the clicked button through Unity `execute_code` (for example, selected modifier/reward, `GameState`, `Button.interactable`, or panel visibility). A successful smoke requires the owner state to change and the button state to reflect the click; a virtual-mouse status response alone is insufficient. Check the Unity Console for errors.
-5. If the editor reports `play_mode.is_changing=true`, do not click. Poll `mcpforunity://editor/state`; if it remains stuck, use `manage_editor stop`, confirm `is_playing=false` and `is_changing=false`, then `manage_editor play`, wait for the transition to finish, refocus Game view, remap coordinates, and repeat the complete sequence.
+4. Capture the same structured snapshot through Unity `execute_code` immediately before and after the click. Each snapshot must include:
+
+```json
+{
+  "syntheticMouse": {"position": {"x": 0, "y": 0}, "buttons": {"left": false, "right": false, "middle": false}},
+  "eventSystem": {"currentSelectedGameObject": null, "pointerOverGameObject": false, "pointerUiTarget": null},
+  "activeCamera": {"position": {"x": 0, "y": 0, "z": 0}, "rotationEuler": {"x": 0, "y": 0, "z": 0}},
+  "screenRay": {"origin": {"x": 0, "y": 0, "z": 0}, "direction": {"x": 0, "y": 0, "z": 0}},
+  "physicsRaycast": {"hit": false, "objectName": null, "hitPoint": null},
+  "selectedGameplayObject": null,
+  "owner": {"gameState": null, "activeChallengeModifier": null, "canSelectChallengeModifier": false, "buttonActive": false, "buttonLabel": null, "buttonInteractable": false},
+  "placement": {"isPlacing": false, "hasSelectedChoice": false, "selectedChoiceIndex": 0, "choiceCount": 0}
+}
+```
+
+`eventSystem.pointerUiTarget` is the top `EventSystem.RaycastAll` UI result at the synthetic position. `screenRay` is `Camera.ScreenPointToRay` for that position. `physicsRaycast` is the `Physics.Raycast` object and hit point under the same ray. `selectedGameplayObject` records a non-UI gameplay hit when one exists. Extend `owner`/`placement` with the state, label, interactable, or placement fields owned by the tested action. Compare before/after values and prove the owner state and UI state changed. `td_virtual_mouse` returning `success=true` is transport evidence only, never click proof.
+
+5. Check the Unity Console for errors after the after-snapshot.
+6. If the editor reports `play_mode.is_changing=true`, do not click. Poll `mcpforunity://editor/state`; if it remains stuck, use `manage_editor stop`, confirm `is_playing=false` and `is_changing=false`, then `manage_editor play`, wait for the transition to finish, refocus Game view, remap coordinates, capture a new before-snapshot, and repeat the complete sequence.
 
 ## References
 
