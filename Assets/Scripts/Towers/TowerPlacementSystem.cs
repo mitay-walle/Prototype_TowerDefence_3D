@@ -68,7 +68,7 @@ namespace TD.Towers
 			if (!_tileMapManager.GetTile(gridPosition).HasValue)
 				return;
 
-			ghostInstance.GetComponent<Rigidbody>().position = _tileMapManager.GridToWorld(gridPosition);
+			ghostInstance.GetComponent<Rigidbody>().position = hitPoint;
 
 			if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
 			{
@@ -162,7 +162,7 @@ namespace TD.Towers
 			if (!_tileMapManager.GetTile(gridPosition).HasValue)
 				return;
 
-			ghostInstance.GetComponent<Rigidbody>().position = _tileMapManager.GridToWorld(gridPosition);
+			ghostInstance.GetComponent<Rigidbody>().position = hitPoint;
 
 			if (ghostInstance.GetComponent<TriggerIntersectColor>().IsIntersected) return;
 
