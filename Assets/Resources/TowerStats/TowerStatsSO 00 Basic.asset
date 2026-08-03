@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeRules: []
   Cost: 25
   UpgradeCost:
-    BaseValue: 10
+    BaseValue: 30
     Growth:
       serializedVersion: 2
       m_Curve:
