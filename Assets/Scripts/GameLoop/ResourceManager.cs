@@ -6,6 +6,8 @@ namespace TD.GameLoop
     public class ResourceManager : MonoBehaviour
     {
         private const string TOOLTIP_PASSIVE_INCOME = "Currency given at the end of each wave";
+        private const string STARTING_RESERVE_KEY = "TD3D.StartingReserve";
+        private const int STARTING_RESERVE_BONUS = 25;
         private const string TOOLTIP_ENABLE_INCOME = "Whether passive income is enabled";
 
         [SerializeField] private bool Logs = false;
@@ -26,6 +28,22 @@ namespace TD.GameLoop
 
         public int CurrentCurrency => currentCurrency;
 
+        public void UnlockStartingReserve()
+        {
+            if (HasStartingReserve)
+                return;
+
+            PlayerPrefs.SetInt(STARTING_RESERVE_KEY, 1);
+            PlayerPrefs.Save();
+        }
+
+        private bool HasStartingReserve => PlayerPrefs.GetInt(STARTING_RESERVE_KEY, 0) == 1;
+
+        private int GetStartingCurrency()
+        {
+            return startingCurrency + (HasStartingReserve ? STARTING_RESERVE_BONUS : 0);
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -35,7 +53,7 @@ namespace TD.GameLoop
             }
 
             Instance = this;
-            currentCurrency = startingCurrency;
+            currentCurrency = GetStartingCurrency();
         }
 
         private void Start()
@@ -83,7 +101,7 @@ namespace TD.GameLoop
 
         public void Reset()
         {
-            currentCurrency = startingCurrency;
+            currentCurrency = GetStartingCurrency();
             onCurrencyChanged?.Invoke(currentCurrency);
         }
 

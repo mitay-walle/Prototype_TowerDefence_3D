@@ -248,6 +248,7 @@ namespace TD.GameLoop
 		{
 			if (IsGameOver) return;
 
+			ResourceManager.Instance?.UnlockStartingReserve();
 			ChangeState(GameState.Victory);
 			onVictory?.Invoke();
 		}
