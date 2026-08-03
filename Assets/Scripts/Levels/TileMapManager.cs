@@ -190,5 +190,161 @@ namespace TD.Levels
 		{
 			return validator.GetAllTiles();
 		}
+
+		public List<TilePlacementChoice> BuildPlacementChoices(IReadOnlyList<RoadTileComponent> tilePrefabs, int minimumOptions)
+		{
+			var choices = new List<TilePlacementChoice>();
+			if (tilePrefabs == null || tilePrefabs.Count == 0 || minimumOptions <= 0)
+				return choices;
+
+			var openRoadEndsBefore = GetOpenRoadEnds();
+			var candidatePositions = new HashSet<Vector2Int>(openRoadEndsBefore);
+			var signatures = new HashSet<string>();
+
+			foreach (var gridPosition in candidatePositions)
+			{
+				foreach (var tilePrefab in tilePrefabs)
+				{
+					if (tilePrefab == null)
+						continue;
+
+					var tileDefinition = new RoadTileDef
+					{
+						position = gridPosition,
+						connections = tilePrefab.GetConnections(),
+						name = tilePrefab.name
+					};
+
+					for (var rotation = 0; rotation < 4; rotation++)
+					{
+						if (!CanPlaceTile(gridPosition, tileDefinition, rotation))
+							continue;
+
+						var rotatedConnections = tileDefinition.GetRotatedConnections(rotation);
+						var signature = $"{gridPosition.x}:{gridPosition.y}:{tilePrefab.name}:{(int)rotatedConnections}";
+						if (!signatures.Add(signature))
+							continue;
+
+						var openRoadEndsAfter = GetOpenRoadEndsAfter(tileDefinition, gridPosition, rotation);
+						var affectedOpenRoadEnds = GetAffectedOpenRoadEnds(openRoadEndsBefore, openRoadEndsAfter);
+						choices.Add(new TilePlacementChoice(
+							true,
+							string.Empty,
+							tileDefinition,
+							tilePrefab,
+							gridPosition,
+							rotation,
+							rotatedConnections,
+							CountConnectedNeighbors(gridPosition, rotatedConnections),
+							openRoadEndsBefore,
+							openRoadEndsAfter,
+							affectedOpenRoadEnds));
+
+						if (choices.Count >= minimumOptions)
+							return choices;
+					}
+				}
+			}
+
+			return choices;
+		}
+
+		public List<Vector2Int> GetOpenRoadEnds()
+		{
+			var tiles = validator.GetAllTiles();
+			var rotations = new Dictionary<Vector2Int, int>();
+			foreach (var tile in tiles)
+				rotations[tile.Key] = validator.GetTileRotation(tile.Key);
+
+			return CollectOpenRoadEnds(tiles, rotations);
+		}
+
+		private List<Vector2Int> GetOpenRoadEndsAfter(RoadTileDef tileDefinition, Vector2Int gridPosition, int rotation)
+		{
+			var tiles = new Dictionary<Vector2Int, RoadTileDef>(validator.GetAllTiles());
+			var rotations = new Dictionary<Vector2Int, int>();
+			foreach (var tile in tiles)
+				rotations[tile.Key] = validator.GetTileRotation(tile.Key);
+
+			tiles[gridPosition] = tileDefinition;
+			rotations[gridPosition] = rotation;
+			return CollectOpenRoadEnds(tiles, rotations);
+		}
+
+		private List<Vector2Int> CollectOpenRoadEnds(
+			IReadOnlyDictionary<Vector2Int, RoadTileDef> tiles,
+			IReadOnlyDictionary<Vector2Int, int> rotations)
+		{
+			var openRoadEnds = new List<Vector2Int>();
+			foreach (var tile in tiles)
+			{
+				var rotation = rotations.TryGetValue(tile.Key, out var storedRotation) ? storedRotation : 0;
+				var connections = tile.Value.GetRotatedConnections(rotation);
+				for (var sideIndex = 0; sideIndex < 4; sideIndex++)
+				{
+					var side = (RoadSide)sideIndex;
+					var neighborPosition = tile.Key + GetOffset(side);
+					if (connections.HasConnection(side) && !tiles.ContainsKey(neighborPosition))
+						openRoadEnds.Add(neighborPosition);
+				}
+			}
+
+			return openRoadEnds;
+		}
+
+		private List<Vector2Int> GetAffectedOpenRoadEnds(
+			IReadOnlyList<Vector2Int> before,
+			IReadOnlyList<Vector2Int> after)
+		{
+			var beforeSet = new HashSet<Vector2Int>(before);
+			var afterSet = new HashSet<Vector2Int>(after);
+			var affected = new List<Vector2Int>();
+
+			foreach (var position in beforeSet)
+			{
+				if (!afterSet.Contains(position))
+					affected.Add(position);
+			}
+
+			foreach (var position in afterSet)
+			{
+				if (!beforeSet.Contains(position))
+					affected.Add(position);
+			}
+
+			return affected;
+		}
+
+		private int CountConnectedNeighbors(Vector2Int gridPosition, RoadConnections connections)
+		{
+			var connectedNeighbors = 0;
+			var tiles = validator.GetAllTiles();
+			for (var sideIndex = 0; sideIndex < 4; sideIndex++)
+			{
+				var side = (RoadSide)sideIndex;
+				var neighborPosition = gridPosition + GetOffset(side);
+				if (!tiles.TryGetValue(neighborPosition, out var neighborTile))
+					continue;
+
+				var neighborRotation = validator.GetTileRotation(neighborPosition);
+				var oppositeSide = RoadConnectionsExtensions.GetOppositeSide(side);
+				if (connections.HasConnection(side) && neighborTile.GetRotatedConnections(neighborRotation).HasConnection(oppositeSide))
+					connectedNeighbors++;
+			}
+
+			return connectedNeighbors;
+		}
+
+		private Vector2Int GetOffset(RoadSide side)
+		{
+			return side switch
+			{
+				RoadSide.North => Vector2Int.up,
+				RoadSide.South => Vector2Int.down,
+				RoadSide.East => Vector2Int.right,
+				RoadSide.West => Vector2Int.left,
+				_ => Vector2Int.zero
+			};
+		}
 	}
 }

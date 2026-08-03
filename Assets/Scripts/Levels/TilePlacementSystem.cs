@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.GameLoop;
 using TD.Interactions;
@@ -23,9 +24,12 @@ namespace TD.Levels
         private int currentRotation;
         private Vector2Int currentGridPosition;
         private VoxelGenerator ghostGenerator;
+        private List<TilePlacementChoice> placementChoices = new List<TilePlacementChoice>();
+        private int selectedChoiceIndex;
         private bool isPlacingTile;
 
         public bool IsPlacing => isPlacingTile;
+        public IReadOnlyList<TilePlacementChoice> PlacementChoices => placementChoices;
         private bool Logs;
         private IRTSCInputProvider inputProvider;
         private InputAction clickAction;
@@ -33,6 +37,8 @@ namespace TD.Levels
         private InputAction submitAction;
         private InputAction cancelAction;
         private InputAction rotateAction;
+        private InputAction previousOptionAction;
+        private InputAction nextOptionAction;
         private InputAction restartAction;
 
         private void OnEnable()
@@ -53,6 +59,8 @@ namespace TD.Levels
             submitAction = inputActions.FindAction("UI/Submit", true);
             cancelAction = inputActions.FindAction("UI/Cancel", true);
             rotateAction = inputActions.FindAction("Player/Build", true);
+            previousOptionAction = inputActions.FindAction("Player/Previous", true);
+            nextOptionAction = inputActions.FindAction("Player/Next", true);
             restartAction = inputActions.FindAction("Player/Restart", true);
 
             clickAction.Enable();
@@ -60,6 +68,8 @@ namespace TD.Levels
             submitAction.Enable();
             cancelAction.Enable();
             rotateAction.Enable();
+            previousOptionAction.Enable();
+            nextOptionAction.Enable();
             restartAction.Enable();
         }
 
@@ -67,6 +77,8 @@ namespace TD.Levels
         {
             if (tileDef.name == null || tilePrefab == null) return;
 
+            placementChoices.Clear();
+            selectedChoiceIndex = 0;
             currentTileDef = tileDef;
             currentTilePrefab = tilePrefab;
             currentRotation = 0;
@@ -77,12 +89,67 @@ namespace TD.Levels
             if (Logs) Debug.Log($"[TilePlacement] Started placing tile: {tileDef.name}");
         }
 
+        public void StartTilePlacementOptions(IReadOnlyList<TilePlacementChoice> choices)
+        {
+            if (choices == null || choices.Count == 0)
+                return;
+
+            placementChoices = new List<TilePlacementChoice>(choices);
+            selectedChoiceIndex = 0;
+            isPlacingTile = true;
+            ApplySelectedChoice();
+        }
+
+        private void ApplySelectedChoice()
+        {
+            var choice = placementChoices[selectedChoiceIndex];
+            currentTileDef = choice.TileDefinition;
+            currentTilePrefab = choice.Prefab != null ? choice.Prefab.gameObject : null;
+            currentGridPosition = choice.GridPosition;
+            currentRotation = choice.Rotation;
+
+            if (currentTilePrefab == null)
+            {
+                CancelPlacement();
+                return;
+            }
+
+            CreateGhost();
+            if (Logs)
+            {
+                Debug.Log(
+                    $"[TilePlacement] Option {selectedChoiceIndex + 1}/{placementChoices.Count}: " +
+                    $"{choice.TileName} {choice.Rotation * 90}° at {choice.GridPosition}, " +
+                    $"open ends {choice.OpenRoadEndCountBefore}->{choice.OpenRoadEndCountAfter}");
+            }
+        }
+
+        private void SelectPreviousOption()
+        {
+            if (!isPlacingTile || placementChoices.Count < 2)
+                return;
+
+            selectedChoiceIndex = (selectedChoiceIndex + placementChoices.Count - 1) % placementChoices.Count;
+            ApplySelectedChoice();
+        }
+
+        private void SelectNextOption()
+        {
+            if (!isPlacingTile || placementChoices.Count < 2)
+                return;
+
+            selectedChoiceIndex = (selectedChoiceIndex + 1) % placementChoices.Count;
+            ApplySelectedChoice();
+        }
+
         public void CancelPlacement()
         {
             if (ghostTile != null)
                 Destroy(ghostTile);
 
             isPlacingTile = false;
+            placementChoices.Clear();
+            selectedChoiceIndex = 0;
             if (Logs) Debug.Log("[TilePlacement] Placement cancelled");
         }
 
@@ -127,6 +194,12 @@ namespace TD.Levels
 
         private void HandleInput()
         {
+            if (previousOptionAction != null && previousOptionAction.WasPressedThisFrame())
+                SelectPreviousOption();
+
+            if (nextOptionAction != null && nextOptionAction.WasPressedThisFrame())
+                SelectNextOption();
+
             if (clickAction != null && clickAction.WasPressedThisFrame() &&
                 (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject()))
             {
@@ -166,6 +239,14 @@ namespace TD.Levels
             if (mainCamera == null || ghostTile == null) return;
 
             if (inputProvider == null) return;
+
+            if (placementChoices.Count > 0)
+            {
+                ghostTile.transform.position = tileMapManager.GridToWorld(currentGridPosition);
+                ghostTile.transform.rotation = Quaternion.Euler(0, currentRotation * 90, 0);
+                UpdateGhostAppearance();
+                return;
+            }
 
             Vector2 mousePos = inputProvider.MousePosition();
             Ray ray = mainCamera.ScreenPointToRay(mousePos);

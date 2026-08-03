@@ -347,30 +347,62 @@ namespace TD.GameLoop
 
 			if (Logs) Debug.Log("[WaveManager] Tile placement phase started");
 
-			var tilePrefab = TileDatabase.Instance.GetRandomTilePrefab();
-			if (tilePrefab == null)
+			var tilePrefabs = TileDatabase.Instance.GetAllTilePrefabs();
+			var placementChoices = tileMapManager.BuildPlacementChoices(tilePrefabs, 3);
+			if (placementChoices.Count < 3)
 			{
+				if (Logs) Debug.LogWarning($"[WaveManager] Tile placement phase skipped: only {placementChoices.Count} valid choices");
 				ContinueToNextWave();
 				return;
 			}
 
 			await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
 
-			var tileDefinition = new RoadTileDef
-			{
-				connections = tilePrefab.GetConnections(),
-				name = tilePrefab.name
-			};
-			tilePlacementSystem.StartTilePlacement(tileDefinition, tilePrefab.gameObject);
+			tilePlacementSystem.StartTilePlacementOptions(placementChoices);
 
-			if (Logs) Debug.Log("[WaveManager] Player can now place a tile");
+			if (Logs)
+			{
+				for (var i = 0; i < placementChoices.Count; i++)
+				{
+					var choice = placementChoices[i];
+					Debug.Log(
+						$"[WaveManager] Tile option {i + 1}: {choice.TileName} {choice.Rotation * 90}° at {choice.GridPosition}, " +
+						$"open ends {choice.OpenRoadEndCountBefore}->{choice.OpenRoadEndCountAfter}");
+				}
+			}
 
 			await UniTask.WaitUntil(() => !tilePlacementSystem.IsPlacing,
 				cancellationToken: this.GetCancellationTokenOnDestroy());
 
+			RefreshSpawnPoints(tileMapManager);
 			if (Logs) Debug.Log("[WaveManager] Tile placement phase completed");
 
 			ContinueToNextWave();
+		}
+
+		private void RefreshSpawnPoints(TileMapManager tileMapManager)
+		{
+			var spawnPositions = tileMapManager.SpawnPositions;
+			if (spawnPositions.Count == 0)
+				return;
+
+			var refreshedSpawnPoints = new Transform[spawnPositions.Count];
+			for (var i = 0; i < spawnPositions.Count; i++)
+			{
+				if (spawnPoints != null && i < spawnPoints.Length && spawnPoints[i] != null)
+				{
+					refreshedSpawnPoints[i] = spawnPoints[i];
+				}
+				else
+				{
+					var spawnPoint = new GameObject($"Spawner_{i}");
+					refreshedSpawnPoints[i] = spawnPoint.transform;
+				}
+
+				refreshedSpawnPoints[i].position = spawnPositions[i];
+			}
+
+			spawnPoints = refreshedSpawnPoints;
 		}
 
 		private void ContinueToNextWave()
