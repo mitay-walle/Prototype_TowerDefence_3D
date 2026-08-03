@@ -108,6 +108,32 @@ Prefer this order when API details are uncertain:
 
 Do not run docs/reflection lookups for routine Unity APIs already clear from nearby project code.
 
+## Virtual Mouse UI Smoke
+
+Use this protocol for a real UI click in the running Gameplay scene:
+
+1. Focus the Unity Game view and verify the editor state is `is_playing=true` and `is_changing=false`. Do not use the editor-window rectangle as game coordinates.
+2. Read `Screen.width`/`Screen.height` and find the active, interactable `Button` through Unity. Convert its `RectTransform.GetWorldCorners` to screen points with `RectTransformUtility.WorldToScreenPoint`; use the center in Unity's bottom-left screen coordinates.
+3. Run one serialized `batch_execute` with `fail_fast=true`, `max_parallelism=1`, `parallel=false`. The tested command was:
+
+```json
+{
+  "commands": [
+    {"tool":"td_virtual_mouse","params":{"operation":"status","mouse":"synthetic"}},
+    {"tool":"td_virtual_mouse","params":{"operation":"move","mouse":"synthetic","x":960,"y":388}},
+    {"tool":"td_virtual_mouse","params":{"operation":"click","mouse":"synthetic","x":960,"y":388,"button":"left"}}
+  ],
+  "fail_fast":true,
+  "max_parallelism":1,
+  "parallel":false
+}
+```
+
+Replace `960,388` with the measured button center for the current UI. Require all three results to report `callSucceeded=true` and matching `actual_position`.
+
+4. Read back the owner state and the clicked button through Unity `execute_code` (for example, selected modifier/reward, `GameState`, `Button.interactable`, or panel visibility). A successful smoke requires the owner state to change and the button state to reflect the click; a virtual-mouse status response alone is insufficient. Check the Unity Console for errors.
+5. If the editor reports `play_mode.is_changing=true`, do not click. Poll `mcpforunity://editor/state`; if it remains stuck, use `manage_editor stop`, confirm `is_playing=false` and `is_changing=false`, then `manage_editor play`, wait for the transition to finish, refocus Game view, remap coordinates, and repeat the complete sequence.
+
 ## References
 
 Read only the relevant reference index, then open the one topic file it points to:
