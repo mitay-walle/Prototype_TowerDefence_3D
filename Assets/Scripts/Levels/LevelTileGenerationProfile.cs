@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace TD.Levels
 {
+    [System.Serializable]
     public class LevelTileGenerationProfile : GenerationProfile
     {
         [SerializeField] private Color tileBaseColor = Color.gray;
