@@ -136,17 +136,18 @@ Replace `960,388` with the measured button center for the current UI. Require al
 ```json
 {
   "syntheticMouse": {"position": {"x": 0, "y": 0}, "buttons": {"left": false, "right": false, "middle": false}},
-  "eventSystem": {"currentSelectedGameObject": null, "pointerOverGameObject": false, "pointerUiTarget": null},
+  "eventSystem": {"currentSelectedGameObject": null, "currentSelectedGameObjectPath": null, "pointerOverGameObject": false, "pointerUiTarget": null, "pointerUiTargetPath": null},
   "activeCamera": {"position": {"x": 0, "y": 0, "z": 0}, "rotationEuler": {"x": 0, "y": 0, "z": 0}},
   "screenRay": {"origin": {"x": 0, "y": 0, "z": 0}, "direction": {"x": 0, "y": 0, "z": 0}},
-  "physicsRaycast": {"hit": false, "objectName": null, "hitPoint": null},
+  "physicsRaycast": {"hit": false, "objectName": null, "objectPath": null, "hitPoint": null},
   "selectedGameplayObject": null,
+  "selectedGameplayObjectPath": null,
   "owner": {"gameState": null, "activeChallengeModifier": null, "canSelectChallengeModifier": false, "buttonActive": false, "buttonLabel": null, "buttonInteractable": false},
   "placement": {"isPlacing": false, "hasSelectedChoice": false, "selectedChoiceIndex": 0, "choiceCount": 0}
 }
 ```
 
-`eventSystem.pointerUiTarget` is the top `EventSystem.RaycastAll` UI result at the synthetic position. `screenRay` is `Camera.ScreenPointToRay` for that position. `physicsRaycast` is the `Physics.Raycast` object and hit point under the same ray. `selectedGameplayObject` records a non-UI gameplay hit when one exists. Extend `owner`/`placement` with the state, label, interactable, or placement fields owned by the tested action. Compare before/after values and prove the owner state and UI state changed. `td_virtual_mouse` returning `success=true` is transport evidence only, never click proof.
+`eventSystem.pointerUiTarget` is the top `EventSystem.RaycastAll` UI result at the synthetic position. `screenRay` is `Camera.ScreenPointToRay` for that position. `physicsRaycast` is the `Physics.Raycast` object and hit point under the same ray. `selectedGameplayObject` records a non-UI gameplay hit when one exists. For every non-null object, output both its short name and its full hierarchy path from the scene root (for example, `Gameplay/Canvas/WavePanel/ReinforcedHordeButton`); use the same path fields in before/after snapshots. Extend `owner`/`placement` with the state, label, interactable, or placement fields owned by the tested action. Compare before/after values and prove the owner state and UI state changed. `td_virtual_mouse` returning `success=true` is transport evidence only, never click proof.
 
 5. Check the Unity Console for errors after the after-snapshot.
 6. If the editor reports `play_mode.is_changing=true`, do not click. Poll `mcpforunity://editor/state`; if it remains stuck, use `manage_editor stop`, confirm `is_playing=false` and `is_changing=false`, then `manage_editor play`, wait for the transition to finish, refocus Game view, remap coordinates, capture a new before-snapshot, and repeat the complete sequence.
