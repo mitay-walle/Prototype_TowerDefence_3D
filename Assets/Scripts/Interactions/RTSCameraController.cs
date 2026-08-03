@@ -271,7 +271,13 @@ public class RTSCameraController : MonoBehaviour
 
     protected void Update()
     {
+#if UNITY_EDITOR
+        bool syntheticMouseActive = UnityEngine.InputSystem.Mouse.current != null &&
+            UnityEngine.InputSystem.Mouse.current.name == "TD Synthetic Mouse";
+        if (_inputProvider == null || (!_isFocused && !syntheticMouseActive))
+#else
         if (_inputProvider == null || !_isFocused)
+#endif
         {
             CancelTargetLock();
             return;
