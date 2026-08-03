@@ -142,12 +142,17 @@ Replace `960,388` with the measured button center for the current UI. Require al
   "physicsRaycast": {"hit": false, "objectName": null, "objectPath": null, "hitPoint": null},
   "selectedGameplayObject": null,
   "selectedGameplayObjectPath": null,
+  "gameplay": {
+    "enemies": {"activeCount": null, "spawnedCount": null, "remainingInWave": null, "byType": {}},
+    "damage": {"lastAmount": null, "totalSincePreviousSnapshot": null, "sourcePath": null, "targetPath": null},
+    "towers": {"count": null, "entries": [{"path": null, "level": null, "upgradeCount": null, "damage": null}]}
+  },
   "owner": {"gameState": null, "activeChallengeModifier": null, "canSelectChallengeModifier": false, "buttonPath": null, "buttonActive": false, "buttonLabel": null, "buttonInteractable": false},
   "placement": {"isPlacing": false, "hasSelectedChoice": false, "selectedChoiceIndex": 0, "choiceCount": 0}
 }
 ```
 
-`eventSystem.pointerUiTarget` is the top `EventSystem.RaycastAll` UI result at the synthetic position. `screenRay` is `Camera.ScreenPointToRay` for that position. `physicsRaycast` is the `Physics.Raycast` object and hit point under the same ray. `selectedGameplayObject` records a non-UI gameplay hit when one exists. For every non-null object, output both its short name and its full hierarchy path from the scene root (for example, `Gameplay/Canvas/WavePanel/ReinforcedHordeButton`); use the same path fields in before/after snapshots. Extend `owner`/`placement` with the state, label, interactable, or placement fields owned by the tested action. Compare before/after values and prove the owner state and UI state changed. `td_virtual_mouse` returning `success=true` is transport evidence only, never click proof.
+`eventSystem.pointerUiTarget` is the top `EventSystem.RaycastAll` UI result at the synthetic position. `screenRay` is `Camera.ScreenPointToRay` for that position. `physicsRaycast` is the `Physics.Raycast` object and hit point under the same ray. `selectedGameplayObject` records a non-UI gameplay hit when one exists. For every non-null object, output both its short name and its full hierarchy path from the scene root (for example, `Gameplay/Canvas/WavePanel/ReinforcedHordeButton`); use the same path fields in before/after snapshots. `gameplay.enemies` must report active/spawned/remaining enemy counts and type breakdown when available; `gameplay.damage` must report the observed damage amount and source/target paths or the cumulative amount since the previous snapshot; `gameplay.towers` must report tower count and each tower path, level, upgrade count, and damage. Resolve these values from the current owner components/events; report `null` or an empty collection when an owner does not expose a metric instead of inventing data. Compare before/after values and prove the owner state and UI state changed. `td_virtual_mouse` returning `success=true` is transport evidence only, never click proof.
 
 5. Check the Unity Console for errors after the after-snapshot.
 6. If the editor reports `play_mode.is_changing=true`, do not click. Poll `mcpforunity://editor/state`; if it remains stuck, use `manage_editor stop`, confirm `is_playing=false` and `is_changing=false`, then `manage_editor play`, wait for the transition to finish, refocus Game view, remap coordinates, capture a new before-snapshot, and repeat the complete sequence.
