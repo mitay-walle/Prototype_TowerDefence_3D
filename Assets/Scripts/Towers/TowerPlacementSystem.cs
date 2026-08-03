@@ -61,11 +61,7 @@ namespace TD.Towers
 			if (mousePosition == Vector2.zero) return;
 
 			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-			if (_tileMapManager == null || !_tileMapManager.TryGetGridPoint(ray, out var hitPoint))
-				return;
-
-			var gridPosition = _tileMapManager.WorldToGrid(hitPoint);
-			if (!_tileMapManager.GetTile(gridPosition).HasValue)
+			if (_tileMapManager == null || !_tileMapManager.TryGetTileSurfacePoint(ray, out var hitPoint, out _))
 				return;
 
 			ghostInstance.GetComponent<Rigidbody>().position = hitPoint;
@@ -155,11 +151,7 @@ namespace TD.Towers
 			if (!ghostInstance || _tileMapManager == null || cam == null || Mouse.current == null) return;
 
 			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-			if (!_tileMapManager.TryGetGridPoint(ray, out var hitPoint))
-				return;
-
-			var gridPosition = _tileMapManager.WorldToGrid(hitPoint);
-			if (!_tileMapManager.GetTile(gridPosition).HasValue)
+			if (!_tileMapManager.TryGetTileSurfacePoint(ray, out var hitPoint, out _))
 				return;
 
 			ghostInstance.GetComponent<Rigidbody>().position = hitPoint;

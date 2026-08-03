@@ -43,6 +43,38 @@ namespace TD.Levels
 			return true;
 		}
 
+		public bool TryGetTileSurfacePoint(Ray ray, out Vector3 worldPoint, out Vector2Int gridPosition)
+		{
+			worldPoint = default;
+			gridPosition = default;
+			if (placedTiles == null || placedTiles.Count == 0)
+				return false;
+
+			var hits = Physics.RaycastAll(ray, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+			var nearestDistance = float.MaxValue;
+			var found = false;
+			for (var hitIndex = 0; hitIndex < hits.Length; hitIndex++)
+			{
+				var tileComponent = hits[hitIndex].collider.GetComponentInParent<RoadTileComponent>();
+				if (tileComponent == null || hits[hitIndex].distance >= nearestDistance)
+					continue;
+
+				foreach (var placedTile in placedTiles)
+				{
+					if (placedTile.Value != tileComponent.gameObject)
+						continue;
+
+					nearestDistance = hits[hitIndex].distance;
+					worldPoint = hits[hitIndex].point;
+					gridPosition = placedTile.Key;
+					found = true;
+					break;
+				}
+			}
+
+			return found;
+		}
+
 		private void Awake()
 		{
 			if (tilesParent == null)
