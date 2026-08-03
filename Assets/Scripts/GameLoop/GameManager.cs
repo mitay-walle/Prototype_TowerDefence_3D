@@ -15,7 +15,7 @@ namespace TD.GameLoop
 
 		[SerializeField] private bool Logs = true;
 		[SerializeField] private float gameOverDelay = 2f;
-		[SerializeField] private GameState currentState = GameState.Initial;
+		[SerializeField] private GameState currentState = GameState.Boot;
 		[SerializeField] private SerializedDictionary<GameState, GameObject> _stateGameObjecs = new();
 		[SerializeField] private InputActionAsset inputActions;
 
@@ -29,11 +29,9 @@ namespace TD.GameLoop
 		[ShowInInspector] private TimeControl TimeControl => TimeControl.Instance;
 
 		public GameState CurrentState => currentState;
-		public bool IsPlaying => currentState == PlayingState;
+		public bool IsPlaying => currentState == GameState.Preparation || currentState == GameState.WaveActive || currentState == GameState.WaveResolve;
 		public bool IsPaused => TimeControl.Instance.IsPaused;
-		public bool IsGameOver => currentState == GameState.GameOver || currentState == GameState.Victory;
-
-		private GameState PlayingState => WaveManager.Instance.IsWaveActive ? GameState.WaveActive : GameState.WavePreparing;
+		public bool IsGameOver => currentState == GameState.Defeat || currentState == GameState.Victory;
 		private PlayerBase playerBase;
 		private InputActionMap playerActionMap;
 		private InputAction restartAction;
@@ -97,11 +95,51 @@ namespace TD.GameLoop
 		public void Initialize()
 		{
 			SetupEventListeners();
+		}
 
-			if (currentState == GameState.Initial)
+		public void BeginBoot()
+		{
+			if (currentState != GameState.Boot)
 			{
-				StartGame();
+				ChangeState(GameState.Boot);
 			}
+			else if (Logs)
+			{
+				Debug.Log("[GameManager] State: Boot");
+			}
+		}
+
+		public void BeginMapBuild()
+		{
+			ChangeState(GameState.MapBuild);
+		}
+
+		public void CompleteMapBuild()
+		{
+			if (currentState != GameState.MapBuild)
+			{
+				return;
+			}
+
+			playerActionMap?.Enable();
+			ChangeState(GameState.Preparation);
+			onGameStarted?.Invoke();
+			TimeControl.Instance.Pause.Remove(this);
+
+			if (WaveManager.Instance != null && WaveManager.Instance.AutoStartNextWave)
+			{
+				StartNextWave();
+			}
+		}
+
+		public void StartNextWave()
+		{
+			if (currentState != GameState.Preparation || WaveManager.Instance == null || WaveManager.Instance.TotalWaves == 0)
+			{
+				return;
+			}
+
+			WaveManager.Instance.StartNextWave();
 		}
 
 		private void SetupEventListeners()
@@ -119,6 +157,7 @@ namespace TD.GameLoop
 			if (WaveManager.Instance != null)
 			{
 				WaveManager.Instance.onAllWavesCompleted.AddListener(OnAllWavesCompleted);
+				WaveManager.Instance.onPreparationReady.AddListener(OnPreparationReady);
 				WaveManager.Instance.onWaveCompleted.AddListener(OnWaveCompleted);
 				WaveManager.Instance.onWaveStarted.AddListener(OnWaveStarted);
 			}
@@ -128,42 +167,36 @@ namespace TD.GameLoop
 			}
 		}
 
-		void OnWaveStarted(int waveIndex)
+		private void OnWaveStarted(int waveIndex)
 		{
 			ChangeState(GameState.WaveActive);
 		}
 
-		void OnWaveCompleted(int waveIndex)
+		private void OnWaveCompleted(int waveIndex)
 		{
-			ChangeState(GameState.WavePreparing);
+			ChangeState(GameState.WaveResolve);
 		}
 
-		void StartGame()
+		private void OnPreparationReady()
 		{
-			playerActionMap?.Enable();
-			ChangeState(GameState.WavePreparing);
-			onGameStarted?.Invoke();
-			TimeControl.Instance.Pause.Remove(this);
+			ChangeState(GameState.Preparation);
 		}
 
-		void PauseGame()
+		private void PauseGame()
 		{
 			if (IsPaused) return;
 
 			playerActionMap?.Disable();
-			ChangeState(GameState.Paused);
-
 			onGamePaused?.Invoke();
 			TimeControl.Instance.Pause.Add(this);
 		}
 
-		void UnpauseGame()
+		private void UnpauseGame()
 		{
 			if (!IsPaused) return;
 
 			playerActionMap?.Enable();
 			TimeControl.Instance.Pause.Remove(this);
-			ChangeState(PlayingState);
 			onGameUnpaused?.Invoke();
 		}
 
@@ -187,31 +220,41 @@ namespace TD.GameLoop
 
 		private void OnBaseDestroyed()
 		{
+			if (IsGameOver) return;
+
 			if (Logs) Debug.Log("On Base Destroyed");
-			Invoke(nameof(GameOver), gameOverDelay);
+			Invoke(nameof(Defeat), gameOverDelay);
 		}
 
 		private void OnAllWavesCompleted()
 		{
-			Victory();
+			if (!IsGameOver)
+			{
+				Victory();
+			}
 		}
 
-		private void GameOver()
+		private void Defeat()
 		{
-			if (Logs) Debug.Log("GameOver");
-			ChangeState(GameState.GameOver);
+			if (IsGameOver) return;
+
+			if (Logs) Debug.Log("Defeat");
+			ChangeState(GameState.Defeat);
 			onGameOver?.Invoke();
 			Time.timeScale = 0f;
 		}
 
 		private void Victory()
 		{
+			if (IsGameOver) return;
+
 			ChangeState(GameState.Victory);
 			onVictory?.Invoke();
 		}
 
 		public void RestartGame()
 		{
+			CancelInvoke(nameof(Defeat));
 			Time.timeScale = 1f;
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
@@ -258,6 +301,14 @@ namespace TD.GameLoop
 			if (playerBase != null)
 			{
 				playerBase.onBaseDestroyed.RemoveListener(OnBaseDestroyed);
+			}
+
+			if (WaveManager.Instance != null)
+			{
+				WaveManager.Instance.onAllWavesCompleted.RemoveListener(OnAllWavesCompleted);
+				WaveManager.Instance.onPreparationReady.RemoveListener(OnPreparationReady);
+				WaveManager.Instance.onWaveCompleted.RemoveListener(OnWaveCompleted);
+				WaveManager.Instance.onWaveStarted.RemoveListener(OnWaveStarted);
 			}
 
 			onGameStateChanged?.RemoveAllListeners();

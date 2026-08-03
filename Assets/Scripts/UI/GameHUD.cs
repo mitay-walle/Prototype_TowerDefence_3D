@@ -343,9 +343,9 @@ namespace TD.UI
 
 		private void UpdateStartWaveButton()
 		{
-			if (startWaveButton == null || WaveManager.Instance == null) return;
+			if (startWaveButton == null || GameManager.Instance == null) return;
 
-			bool canStart = !WaveManager.Instance.IsWaveActive;
+			bool canStart = GameManager.Instance.CurrentState == GameState.Preparation;
 			startWaveButton.interactable = canStart;
 
 			if (startWaveButtonText != null)
@@ -416,7 +416,7 @@ namespace TD.UI
 			}
 		}
 
-		private void OnStartWaveButtonClicked() => WaveManager.Instance?.StartNextWave();
+		private void OnStartWaveButtonClicked() => GameManager.Instance?.StartNextWave();
 		private void OnRestartButtonClicked() => GameManager.Instance?.RestartGame();
 		private void OnQuitButtonClicked() => GameManager.Instance?.QuitGame();
 		private void OnResumeButtonClicked() => GameManager.Instance?.TogglePause();

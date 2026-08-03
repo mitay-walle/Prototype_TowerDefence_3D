@@ -25,10 +25,21 @@ namespace TD.GameLoop
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP STARTED ===");
 
+			if (gameManager != null)
+			{
+				gameManager.BeginBoot();
+				gameManager.BeginMapBuild();
+			}
+
 			await GenerateLevelAsync();
 			await BakeNavMeshAsync();
 			await PlaceGameplayObjectsAsync();
 			await InitializeSystemsAsync();
+
+			if (gameManager != null)
+			{
+				gameManager.CompleteMapBuild();
+			}
 
 			if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP COMPLETE ===");
 		}

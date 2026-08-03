@@ -30,7 +30,8 @@ namespace TD.UI
 			if (WaveManager.Instance == null) return;
 
 			// Update button state
-			startWaveButton.gameObject.SetActive(!WaveManager.Instance.IsWaveActive);
+			bool canStart = GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Preparation;
+			startWaveButton.gameObject.SetActive(canStart);
 
 			// Update wave info text
 			if (waveInfoText != null)
@@ -47,17 +48,17 @@ namespace TD.UI
 				}
 				else
 				{
-					waveInfoText.text = $"Ready to start Wave {WaveManager.Instance.CurrentWaveNumber + 1}/{WaveManager.Instance.TotalWaves}";
+					string waveStatus = GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Preparation
+						? "Ready to start"
+						: "Preparing";
+					waveInfoText.text = $"{waveStatus} Wave {WaveManager.Instance.CurrentWaveNumber + 1}/{WaveManager.Instance.TotalWaves}";
 				}
 			}
 		}
 
 		private void OnStartWaveClicked()
 		{
-			if (WaveManager.Instance != null)
-			{
-				WaveManager.Instance.StartNextWave();
-			}
+			GameManager.Instance?.StartNextWave();
 		}
 
 		private void OnDestroy()

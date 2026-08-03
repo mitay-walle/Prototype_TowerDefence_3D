@@ -60,6 +60,7 @@ namespace TD.GameLoop
 		public UnityEvent<int> onEnemySpawned;
 		public UnityEvent<int> onEnemyKilled;
 		public UnityEvent onAllWavesCompleted;
+		public UnityEvent onPreparationReady;
 
 		private UniTask spawnTask;
 		private bool isSpawning = false;
@@ -67,6 +68,7 @@ namespace TD.GameLoop
 
 		public int CurrentWaveNumber => currentWaveIndex + 1;
 		public int TotalWaves => waves.Count;
+		public bool AutoStartNextWave => autoStartNextWave;
 		public bool IsSpawning => isSpawning;
 		public bool IsWaveActive => enemiesAlive > 0 || isSpawning;
 		public int EnemiesAlive => enemiesAlive;
@@ -113,20 +115,15 @@ namespace TD.GameLoop
 
 		private void OnStartWaveInput(InputAction.CallbackContext context)
 		{
-			if (context.performed && waves.Count > 0 && !IsWaveActive)
+			if (context.performed)
 			{
-				StartNextWave();
+				GameManager.Instance?.StartNextWave();
 			}
 		}
 
 		private void Start()
 		{
 			ValidateSpawnPoints();
-
-			if (waves.Count > 0 && autoStartNextWave)
-			{
-				StartNextWave();
-			}
 		}
 
 		private void ValidateSpawnPoints()
@@ -328,6 +325,13 @@ namespace TD.GameLoop
 
 			onWaveCompleted?.Invoke(currentWaveIndex + 1);
 
+			if (currentWaveIndex + 1 >= waves.Count)
+			{
+				if (Logs) Debug.Log("[WaveManager] All waves completed!");
+				onAllWavesCompleted?.Invoke();
+				return;
+			}
+
 			_ = TilePlacementPhase();
 		}
 
@@ -376,10 +380,20 @@ namespace TD.GameLoop
 				if (Logs) Debug.Log("[WaveManager] All waves completed!");
 				onAllWavesCompleted?.Invoke();
 			}
-			else if (autoStartNextWave)
+			else
 			{
-				Invoke(nameof(StartNextWave), autoStartDelay);
+				onPreparationReady?.Invoke();
+
+				if (autoStartNextWave)
+				{
+					Invoke(nameof(RequestNextWave), autoStartDelay);
+				}
 			}
+		}
+
+		private void RequestNextWave()
+		{
+			GameManager.Instance?.StartNextWave();
 		}
 
 		public void ForceStopWave()
@@ -407,6 +421,7 @@ namespace TD.GameLoop
 			onEnemySpawned?.RemoveAllListeners();
 			onEnemyKilled?.RemoveAllListeners();
 			onAllWavesCompleted?.RemoveAllListeners();
+			onPreparationReady?.RemoveAllListeners();
 		}
 	}
 }
