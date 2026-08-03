@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TD.Levels;
+using TD.Towers;
 using TD.UI;
 
 namespace TD.GameLoop
@@ -96,12 +97,10 @@ namespace TD.GameLoop
 
 			if (Logs) Debug.Log($"[GameplayBootstrap] Base at {basePosition}, spawners: {spawnPositions.Count}");
 
-			var playerBaseGo = GameObject.FindObjectOfType<GameManager>()?.gameObject;
-			if (playerBaseGo != null)
+			var playerBase = FindFirstObjectByType<PlayerBase>();
+			if (playerBase != null)
 			{
-				var base3dGo = playerBaseGo.transform.Find("Base3D");
-				if (base3dGo != null)
-					base3dGo.position = basePosition;
+				playerBase.transform.position = basePosition;
 			}
 
 			if (waveManager != null)
