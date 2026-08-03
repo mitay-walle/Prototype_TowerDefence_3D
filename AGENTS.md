@@ -89,6 +89,3 @@ Unity-проект Tower Defence на Unity `6000.3.7f1`.
 - Используй Odin Inspector для новых custom inspector/editor window поверх существующих паттернов проекта.
 - Не заменяй обычный Odin Inspector на plain `UnityEditor.Editor` без конкретной причины.
 
-## Источники истины
-
-Текущий код, сцена и ассеты важнее старых описаний в `README.md`, `SESSION_SUMMARY.md`, `READY_TO_TEST.md` и `Assets/Documentation`. Перед реализацией сверяй их с фактическими компонентами и ссылками в `Gameplay.unity`.
