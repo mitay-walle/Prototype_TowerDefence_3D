@@ -183,6 +183,22 @@ MonoBehaviour:
     m_Key: tower.defense.scaling
     m_Metadata:
       m_Items: []
+  - m_Id: 105501076893982720
+    m_Key: wave.reward.header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314368
+    m_Key: wave.reward.resource_cache
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314369
+    m_Key: wave.reward.emergency_repairs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314370
+    m_Key: wave.reward.bounty_contract
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using TD.Monsters;
 using TD.Levels;
+using TD.Towers;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -64,6 +65,8 @@ namespace TD.GameLoop
 
 		private UniTask spawnTask;
 		private bool isSpawning = false;
+		private bool rewardOfferPending;
+		private int nextCompletionRewardBonus;
 		private InputAction startWaveAction;
 
 		public int CurrentWaveNumber => currentWaveIndex + 1;
@@ -71,6 +74,7 @@ namespace TD.GameLoop
 		public bool AutoStartNextWave => autoStartNextWave;
 		public bool IsSpawning => isSpawning;
 		public bool IsWaveActive => enemiesAlive > 0 || isSpawning;
+		public bool IsRewardOfferPending => rewardOfferPending;
 		public int EnemiesAlive => enemiesAlive;
 		public int EnemiesSpawned => enemiesSpawned;
 		public int TotalEnemiesInWave => totalEnemiesInWave;
@@ -337,9 +341,12 @@ namespace TD.GameLoop
 
 		private void OnWaveCompleted(WaveConfig waveConfig)
 		{
-			if (Logs) Debug.Log($"[WaveManager] Wave {currentWaveIndex + 1} completed! Reward: {waveConfig.CompletionReward}");
+			int completionReward = waveConfig.CompletionReward + nextCompletionRewardBonus;
+			nextCompletionRewardBonus = 0;
 
-			ResourceManager.Instance?.AddCurrency(waveConfig.CompletionReward);
+			if (Logs) Debug.Log($"[WaveManager] Wave {currentWaveIndex + 1} completed! Reward: {completionReward}");
+
+			ResourceManager.Instance?.AddCurrency(completionReward);
 			ResourceManager.Instance?.GivePassiveIncome();
 
 			onWaveCompleted?.Invoke(currentWaveIndex + 1);
@@ -351,7 +358,44 @@ namespace TD.GameLoop
 				return;
 			}
 
-			_ = TilePlacementPhase();
+			_ = InterWavePhase();
+		}
+
+		public void SelectRewardOffer(int choiceIndex)
+		{
+			if (!rewardOfferPending || choiceIndex < (int)RewardOfferChoice.ResourceCache ||
+				choiceIndex > (int)RewardOfferChoice.BountyContract)
+				return;
+
+			rewardOfferPending = false;
+			var choice = (RewardOfferChoice)choiceIndex;
+			switch (choice)
+			{
+				case RewardOfferChoice.ResourceCache:
+					ResourceManager.Instance?.AddCurrency(75);
+					break;
+				case RewardOfferChoice.EmergencyRepairs:
+					FindFirstObjectByType<PlayerBase>()?.Repair(10);
+					break;
+				case RewardOfferChoice.BountyContract:
+					nextCompletionRewardBonus = 50;
+					break;
+			}
+
+			if (Logs) Debug.Log($"[WaveManager] Reward offer selected: {choice}");
+		}
+
+		private async UniTask InterWavePhase()
+		{
+			await RewardOfferPhase();
+			await TilePlacementPhase();
+		}
+
+		private async UniTask RewardOfferPhase()
+		{
+			rewardOfferPending = true;
+			await UniTask.WaitUntil(() => !rewardOfferPending,
+				cancellationToken: this.GetCancellationTokenOnDestroy());
 		}
 
 		private async UniTask TilePlacementPhase()

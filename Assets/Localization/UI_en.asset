@@ -228,6 +228,28 @@ MonoBehaviour:
     m_Localized: Needs time and upgrades, but reaches a high development ceiling.
     m_Metadata:
       m_Items: []
+  - m_Id: 105501076893982720
+    m_Localized: Choose one reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314368
+    m_Localized: 'Resource Cache
+
+      +75 currency now'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314369
+    m_Localized: 'Emergency Repairs
+
+      +10 base HP'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105501076944314370
+    m_Localized: 'Bounty Contract
+
+      +50 next wave reward'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

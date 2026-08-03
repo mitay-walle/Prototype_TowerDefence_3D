@@ -12,12 +12,39 @@ namespace TD.UI
 	{
 		[SerializeField] private Button startWaveButton;
 		[SerializeField] private TMP_Text waveInfoText;
+		[SerializeField] private GameObject rewardOfferPanel;
+		[SerializeField] private TMP_Text rewardOfferTitleText;
+		[SerializeField] private Button resourceCacheButton;
+		[SerializeField] private Button emergencyRepairsButton;
+		[SerializeField] private Button bountyContractButton;
+
+		private TMP_Text resourceCacheText;
+		private TMP_Text emergencyRepairsText;
+		private TMP_Text bountyContractText;
 
 		private void Start()
 		{
 			if (startWaveButton != null)
 			{
 				startWaveButton.onClick.AddListener(OnStartWaveClicked);
+			}
+
+			if (resourceCacheButton != null)
+			{
+				resourceCacheButton.onClick.AddListener(OnResourceCacheClicked);
+				resourceCacheText = resourceCacheButton.GetComponentInChildren<TMP_Text>(true);
+			}
+
+			if (emergencyRepairsButton != null)
+			{
+				emergencyRepairsButton.onClick.AddListener(OnEmergencyRepairsClicked);
+				emergencyRepairsText = emergencyRepairsButton.GetComponentInChildren<TMP_Text>(true);
+			}
+
+			if (bountyContractButton != null)
+			{
+				bountyContractButton.onClick.AddListener(OnBountyContractClicked);
+				bountyContractText = bountyContractButton.GetComponentInChildren<TMP_Text>(true);
 			}
 
 			UpdateUI();
@@ -32,6 +59,8 @@ namespace TD.UI
 		{
 			var waveManager = WaveManager.Instance;
 			if (waveManager == null) return;
+
+			UpdateRewardOffer(waveManager);
 
 			var gameManager = GameManager.Instance;
 			bool canStart = gameManager != null && gameManager.CurrentState == GameState.Preparation;
@@ -69,6 +98,55 @@ namespace TD.UI
 					"wave.info.preparing",
 					waveManager.CurrentWaveNumber + 1,
 					waveManager.TotalWaves);
+			}
+		}
+
+		private void UpdateRewardOffer(WaveManager waveManager)
+		{
+			bool isPending = waveManager.IsRewardOfferPending;
+			if (rewardOfferPanel != null)
+			{
+				rewardOfferPanel.SetActive(isPending);
+			}
+
+			if (!isPending)
+			{
+				return;
+			}
+
+			if (rewardOfferTitleText != null)
+			{
+				rewardOfferTitleText.text = GetLocalizedText("wave.reward.header");
+			}
+
+			if (resourceCacheText != null)
+			{
+				resourceCacheText.text = GetLocalizedText("wave.reward.resource_cache");
+			}
+
+			if (emergencyRepairsText != null)
+			{
+				emergencyRepairsText.text = GetLocalizedText("wave.reward.emergency_repairs");
+			}
+
+			if (bountyContractText != null)
+			{
+				bountyContractText.text = GetLocalizedText("wave.reward.bounty_contract");
+			}
+
+			if (resourceCacheButton != null)
+			{
+				resourceCacheButton.interactable = true;
+			}
+
+			if (emergencyRepairsButton != null)
+			{
+				emergencyRepairsButton.interactable = true;
+			}
+
+			if (bountyContractButton != null)
+			{
+				bountyContractButton.interactable = true;
 			}
 		}
 
@@ -113,11 +191,41 @@ namespace TD.UI
 			GameManager.Instance?.StartNextWave();
 		}
 
+		private void OnResourceCacheClicked()
+		{
+			WaveManager.Instance?.SelectRewardOffer((int)RewardOfferChoice.ResourceCache);
+		}
+
+		private void OnEmergencyRepairsClicked()
+		{
+			WaveManager.Instance?.SelectRewardOffer((int)RewardOfferChoice.EmergencyRepairs);
+		}
+
+		private void OnBountyContractClicked()
+		{
+			WaveManager.Instance?.SelectRewardOffer((int)RewardOfferChoice.BountyContract);
+		}
+
 		private void OnDestroy()
 		{
 			if (startWaveButton != null)
 			{
 				startWaveButton.onClick.RemoveListener(OnStartWaveClicked);
+			}
+
+			if (resourceCacheButton != null)
+			{
+				resourceCacheButton.onClick.RemoveListener(OnResourceCacheClicked);
+			}
+
+			if (emergencyRepairsButton != null)
+			{
+				emergencyRepairsButton.onClick.RemoveListener(OnEmergencyRepairsClicked);
+			}
+
+			if (bountyContractButton != null)
+			{
+				bountyContractButton.onClick.RemoveListener(OnBountyContractClicked);
 			}
 		}
 	}
