@@ -75,6 +75,25 @@ namespace TD.GameLoop
 		public int EnemiesSpawned => enemiesSpawned;
 		public int TotalEnemiesInWave => totalEnemiesInWave;
 		public float WaveProgress => totalEnemiesInWave > 0 ? (float)enemiesSpawned / totalEnemiesInWave : 0f;
+		public WaveConfig UpcomingWave
+		{
+			get
+			{
+				if (waves == null || waves.Count == 0)
+					return null;
+
+				var nextWaveIndex = currentWaveIndex + 1;
+				if (nextWaveIndex >= waves.Count)
+				{
+					if (!loopWaves)
+						return null;
+
+					nextWaveIndex = 0;
+				}
+
+				return waves[nextWaveIndex];
+			}
+		}
 
 		private Color GetSpawnProgressColor()
 		{

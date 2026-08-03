@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.Stats;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace TD.Monsters
 {
@@ -15,6 +16,9 @@ namespace TD.Monsters
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry InstantReward = new BaseStatEntry(50, AnimationCurve.Linear(0, 1, 1, 2));
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry IncomeReward = new BaseStatEntry(10, AnimationCurve.Linear(0, 1, 1, 2));
 		[OnValueChanged("OnStatsChanged", true)] public BaseStatEntry EarlyKillModifier = new BaseStatEntry(1.2f, AnimationCurve.Linear(0, 1, 1, 2));
+
+		[VerticalGroup("Identity")] public LocalizedString Role = new LocalizedString();
+		[VerticalGroup("Identity")] public LocalizedString DefensiveIdentity = new LocalizedString();
 
 		public override IEnumerable<BaseStatEntry> GetStats()
 		{

@@ -111,6 +111,54 @@ MonoBehaviour:
     m_Key: Sell{0}
     m_Metadata:
       m_Items: []
+  - m_Id: 105480028488196096
+    m_Key: enemy.role.fast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608128
+    m_Key: enemy.defense.fast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608129
+    m_Key: enemy.role.durable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608130
+    m_Key: enemy.defense.durable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608131
+    m_Key: enemy.role.boss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608132
+    m_Key: enemy.defense.boss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608133
+    m_Key: wave.intel.header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608134
+    m_Key: wave.intel.entry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608135
+    m_Key: wave.intel.none
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608136
+    m_Key: wave.info.spawning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608137
+    m_Key: wave.info.active
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608138
+    m_Key: wave.info.preparing
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

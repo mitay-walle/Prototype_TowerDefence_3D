@@ -180,6 +180,55 @@ MonoBehaviour:
     m_Localized: Sell {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 105480028488196096
+    m_Localized: Fast pressure
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608128
+    m_Localized: 'Use dense coverage and fast damage: leaks reach the base quickly.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608129
+    m_Localized: Durable pressure
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608130
+    m_Localized: Use focused damage so durable enemies do not outlast the defense.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608131
+    m_Localized: Base breaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608132
+    m_Localized: 'Keep a strong firing lane and burst damage: this enemy is a direct
+      threat to the base.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608133
+    m_Localized: 'Next wave {0}: {1} enemies'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608134
+    m_Localized: "{0}x {1} \u2014 {2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608135
+    m_Localized: No next wave is configured.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608136
+    m_Localized: "Wave {0}/{1} \u2014 spawning: {2}/{3}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608137
+    m_Localized: "Wave {0}/{1} \u2014 enemies alive: {2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105480028626608138
+    m_Localized: Preparing wave {0}/{1}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using TD.GameLoop;
+using TD.Monsters;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 namespace TD.UI
@@ -27,33 +30,82 @@ namespace TD.UI
 
 		private void UpdateUI()
 		{
-			if (WaveManager.Instance == null) return;
+			var waveManager = WaveManager.Instance;
+			if (waveManager == null) return;
 
-			// Update button state
-			bool canStart = GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Preparation;
-			startWaveButton.gameObject.SetActive(canStart);
-
-			// Update wave info text
-			if (waveInfoText != null)
+			var gameManager = GameManager.Instance;
+			bool canStart = gameManager != null && gameManager.CurrentState == GameState.Preparation;
+			if (startWaveButton != null)
 			{
-				if (WaveManager.Instance.IsSpawning)
-				{
-					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves} " +
-					                    $"Spawning: {WaveManager.Instance.EnemiesSpawned}/{WaveManager.Instance.TotalEnemiesInWave}";
-				}
-				else if (WaveManager.Instance.IsWaveActive)
-				{
-					waveInfoText.text = $"Wave {WaveManager.Instance.CurrentWaveNumber}/{WaveManager.Instance.TotalWaves} " +
-					                    $"Enemies Alive: {WaveManager.Instance.EnemiesAlive}";
-				}
-				else
-				{
-					string waveStatus = GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Preparation
-						? "Ready to start"
-						: "Preparing";
-					waveInfoText.text = $"{waveStatus} Wave {WaveManager.Instance.CurrentWaveNumber + 1}/{WaveManager.Instance.TotalWaves}";
-				}
+				startWaveButton.gameObject.SetActive(canStart);
 			}
+
+			if (waveInfoText == null) return;
+
+			if (waveManager.IsSpawning)
+			{
+				waveInfoText.text = GetLocalizedText(
+					"wave.info.spawning",
+					waveManager.CurrentWaveNumber,
+					waveManager.TotalWaves,
+					waveManager.EnemiesSpawned,
+					waveManager.TotalEnemiesInWave);
+			}
+			else if (waveManager.IsWaveActive)
+			{
+				waveInfoText.text = GetLocalizedText(
+					"wave.info.active",
+					waveManager.CurrentWaveNumber,
+					waveManager.TotalWaves,
+					waveManager.EnemiesAlive);
+			}
+			else if (canStart)
+			{
+				waveInfoText.text = BuildUpcomingWaveInfo(waveManager.UpcomingWave);
+			}
+			else
+			{
+				waveInfoText.text = GetLocalizedText(
+					"wave.info.preparing",
+					waveManager.CurrentWaveNumber + 1,
+					waveManager.TotalWaves);
+			}
+		}
+
+		private string BuildUpcomingWaveInfo(WaveConfig waveConfig)
+		{
+			if (waveConfig == null)
+				return GetLocalizedText("wave.intel.none");
+
+			var lines = new List<string>
+			{
+				GetLocalizedText("wave.intel.header", waveConfig.WaveNumber, waveConfig.GetTotalEnemyCount())
+			};
+
+			foreach (var enemySpawn in waveConfig.EnemySpawns)
+			{
+				if (enemySpawn == null || enemySpawn.enemyPrefab == null)
+					continue;
+
+				if (!enemySpawn.enemyPrefab.TryGetComponent<MonsterStats>(out var stats) || stats.statsSO == null)
+					continue;
+
+				lines.Add(GetLocalizedText(
+					"wave.intel.entry",
+					enemySpawn.count,
+					stats.statsSO.Role.GetLocalizedString(),
+					stats.statsSO.DefensiveIdentity.GetLocalizedString()));
+			}
+
+			return string.Join("\n", lines);
+		}
+
+		private string GetLocalizedText(string key, params object[] arguments)
+		{
+			return new LocalizedString("UI", key)
+			{
+				Arguments = arguments
+			}.GetLocalizedString();
 		}
 
 		private void OnStartWaveClicked()
