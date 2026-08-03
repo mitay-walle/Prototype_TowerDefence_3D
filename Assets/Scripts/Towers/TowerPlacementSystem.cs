@@ -152,7 +152,18 @@ namespace TD.Towers
 
 		void PlaceTower()
 		{
-			if (!ghostInstance) return;
+			if (!ghostInstance || _tileMapManager == null || cam == null || Mouse.current == null) return;
+
+			Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+			if (!_tileMapManager.TryGetGridPoint(ray, out var hitPoint))
+				return;
+
+			var gridPosition = _tileMapManager.WorldToGrid(hitPoint);
+			if (!_tileMapManager.GetTile(gridPosition).HasValue)
+				return;
+
+			ghostInstance.GetComponent<Rigidbody>().position = _tileMapManager.GridToWorld(gridPosition);
+
 			if (ghostInstance.GetComponent<TriggerIntersectColor>().IsIntersected) return;
 
 			int currentTowerCost = ghostInstance.GetComponent<Tower>().Stats.statsSO.Cost;
