@@ -376,7 +376,10 @@ public partial class @RTSCC_InputActions: IInputActionCollection2, IDisposable
 
     public void Dispose()
     {
-        UnityEngine.Object.Destroy(asset);
+        if (UnityEngine.Application.isPlaying)
+            UnityEngine.Object.Destroy(asset);
+        else
+            UnityEngine.Object.DestroyImmediate(asset);
     }
 
     public InputBinding? bindingMask

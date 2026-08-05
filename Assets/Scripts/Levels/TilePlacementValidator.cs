@@ -185,5 +185,135 @@ namespace TD.Levels
         }
 
         public IReadOnlyDictionary<Vector2Int, RoadTileDef> GetAllTiles() => placedTiles;
+
+        public bool ValidateTopology(Vector2Int rootPosition, out string reason)
+        {
+            reason = string.Empty;
+            if (!placedTiles.ContainsKey(rootPosition))
+            {
+                reason = $"Topology root tile is missing at {rootPosition}";
+                return false;
+            }
+
+            var connectedTiles = new HashSet<Vector2Int>();
+            var pendingTiles = new Queue<Vector2Int>();
+            connectedTiles.Add(rootPosition);
+            pendingTiles.Enqueue(rootPosition);
+
+            while (pendingTiles.Count > 0)
+            {
+                var position = pendingTiles.Dequeue();
+                var tile = placedTiles[position];
+                var rotation = GetTileRotation(position);
+                if (!tile.IsValid)
+                {
+                    reason = $"Tile at {position} has invalid road connections";
+                    return false;
+                }
+
+                var connections = tile.GetRotatedConnections(rotation);
+                foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+                {
+                    var neighborPosition = position + GetOffset(side);
+                    if (!placedTiles.TryGetValue(neighborPosition, out var neighbor))
+                        continue;
+
+                    var neighborConnections = neighbor.GetRotatedConnections(GetTileRotation(neighborPosition));
+                    var hasConnection = connections.HasConnection(side);
+                    var neighborHasConnection = neighborConnections.HasConnection(RoadConnectionsExtensions.GetOppositeSide(side));
+                    if (hasConnection != neighborHasConnection)
+                    {
+                        reason = $"Connection mismatch {position} {side} <-> {neighborPosition}";
+                        return false;
+                    }
+
+                    if (hasConnection && connectedTiles.Add(neighborPosition))
+                        pendingTiles.Enqueue(neighborPosition);
+                }
+            }
+
+            if (connectedTiles.Count != placedTiles.Count)
+            {
+                reason = $"{placedTiles.Count - connectedTiles.Count} tile(s) are disconnected from {rootPosition}";
+                return false;
+            }
+
+            foreach (var position in connectedTiles)
+            {
+                var connections = placedTiles[position].GetRotatedConnections(GetTileRotation(position));
+                foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+                {
+                    if (!connections.HasConnection(side))
+                        continue;
+
+                    var neighborPosition = position + GetOffset(side);
+                    if (!placedTiles.ContainsKey(neighborPosition))
+                        continue;
+
+                    var neighborConnections = placedTiles[neighborPosition].GetRotatedConnections(GetTileRotation(neighborPosition));
+                    if (!neighborConnections.HasConnection(RoadConnectionsExtensions.GetOppositeSide(side)))
+                    {
+                        reason = $"Route to open road is broken at {position} {side}";
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public bool ValidateRoutesToOpenEnds(Vector2Int rootPosition, out string reason)
+        {
+            reason = string.Empty;
+            if (!placedTiles.ContainsKey(rootPosition))
+            {
+                reason = $"Route root tile is missing at {rootPosition}";
+                return false;
+            }
+
+            var reachable = new HashSet<Vector2Int> { rootPosition };
+            var pending = new Queue<Vector2Int>();
+            pending.Enqueue(rootPosition);
+            while (pending.Count > 0)
+            {
+                var position = pending.Dequeue();
+                var tile = placedTiles[position];
+                var connections = tile.GetRotatedConnections(GetTileRotation(position));
+                foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+                {
+                    if (!connections.HasConnection(side))
+                        continue;
+
+                    var neighborPosition = position + GetOffset(side);
+                    if (!placedTiles.TryGetValue(neighborPosition, out var neighbor))
+                        continue;
+
+                    var neighborConnections = neighbor.GetRotatedConnections(GetTileRotation(neighborPosition));
+                    if (!neighborConnections.HasConnection(RoadConnectionsExtensions.GetOppositeSide(side)))
+                        continue;
+
+                    if (reachable.Add(neighborPosition))
+                        pending.Enqueue(neighborPosition);
+                }
+            }
+
+            foreach (var tile in placedTiles)
+            {
+                var connections = tile.Value.GetRotatedConnections(GetTileRotation(tile.Key));
+                foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+                {
+                    if (connections.HasConnection(side) && !placedTiles.ContainsKey(tile.Key + GetOffset(side)))
+                    {
+                        if (!reachable.Contains(tile.Key))
+                        {
+                            reason = $"Open road at {tile.Key} {side} is not reachable from base";
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }

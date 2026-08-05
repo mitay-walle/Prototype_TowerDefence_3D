@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e4717a3eb8f5c04aa4236e18bf12300, type: 3}
+  m_Name: Wave_ML_148526 2
+  m_EditorClassIdentifier: Assembly-CSharp::TD.GameLoop.WaveConfig
+  waveName: Wave_ML_148526
+  waveNumber: 2
+  enemySpawns:
+  - enemyPrefab: {fileID: 5149866118109878360, guid: 2b40f9dcbaf447a4b81fcc46dfa11de5, type: 3}
+    count: 2
+    spawnDelay: 1.175
+    healthMultiplier: 1
+    speedMultiplier: 0.97499996
+  - enemyPrefab: {fileID: 1287642803043803240, guid: 994cde2bcedcbe948aba4ace8c5d0778, type: 3}
+    count: 2
+    spawnDelay: 1.175
+    healthMultiplier: 1
+    speedMultiplier: 0.97499996
+  delayBeforeWave: 2.5
+  completionReward: 37
+  healthScaling: 1
+  countScaling: 1
+  generatedByMl: 1
+  generationSeed: 148526
+  predictedBaseDamage: 12
+  safetyMargin: 0.07692308
+  tensionScore: 0.25
+  lastEvaluationScore: 0.24598217
+  lastObservedBaseHealthFraction: 0.05
+  evaluationCount: 1
+  lastEvaluationVictory: 1
+  lastEvaluationDefeat: 0

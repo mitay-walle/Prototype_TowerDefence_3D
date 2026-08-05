@@ -77,7 +77,10 @@ namespace TD.UI
 		{
 			foreach (Button button in _buttons)
 			{
-				Destroy(button.gameObject);
+				if (Application.isPlaying)
+					Destroy(button.gameObject);
+				else
+					DestroyImmediate(button.gameObject);
 			}
 
 			content.DetachChildren();

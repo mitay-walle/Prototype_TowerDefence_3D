@@ -27,6 +27,7 @@ namespace TD.GameLoop
         public UnityEvent<int> onCurrencySpent;
 
         public int CurrentCurrency => currentCurrency;
+        public int StartingCurrency => GetStartingCurrency();
 
         public void UnlockStartingReserve()
         {
@@ -48,7 +49,10 @@ namespace TD.GameLoop
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject);
+                if (Application.isPlaying)
+                    Destroy(gameObject);
+                else
+                    DestroyImmediate(gameObject);
                 return;
             }
 

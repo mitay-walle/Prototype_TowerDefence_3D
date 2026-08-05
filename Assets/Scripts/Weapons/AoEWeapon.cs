@@ -1,6 +1,7 @@
 using TD.Monsters;
 using TD.Plugins.Timing;
 using TD.Stats;
+using TD.Towers;
 using UnityEngine;
 
 namespace TD.Weapons
@@ -16,17 +17,19 @@ namespace TD.Weapons
 		private bool isActive;
 		Collider[] results = new Collider[100];
 		private TowerStats towerStats;
+		private Tower tower;
 
 		public WeaponType WeaponType => WeaponType.AoE;
 
 		private void Awake()
 		{
 			TryGetComponent(out towerStats);
+			TryGetComponent(out tower);
 		}
 
 		private void Update()
 		{
-			if (!isActive) return;
+			if (!isActive || towerStats == null || tower == null) return;
 
 			float damageInterval = 1f / towerStats.FireRate;
 			if (nextDamageTime.CheckAndRestart(damageInterval))
@@ -49,7 +52,10 @@ namespace TD.Weapons
 
 		private void ApplyAreaDamage()
 		{
-			int size = Physics.OverlapSphereNonAlloc(transform.position, towerStats.Range, results, targetMask);
+			if (towerStats == null || tower == null) return;
+
+			var areaRange = tower.EffectiveRange;
+			int size = Physics.OverlapSphereNonAlloc(transform.position, areaRange, results, targetMask);
 
 			int hitCount = 0;
 
@@ -58,7 +64,7 @@ namespace TD.Weapons
 				Collider hit = results[i];
 				if (maxTargetsPerTick > 0 && hitCount >= maxTargetsPerTick) break;
 
-				var health = hit.GetComponent<MonsterHealth>();
+				var health = hit.GetComponentInParent<MonsterHealth>();
 				if (health != null)
 				{
 					health.TakeDamage(damagePerTick);
@@ -68,7 +74,8 @@ namespace TD.Weapons
 				}
 			}
 
-			if (Logs && hitCount > 0) Debug.Log($"[AoEWeapon] Area damage tick: {hitCount} enemies hit for {damagePerTick:F1} each");
+			if (Logs && (size > 0 || hitCount > 0))
+				Debug.Log($"[AoEWeapon] Area damage tick: overlaps={size};resolvedTargets={hitCount};damage={damagePerTick:F1};range={areaRange:F1}");
 		}
 
 		private void OnDrawGizmosSelected()

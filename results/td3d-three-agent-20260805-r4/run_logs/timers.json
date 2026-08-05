@@ -1,0 +1,3157 @@
+{
+    "name": "root",
+    "gauges": {
+        "TD3DBalanceAgent.Policy.Entropy.mean": {
+            "value": 6.362926483154297,
+            "min": 5.821124076843262,
+            "max": 6.414658546447754,
+            "count": 40
+        },
+        "TD3DBalanceAgent.Policy.Entropy.sum": {
+            "value": 814.45458984375,
+            "min": 372.55194091796875,
+            "max": 1167.46435546875,
+            "count": 40
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementCoverageGain.mean": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.5,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementCoverageGain.sum": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.5178571492433548,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementBaseConcentration.mean": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 0.7677051424980164,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementBaseConcentration.sum": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 2.303115427494049,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementCoveredNewEntrance.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementCoveredNewEntrance.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 3.0,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementReward.mean": {
+            "value": 0.07024268060922623,
+            "min": -0.017923721112310886,
+            "max": 0.12700000405311584,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.PlacementReward.sum": {
+            "value": 0.07024268060922623,
+            "min": -0.052800461649894714,
+            "max": 0.13590631633996964,
+            "count": 10
+        },
+        "TD3DBalanceAgent.TD3D.Player.CombatReward.mean": {
+            "value": 0.003071428567636758,
+            "min": -0.019999999552965164,
+            "max": 0.003071428567636758,
+            "count": 23
+        },
+        "TD3DBalanceAgent.TD3D.Player.CombatReward.sum": {
+            "value": 0.04299999994691461,
+            "min": -0.07549999799812213,
+            "max": 0.043000000645406544,
+            "count": 23
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerTargetAcquired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 20
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerTargetAcquired.sum": {
+            "value": 5.0,
+            "min": 1.0,
+            "max": 19.0,
+            "count": 20
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerFired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 20
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerFired.sum": {
+            "value": 6.0,
+            "min": 1.0,
+            "max": 14.0,
+            "count": 20
+        },
+        "TD3DBalanceAgent.TD3D.Player.EnemyLeaked.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 11
+        },
+        "TD3DBalanceAgent.TD3D.Player.EnemyLeaked.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 4.0,
+            "count": 11
+        },
+        "TD3DBalanceAgent.IsTraining.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 40
+        },
+        "TD3DBalanceAgent.IsTraining.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 40
+        },
+        "TD3DEnemyLevelAgent.Policy.Entropy.mean": {
+            "value": 18.50918960571289,
+            "min": 16.699081420898438,
+            "max": 18.684078216552734,
+            "count": 40
+        },
+        "TD3DEnemyLevelAgent.Policy.Entropy.sum": {
+            "value": 2369.17626953125,
+            "min": 1068.7412109375,
+            "max": 3295.07666015625,
+            "count": 40
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementCoverageGain.mean": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.5,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementCoverageGain.sum": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.5178571492433548,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementBaseConcentration.mean": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 0.7677051424980164,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementBaseConcentration.sum": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 2.303115427494049,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementCoveredNewEntrance.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementCoveredNewEntrance.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 3.0,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementReward.mean": {
+            "value": 0.07024268060922623,
+            "min": -0.017923721112310886,
+            "max": 0.12700000405311584,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.PlacementReward.sum": {
+            "value": 0.07024268060922623,
+            "min": -0.052800461649894714,
+            "max": 0.13590631633996964,
+            "count": 10
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CombatReward.mean": {
+            "value": 0.003071428567636758,
+            "min": -0.019999999552965164,
+            "max": 0.003071428567636758,
+            "count": 23
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CombatReward.sum": {
+            "value": 0.04299999994691461,
+            "min": -0.07549999799812213,
+            "max": 0.043000000645406544,
+            "count": 23
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerTargetAcquired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 20
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerTargetAcquired.sum": {
+            "value": 5.0,
+            "min": 1.0,
+            "max": 19.0,
+            "count": 20
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerFired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 20
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerFired.sum": {
+            "value": 6.0,
+            "min": 1.0,
+            "max": 14.0,
+            "count": 20
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EnemyLeaked.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 11
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EnemyLeaked.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 4.0,
+            "count": 11
+        },
+        "TD3DEnemyLevelAgent.IsTraining.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 40
+        },
+        "TD3DEnemyLevelAgent.IsTraining.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 40
+        },
+        "TD3DAgent.Policy.Entropy.mean": {
+            "value": 4.469992637634277,
+            "min": 4.4605278968811035,
+            "max": 4.5473737716674805,
+            "count": 30
+        },
+        "TD3DAgent.Policy.Entropy.sum": {
+            "value": 701.788818359375,
+            "min": 348.5103759765625,
+            "max": 967.3551025390625,
+            "count": 30
+        },
+        "TD3DAgent.TD3D.Player.PlacementCoverageGain.mean": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.4166666716337204,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementCoverageGain.sum": {
+            "value": 0.27272728085517883,
+            "min": -0.125,
+            "max": 0.8333333432674408,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementBaseConcentration.mean": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 0.7677051424980164,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementBaseConcentration.sum": {
+            "value": 0.39763200283050537,
+            "min": 0.39763200283050537,
+            "max": 2.303115427494049,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementCoveredNewEntrance.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementCoveredNewEntrance.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 3.0,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementReward.mean": {
+            "value": 0.07024268060922623,
+            "min": -0.017923721112310886,
+            "max": 0.10633568093180656,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.PlacementReward.sum": {
+            "value": 0.07024268060922623,
+            "min": -0.052800461649894714,
+            "max": 0.21267136186361313,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.CombatReward.mean": {
+            "value": 0.002055555575578991,
+            "min": -0.019999999552965164,
+            "max": 0.0022000000346451996,
+            "count": 17
+        },
+        "TD3DAgent.TD3D.Player.CombatReward.sum": {
+            "value": 0.018500000180210918,
+            "min": -0.07549999799812213,
+            "max": 0.03300000086892396,
+            "count": 17
+        },
+        "TD3DAgent.TD3D.Player.TowerTargetAcquired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 15
+        },
+        "TD3DAgent.TD3D.Player.TowerTargetAcquired.sum": {
+            "value": 3.0,
+            "min": 1.0,
+            "max": 19.0,
+            "count": 15
+        },
+        "TD3DAgent.TD3D.Player.TowerFired.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 15
+        },
+        "TD3DAgent.TD3D.Player.TowerFired.sum": {
+            "value": 5.0,
+            "min": 1.0,
+            "max": 12.0,
+            "count": 15
+        },
+        "TD3DAgent.TD3D.Player.EnemyLeaked.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 9
+        },
+        "TD3DAgent.TD3D.Player.EnemyLeaked.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 4.0,
+            "count": 9
+        },
+        "TD3DAgent.IsTraining.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 30
+        },
+        "TD3DAgent.IsTraining.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 30
+        },
+        "TD3DBalanceAgent.Step.mean": {
+            "value": 94280.0,
+            "min": 90490.0,
+            "max": 94280.0,
+            "count": 39
+        },
+        "TD3DBalanceAgent.Step.sum": {
+            "value": 94280.0,
+            "min": 90490.0,
+            "max": 94280.0,
+            "count": 39
+        },
+        "TD3DBalanceAgent.Policy.ExtrinsicValueEstimate.mean": {
+            "value": -0.052990157157182693,
+            "min": -0.22887791693210602,
+            "max": 0.0827903226017952,
+            "count": 39
+        },
+        "TD3DBalanceAgent.Policy.ExtrinsicValueEstimate.sum": {
+            "value": -0.10598031431436539,
+            "min": -0.35139521956443787,
+            "max": 0.15904948115348816,
+            "count": 39
+        },
+        "TD3DEnemyLevelAgent.Step.mean": {
+            "value": 94280.0,
+            "min": 90490.0,
+            "max": 94280.0,
+            "count": 39
+        },
+        "TD3DEnemyLevelAgent.Step.sum": {
+            "value": 94280.0,
+            "min": 90490.0,
+            "max": 94280.0,
+            "count": 39
+        },
+        "TD3DEnemyLevelAgent.Policy.ExtrinsicValueEstimate.mean": {
+            "value": 0.2857661843299866,
+            "min": -0.014389744028449059,
+            "max": 0.48237088322639465,
+            "count": 39
+        },
+        "TD3DEnemyLevelAgent.Policy.ExtrinsicValueEstimate.sum": {
+            "value": 0.5715323686599731,
+            "min": -0.024897780269384384,
+            "max": 0.9639403820037842,
+            "count": 39
+        },
+        "TD3DBalanceAgent.TD3D.Player.EnemyKilled.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.EnemyKilled.sum": {
+            "value": 3.0,
+            "min": 1.0,
+            "max": 3.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EnemyKilled.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EnemyKilled.sum": {
+            "value": 3.0,
+            "min": 1.0,
+            "max": 3.0,
+            "count": 4
+        },
+        "TD3DAgent.Step.mean": {
+            "value": 93320.0,
+            "min": 89786.0,
+            "max": 93320.0,
+            "count": 29
+        },
+        "TD3DAgent.Step.sum": {
+            "value": 93320.0,
+            "min": 89786.0,
+            "max": 93320.0,
+            "count": 29
+        },
+        "TD3DAgent.Policy.ExtrinsicValueEstimate.mean": {
+            "value": 0.004523225594311953,
+            "min": -0.1690266877412796,
+            "max": 0.5188844203948975,
+            "count": 29
+        },
+        "TD3DAgent.Policy.ExtrinsicValueEstimate.sum": {
+            "value": 0.004523225594311953,
+            "min": -0.1690266877412796,
+            "max": 0.5188844203948975,
+            "count": 29
+        },
+        "TD3DAgent.TD3D.Player.EnemyKilled.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.Player.EnemyKilled.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.Losses.PolicyLoss.mean": {
+            "value": 0.1057890208300065,
+            "min": 0.08675564113245518,
+            "max": 0.11536971262345712,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Losses.PolicyLoss.sum": {
+            "value": 0.1057890208300065,
+            "min": 0.08675564113245518,
+            "max": 0.11536971262345712,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Losses.ValueLoss.mean": {
+            "value": 0.00033907837664796887,
+            "min": 1.3003250555980398e-05,
+            "max": 0.0036762072741112206,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Losses.ValueLoss.sum": {
+            "value": 0.00033907837664796887,
+            "min": 1.3003250555980398e-05,
+            "max": 0.0036762072741112206,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.LearningRate.mean": {
+            "value": 0.0001624928187536,
+            "min": 0.0001624928187536,
+            "max": 0.00016362481818760005,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.LearningRate.sum": {
+            "value": 0.0001624928187536,
+            "min": 0.0001624928187536,
+            "max": 0.00016362481818760005,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.Epsilon.mean": {
+            "value": 0.1812464,
+            "min": 0.1812464,
+            "max": 0.18181240000000004,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.Epsilon.sum": {
+            "value": 0.1812464,
+            "min": 0.1812464,
+            "max": 0.18181240000000004,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.Beta.mean": {
+            "value": 0.004064195359999999,
+            "min": 0.004064195359999999,
+            "max": 0.004092438759999999,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Policy.Beta.sum": {
+            "value": 0.004064195359999999,
+            "min": 0.004064195359999999,
+            "max": 0.004092438759999999,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Losses.PolicyLoss.mean": {
+            "value": 0.10328147991525906,
+            "min": 0.07912242858610288,
+            "max": 0.11677190723949699,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Losses.PolicyLoss.sum": {
+            "value": 0.10328147991525906,
+            "min": 0.07912242858610288,
+            "max": 0.11677190723949699,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Losses.ValueLoss.mean": {
+            "value": 0.00030157998413347676,
+            "min": 1.4598090379641455e-06,
+            "max": 0.009168647053835835,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Losses.ValueLoss.sum": {
+            "value": 0.00030157998413347676,
+            "min": 1.4598090379641455e-06,
+            "max": 0.009168647053835835,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.LearningRate.mean": {
+            "value": 0.0001624928187536,
+            "min": 0.0001624928187536,
+            "max": 0.00016362481818760005,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.LearningRate.sum": {
+            "value": 0.0001624928187536,
+            "min": 0.0001624928187536,
+            "max": 0.00016362481818760005,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.Epsilon.mean": {
+            "value": 0.1812464,
+            "min": 0.1812464,
+            "max": 0.18181240000000004,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.Epsilon.sum": {
+            "value": 0.1812464,
+            "min": 0.1812464,
+            "max": 0.18181240000000004,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.Beta.mean": {
+            "value": 0.004064195359999999,
+            "min": 0.004064195359999999,
+            "max": 0.004092438759999999,
+            "count": 6
+        },
+        "TD3DEnemyLevelAgent.Policy.Beta.sum": {
+            "value": 0.004064195359999999,
+            "min": 0.004064195359999999,
+            "max": 0.004092438759999999,
+            "count": 6
+        },
+        "TD3DBalanceAgent.Environment.EpisodeLength.mean": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.Environment.EpisodeLength.sum": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Success.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Success.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.WavesCompleted.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.WavesCompleted.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CurrencySavingsRatio.mean": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CurrencySavingsRatio.sum": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.UpgradeScore.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.UpgradeScore.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.TotalEntrances.mean": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.TotalEntrances.sum": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CoveredEntrances.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.CoveredEntrances.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.EntryCoverageRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.EntryCoverageRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerBaseConcentration.mean": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.TowerBaseConcentration.sum": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Reward.mean": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.Reward.sum": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.DifficultyScore.mean": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.DifficultyScore.sum": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.mean": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.sum": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.AdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Reward.mean": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Balance.Reward.sum": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Victory.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Victory.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Defeat.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Defeat.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.CompletionRatio.mean": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.CompletionRatio.sum": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.BaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.BaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.DifficultyScore.mean": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.DifficultyScore.sum": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemyHealthFactor.mean": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemyHealthFactor.sum": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemyCountFactor.mean": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemyCountFactor.sum": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemySpeedFactor.mean": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.EnemySpeedFactor.sum": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.GeneratedWave.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.GeneratedWave.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.GeneratedGroups.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.GeneratedGroups.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.PredictedDamageFraction.mean": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.PredictedDamageFraction.sum": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.PredictedCombatSeconds.mean": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.PredictedCombatSeconds.sum": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.TensionScore.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.TensionScore.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Reward.mean": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.Reward.sum": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.Environment.EpisodeLength.mean": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.Environment.EpisodeLength.sum": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Success.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Success.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WavesCompleted.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WavesCompleted.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CurrencySavingsRatio.mean": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CurrencySavingsRatio.sum": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.UpgradeScore.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.UpgradeScore.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TotalEntrances.mean": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TotalEntrances.sum": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CoveredEntrances.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.CoveredEntrances.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EntryCoverageRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.EntryCoverageRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerBaseConcentration.mean": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.TowerBaseConcentration.sum": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Reward.mean": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.Reward.sum": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.DifficultyScore.mean": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.DifficultyScore.sum": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.mean": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.sum": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.AdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Reward.mean": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.Reward.sum": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Victory.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Victory.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Defeat.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Defeat.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.CompletionRatio.mean": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.CompletionRatio.sum": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.BaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.BaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.DifficultyScore.mean": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.DifficultyScore.sum": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemyHealthFactor.mean": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemyHealthFactor.sum": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemyCountFactor.mean": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemyCountFactor.sum": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemySpeedFactor.mean": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.EnemySpeedFactor.sum": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.GeneratedWave.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.GeneratedWave.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.GeneratedGroups.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.GeneratedGroups.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.PredictedDamageFraction.mean": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.PredictedDamageFraction.sum": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.PredictedCombatSeconds.mean": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.PredictedCombatSeconds.sum": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.TensionScore.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.TensionScore.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Reward.mean": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.Reward.sum": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DAgent.Environment.EpisodeLength.mean": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DAgent.Environment.EpisodeLength.sum": {
+            "value": 589.0,
+            "min": 589.0,
+            "max": 589.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Success.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Success.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.WavesCompleted.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.WavesCompleted.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CurrencySavingsRatio.mean": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CurrencySavingsRatio.sum": {
+            "value": 0.6363636255264282,
+            "min": 0.6363636255264282,
+            "max": 0.6363636255264282,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.UpgradeScore.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.UpgradeScore.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.TotalEntrances.mean": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.TotalEntrances.sum": {
+            "value": 8.0,
+            "min": 8.0,
+            "max": 8.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CoveredEntrances.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.CoveredEntrances.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.EntryCoverageRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.EntryCoverageRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.TowerBaseConcentration.mean": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.TowerBaseConcentration.sum": {
+            "value": 0.6538907289505005,
+            "min": 0.6538907289505005,
+            "max": 0.6538907289505005,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Reward.mean": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Player.Reward.sum": {
+            "value": -1.437403678894043,
+            "min": -1.437403678894043,
+            "max": -1.437403678894043,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Victory.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Victory.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Defeat.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Defeat.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.CompletionRatio.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.CompletionRatio.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.BaseHealthFraction.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.BaseHealthFraction.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.BaseHealthLossFraction.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.BaseHealthLossFraction.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.DifficultyScore.mean": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.DifficultyScore.sum": {
+            "value": 0.5000000596046448,
+            "min": 0.5000000596046448,
+            "max": 0.5000000596046448,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemyHealthFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.mean": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveEnemySpeedFactor.sum": {
+            "value": 1.0750000476837158,
+            "min": 1.0750000476837158,
+            "max": 1.0750000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.AdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.2000000476837158,
+            "max": 1.2000000476837158,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Reward.mean": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.Balance.Reward.sum": {
+            "value": -0.75,
+            "min": -0.75,
+            "max": -0.75,
+            "count": 1
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Victory.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Victory.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Defeat.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Defeat.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Timeout.mean": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Timeout.sum": {
+            "value": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.CompletionRatio.mean": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.CompletionRatio.sum": {
+            "value": 0.3333333432674408,
+            "min": 0.0,
+            "max": 0.6666666865348816,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.BaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.BaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.DifficultyScore.mean": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.DifficultyScore.sum": {
+            "value": 0.4166666567325592,
+            "min": 0.083333320915699,
+            "max": 0.75,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemyHealthFactor.mean": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemyHealthFactor.sum": {
+            "value": 0.8999999761581421,
+            "min": 0.8999999761581421,
+            "max": 0.8999999761581421,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemyCountFactor.mean": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemyCountFactor.sum": {
+            "value": 0.75,
+            "min": 0.75,
+            "max": 1.350000023841858,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemySpeedFactor.mean": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.EnemySpeedFactor.sum": {
+            "value": 1.25,
+            "min": 0.8500000238418579,
+            "max": 1.25,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.GeneratedWave.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.GeneratedWave.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.GeneratedGroups.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.GeneratedGroups.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.PredictedDamageFraction.mean": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.PredictedDamageFraction.sum": {
+            "value": 0.4000000059604645,
+            "min": 0.0,
+            "max": 0.949999988079071,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.PredictedCombatSeconds.mean": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.PredictedCombatSeconds.sum": {
+            "value": 29.53125,
+            "min": 29.53125,
+            "max": 75.0,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveSpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.AppliedAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.TensionScore.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.TensionScore.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.9000000357627869,
+            "max": 0.9000000357627869,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Reward.mean": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DAgent.TD3D.EnemyLevel.Reward.sum": {
+            "value": 0.3315475583076477,
+            "min": -0.75,
+            "max": 0.3315475583076477,
+            "count": 5
+        },
+        "TD3DBalanceAgent.Environment.CumulativeReward.mean": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DBalanceAgent.Environment.CumulativeReward.sum": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DBalanceAgent.Policy.ExtrinsicReward.mean": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DBalanceAgent.Policy.ExtrinsicReward.sum": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.Environment.CumulativeReward.mean": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.Environment.CumulativeReward.sum": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.Policy.ExtrinsicReward.mean": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DEnemyLevelAgent.Policy.ExtrinsicReward.sum": {
+            "value": -0.7450000001117587,
+            "min": -0.7450000001117587,
+            "max": -0.7450000001117587,
+            "count": 1
+        },
+        "TD3DAgent.Environment.CumulativeReward.mean": {
+            "value": -1.4906277172267437,
+            "min": -1.4906277172267437,
+            "max": -1.4906277172267437,
+            "count": 1
+        },
+        "TD3DAgent.Environment.CumulativeReward.sum": {
+            "value": -1.4906277172267437,
+            "min": -1.4906277172267437,
+            "max": -1.4906277172267437,
+            "count": 1
+        },
+        "TD3DAgent.Policy.ExtrinsicReward.mean": {
+            "value": -1.4906277172267437,
+            "min": -1.4906277172267437,
+            "max": -1.4906277172267437,
+            "count": 1
+        },
+        "TD3DAgent.Policy.ExtrinsicReward.sum": {
+            "value": -1.4906277172267437,
+            "min": -1.4906277172267437,
+            "max": -1.4906277172267437,
+            "count": 1
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveEntryCoverageRatio.mean": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveEntryCoverageRatio.sum": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveCoveredEntrances.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveCoveredEntrances.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveTotalEntrances.mean": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveTotalEntrances.sum": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveTowerBaseConcentration.mean": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveTowerBaseConcentration.sum": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveReward.mean": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Player.WaveReward.sum": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveBaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveBaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveDifficultyScore.mean": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveDifficultyScore.sum": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveReward.mean": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.Balance.WaveReward.sum": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.WaveReward.mean": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DBalanceAgent.TD3D.EnemyLevel.WaveReward.sum": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveEntryCoverageRatio.mean": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveEntryCoverageRatio.sum": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveCoveredEntrances.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveCoveredEntrances.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveTotalEntrances.mean": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveTotalEntrances.sum": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveTowerBaseConcentration.mean": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveTowerBaseConcentration.sum": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveReward.mean": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Player.WaveReward.sum": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveBaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveBaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveDifficultyScore.mean": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveDifficultyScore.sum": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveReward.mean": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.Balance.WaveReward.sum": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.WaveReward.mean": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DEnemyLevelAgent.TD3D.EnemyLevel.WaveReward.sum": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveEntryCoverageRatio.mean": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveEntryCoverageRatio.sum": {
+            "value": 0.1428571492433548,
+            "min": 0.0,
+            "max": 0.3333333432674408,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveCoveredEntrances.mean": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveCoveredEntrances.sum": {
+            "value": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveTotalEntrances.mean": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveTotalEntrances.sum": {
+            "value": 7.0,
+            "min": 3.0,
+            "max": 7.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveTowerBaseConcentration.mean": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveTowerBaseConcentration.sum": {
+            "value": 0.4825529456138611,
+            "min": 0.4825529456138611,
+            "max": 0.7544213533401489,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveReward.mean": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Player.WaveReward.sum": {
+            "value": 0.10984193533658981,
+            "min": 0.08298737555742264,
+            "max": 0.16354858875274658,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveBaseHealthFraction.mean": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveBaseHealthFraction.sum": {
+            "value": 0.6000000238418579,
+            "min": 0.05000000074505806,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveDifficultyScore.mean": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveDifficultyScore.sum": {
+            "value": 0.4375,
+            "min": 0.0625000074505806,
+            "max": 0.4375,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.mean": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemyHealthFactor.sum": {
+            "value": 1.0,
+            "min": 0.800000011920929,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.mean": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemyCountFactor.sum": {
+            "value": 0.9000000357627869,
+            "min": 0.800000011920929,
+            "max": 0.9000000357627869,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.mean": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveEnemySpeedFactor.sum": {
+            "value": 1.149999976158142,
+            "min": 0.8500000238418579,
+            "max": 1.149999976158142,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveRewardFactor.mean": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveAdaptiveRewardFactor.sum": {
+            "value": 1.2000000476837158,
+            "min": 1.100000023841858,
+            "max": 1.2000000476837158,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveReward.mean": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.Balance.WaveReward.sum": {
+            "value": 0.33883923292160034,
+            "min": 0.08749999105930328,
+            "max": 0.33883923292160034,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.EnemyLevel.WaveEvaluation.mean": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.EnemyLevel.WaveEvaluation.sum": {
+            "value": 1.0,
+            "min": 1.0,
+            "max": 1.0,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.EnemyLevel.WaveReward.mean": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DAgent.TD3D.EnemyLevel.WaveReward.sum": {
+            "value": 0.4357142150402069,
+            "min": 0.142857164144516,
+            "max": 0.4357142150402069,
+            "count": 4
+        },
+        "TD3DAgent.Losses.PolicyLoss.mean": {
+            "value": 0.04717435247342413,
+            "min": 0.04717435247342413,
+            "max": 0.04717435247342413,
+            "count": 1
+        },
+        "TD3DAgent.Losses.PolicyLoss.sum": {
+            "value": 0.04717435247342413,
+            "min": 0.04717435247342413,
+            "max": 0.04717435247342413,
+            "count": 1
+        },
+        "TD3DAgent.Losses.ValueLoss.mean": {
+            "value": 0.007698828373880436,
+            "min": 0.007698828373880436,
+            "max": 0.007698828373880436,
+            "count": 1
+        },
+        "TD3DAgent.Losses.ValueLoss.sum": {
+            "value": 0.007698828373880436,
+            "min": 0.007698828373880436,
+            "max": 0.007698828373880436,
+            "count": 1
+        },
+        "TD3DAgent.Policy.LearningRate.mean": {
+            "value": 0.00024492961835679997,
+            "min": 0.00024492961835679997,
+            "max": 0.00024492961835679997,
+            "count": 1
+        },
+        "TD3DAgent.Policy.LearningRate.sum": {
+            "value": 0.00024492961835679997,
+            "min": 0.00024492961835679997,
+            "max": 0.00024492961835679997,
+            "count": 1
+        },
+        "TD3DAgent.Policy.Epsilon.mean": {
+            "value": 0.1816432,
+            "min": 0.1816432,
+            "max": 0.1816432,
+            "count": 1
+        },
+        "TD3DAgent.Policy.Epsilon.sum": {
+            "value": 0.1816432,
+            "min": 0.1816432,
+            "max": 0.1816432,
+            "count": 1
+        },
+        "TD3DAgent.Policy.Beta.mean": {
+            "value": 0.00408399568,
+            "min": 0.00408399568,
+            "max": 0.00408399568,
+            "count": 1
+        },
+        "TD3DAgent.Policy.Beta.sum": {
+            "value": 0.00408399568,
+            "min": 0.00408399568,
+            "max": 0.00408399568,
+            "count": 1
+        }
+    },
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1785912947",
+        "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "F:\\UnityProjectsSmall\\Prototype_TowerDefence_3D\\MLAgents\\.venv\\Scripts\\mlagents-learn F:\\UnityProjectsSmall\\Prototype_TowerDefence_3D\\MLAgents\\td3d_ppo.yaml --run-id=td3d-three-agent-20260805-r4 --resume --timeout-wait=180 --debug",
+        "mlagents_version": "1.1.0",
+        "mlagents_envs_version": "1.1.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.1.1+cpu",
+        "numpy_version": "1.23.5",
+        "end_time_seconds": "1785913608"
+    },
+    "total": 660.877318200015,
+    "count": 1,
+    "self": 10.012278100039111,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07662069998332299,
+            "count": 1,
+            "self": 0.07662069998332299
+        },
+        "TrainerController.start_learning": {
+            "total": 650.7884193999926,
+            "count": 1,
+            "self": 0.07112880030763336,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 12.155135099979816,
+                    "count": 1,
+                    "self": 12.155135099979816
+                },
+                "TrainerController.advance": {
+                    "total": 638.1795099996962,
+                    "count": 4210,
+                    "self": 0.08396559784887359,
+                    "children": {
+                        "env_step": {
+                            "total": 633.6808529997361,
+                            "count": 4210,
+                            "self": 615.212690098735,
+                            "children": {
+                                "SubprocessEnvManager._take_step": {
+                                    "total": 18.42014290028601,
+                                    "count": 4216,
+                                    "self": 0.418623200210277,
+                                    "children": {
+                                        "TorchPolicy.evaluate": {
+                                            "total": 18.001519700075733,
+                                            "count": 12645,
+                                            "self": 18.001519700075733
+                                        }
+                                    }
+                                },
+                                "workers": {
+                                    "total": 0.04802000071504153,
+                                    "count": 4209,
+                                    "self": 0.0,
+                                    "children": {
+                                        "worker_root": {
+                                            "total": 170.15936240000883,
+                                            "count": 4209,
+                                            "is_parallel": true,
+                                            "self": 27.88453839920112,
+                                            "children": {
+                                                "steps_from_proto": {
+                                                    "total": 0.006022799992933869,
+                                                    "count": 21,
+                                                    "is_parallel": true,
+                                                    "self": 0.002511500002583489,
+                                                    "children": {
+                                                        "_process_rank_one_or_two_observation": {
+                                                            "total": 0.0035112999903503805,
+                                                            "count": 42,
+                                                            "is_parallel": true,
+                                                            "self": 0.0035112999903503805
+                                                        }
+                                                    }
+                                                },
+                                                "UnityEnvironment.step": {
+                                                    "total": 142.26880120081478,
+                                                    "count": 4209,
+                                                    "is_parallel": true,
+                                                    "self": 0.4058808001282159,
+                                                    "children": {
+                                                        "UnityEnvironment._generate_step_input": {
+                                                            "total": 0.346180700493278,
+                                                            "count": 4209,
+                                                            "is_parallel": true,
+                                                            "self": 0.346180700493278
+                                                        },
+                                                        "communicator.exchange": {
+                                                            "total": 139.8766403006157,
+                                                            "count": 4209,
+                                                            "is_parallel": true,
+                                                            "self": 139.8766403006157
+                                                        },
+                                                        "steps_from_proto": {
+                                                            "total": 1.6400993995775934,
+                                                            "count": 12627,
+                                                            "is_parallel": true,
+                                                            "self": 1.0578285032825079,
+                                                            "children": {
+                                                                "_process_rank_one_or_two_observation": {
+                                                                    "total": 0.5822708962950855,
+                                                                    "count": 25254,
+                                                                    "is_parallel": true,
+                                                                    "self": 0.5822708962950855
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "trainer_advance": {
+                            "total": 4.4146914021112025,
+                            "count": 12627,
+                            "self": 0.1752980017918162,
+                            "children": {
+                                "process_trajectory": {
+                                    "total": 1.1581685003184248,
+                                    "count": 12627,
+                                    "self": 1.1581685003184248
+                                },
+                                "_update_policy": {
+                                    "total": 3.0812249000009615,
+                                    "count": 15,
+                                    "self": 0.8743029999022838,
+                                    "children": {
+                                        "TorchPPOOptimizer.update": {
+                                            "total": 2.2069219000986777,
+                                            "count": 396,
+                                            "self": 2.2069219000986777
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "trainer_threads": {
+                    "total": 8.00006091594696e-07,
+                    "count": 1,
+                    "self": 8.00006091594696e-07
+                },
+                "TrainerController._save_models": {
+                    "total": 0.38264470000285655,
+                    "count": 1,
+                    "self": 0.0027680000057443976,
+                    "children": {
+                        "RLTrainer._checkpoint": {
+                            "total": 0.37987669999711215,
+                            "count": 3,
+                            "self": 0.37987669999711215
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

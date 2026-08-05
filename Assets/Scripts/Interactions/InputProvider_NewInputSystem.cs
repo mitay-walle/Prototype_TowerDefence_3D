@@ -53,7 +53,20 @@ public class InputProvider_NewInputSystem : MonoBehaviour, IRTSCInputProvider
 
     public Vector2 MouseInput() => lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
 
-    public Vector2 MousePosition() => pointAction?.ReadValue<Vector2>() ?? Vector2.zero;
+    public Vector2 MousePosition()
+    {
+        var syntheticMouse = FindFirstObjectByType<SyntheticMouse>();
+        if (syntheticMouse != null && syntheticMouse.isActiveAndEnabled && syntheticMouse.IsReady)
+            return syntheticMouse.Position;
+
+        foreach (var device in InputSystem.devices)
+        {
+            if (device is Mouse mouse && mouse.added && mouse.name != "TD Synthetic Mouse" && mouse.name != "VirtualMouse")
+                return mouse.position.ReadValue();
+        }
+
+        return Vector2.zero;
+    }
 
     public Vector2 MovementInput() => moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
 

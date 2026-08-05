@@ -1,0 +1,29 @@
+{
+    "TD3DAgent": {
+        "checkpoints": [
+            {
+                "steps": 5569,
+                "file_path": "results\\td3d-live-20260805-r3\\TD3DAgent\\TD3DAgent-5569.onnx",
+                "reward": -1.2997498989570886,
+                "creation_time": 1785884152.0966036,
+                "auxillary_file_paths": [
+                    "results\\td3d-live-20260805-r3\\TD3DAgent\\TD3DAgent-5569.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 5569,
+            "file_path": "results\\td3d-live-20260805-r3\\TD3DAgent.onnx",
+            "reward": -1.2997498989570886,
+            "creation_time": 1785884152.0966036,
+            "auxillary_file_paths": [
+                "results\\td3d-live-20260805-r3\\TD3DAgent\\TD3DAgent-5569.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.1.1+cpu"
+    }
+}

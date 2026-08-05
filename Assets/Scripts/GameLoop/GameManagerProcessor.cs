@@ -21,6 +21,7 @@ namespace TD.GameLoop
 				case nameof(GameManager.onGameUnpaused):
 				case nameof(GameManager.onGameStarted):
 				case nameof(GameManager.onGameStateChanged):
+				case nameof(GameManager.onRunFinished):
 				{
 					attributes.Add(new FoldoutGroupAttribute("Events"));
 					break;

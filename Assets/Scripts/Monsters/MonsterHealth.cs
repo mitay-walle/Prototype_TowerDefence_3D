@@ -9,6 +9,13 @@ using UnityEngine.Localization;
 
 namespace TD.Monsters
 {
+	public enum MonsterTerminalReason
+	{
+		None,
+		Kill,
+		Leak
+	}
+
 	public class MonsterHealth : MonoBehaviour, ITooltipValues
 	{
 		[SerializeField] private float maxHealth = 100f;
@@ -18,7 +25,9 @@ namespace TD.Monsters
 		[SerializeField] private float earlyKillThreshold = 0.5f;
 
 		[FoldoutGroup("Events")] public UnityEvent<float> onHealthChanged;
+		[FoldoutGroup("Events")] public UnityEvent<float> onDamageTaken;
 		[FoldoutGroup("Events")] public UnityEvent onDeath;
+		[FoldoutGroup("Events")] public UnityEvent onLeak;
 		[FoldoutGroup("Events")] public UnityEvent<int> onRewardGiven;
 
 		[SerializeField] private bool changeColorOnDamage = true;
@@ -27,14 +36,22 @@ namespace TD.Monsters
 		private Color[][] originalColors;
 		private float colorChangeTimer;
 		MonsterStats stats;
+		private MonsterTerminalReason terminalReason;
 
 		public float MaxHealth => maxHealth;
 		public float CurrentHealth => currentHealth;
 		public float HealthPercent => currentHealth / maxHealth;
 		public bool IsAlive => currentHealth > 0;
+		public MonsterTerminalReason TerminalReason => terminalReason;
 
 		private void Awake()
 		{
+			if (onHealthChanged == null) onHealthChanged = new UnityEvent<float>();
+			if (onDamageTaken == null) onDamageTaken = new UnityEvent<float>();
+			if (onDeath == null) onDeath = new UnityEvent();
+			if (onLeak == null) onLeak = new UnityEvent();
+			if (onRewardGiven == null) onRewardGiven = new UnityEvent<int>();
+
 			currentHealth = maxHealth;
 
 			if (changeColorOnDamage)
@@ -72,14 +89,31 @@ namespace TD.Monsters
 		{
 			maxHealth = health;
 			currentHealth = health;
+			terminalReason = MonsterTerminalReason.None;
+		}
+
+		public bool TryLeak(System.Action applyLeakEffect)
+		{
+			if (!IsAlive || terminalReason != MonsterTerminalReason.None)
+				return false;
+
+			terminalReason = MonsterTerminalReason.Leak;
+			currentHealth = 0f;
+			OnHealthChanged();
+			applyLeakEffect?.Invoke();
+			onLeak?.Invoke();
+			return true;
 		}
 
 		public void TakeDamage(float damage)
 		{
 			if (!IsAlive) return;
 
-			currentHealth = Mathf.Max(0, currentHealth - damage);
+			var appliedDamage = Mathf.Min(currentHealth, Mathf.Max(0f, damage));
+			currentHealth = Mathf.Max(0, currentHealth - appliedDamage);
 			OnHealthChanged();
+			if (appliedDamage > 0f)
+				onDamageTaken?.Invoke(appliedDamage);
 
 			if (changeColorOnDamage)
 			{
@@ -112,6 +146,10 @@ namespace TD.Monsters
 
 		private void Die()
 		{
+			if (terminalReason != MonsterTerminalReason.None)
+				return;
+
+			terminalReason = MonsterTerminalReason.Kill;
 			onDeath?.Invoke();
 
 			int rewardAmount = stats.InstantReward.ValueInt;
@@ -124,7 +162,10 @@ namespace TD.Monsters
 
 			onRewardGiven?.Invoke(finalReward);
 
-			Destroy(gameObject, deathDelay);
+			if (Application.isPlaying)
+				Destroy(gameObject, deathDelay);
+			else
+				DestroyImmediate(gameObject);
 		}
 
 		private void CacheOriginalColors()
@@ -194,6 +235,7 @@ namespace TD.Monsters
 		{
 			onHealthChanged?.RemoveAllListeners();
 			onDeath?.RemoveAllListeners();
+			onLeak?.RemoveAllListeners();
 			onRewardGiven?.RemoveAllListeners();
 		}
 

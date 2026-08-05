@@ -194,6 +194,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  Archetype: 2
   references:
     version: 2
     RefIds: []

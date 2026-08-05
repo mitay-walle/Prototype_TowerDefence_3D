@@ -99,3 +99,6 @@ Packages/com.unity.inputsystem@1.5.1/Samples~/DocsExamples/Scenes/Example with E
 Packages/com.unity.inputsystem@1.5.1/Samples~/DocsExamples/Scenes/Example with Actions Asset Reference.unity
 Packages/com.unity.inputsystem@1.5.1/Samples~/DocsExamples/Scenes/Example with Actions Asset C\# Wrapper.unity
 Assets/Plugins/Character Controller Pro/Demo/Scenes/3D Scene/LightingData.asset
+# ML-Agents local trainer artifacts
+/MLAgents/.venv/
+/MLAgents/results/

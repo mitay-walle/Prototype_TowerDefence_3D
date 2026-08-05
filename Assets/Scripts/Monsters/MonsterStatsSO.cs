@@ -7,6 +7,15 @@ using UnityEngine.Localization;
 
 namespace TD.Monsters
 {
+	public enum MonsterArchetype
+	{
+		Standard,
+		Tank,
+		Runner,
+		Skirmisher,
+		Berserker
+	}
+
 	[CreateAssetMenu(fileName = "MonsterStats", menuName = "TD/MonsterStats", order = 1)]
 	public sealed class MonsterStatsSO : StatsSO
 	{
@@ -19,6 +28,7 @@ namespace TD.Monsters
 
 		[VerticalGroup("Identity")] public LocalizedString Role = new LocalizedString();
 		[VerticalGroup("Identity")] public LocalizedString DefensiveIdentity = new LocalizedString();
+		[VerticalGroup("Identity")] public MonsterArchetype Archetype = MonsterArchetype.Standard;
 
 		public override IEnumerable<BaseStatEntry> GetStats()
 		{

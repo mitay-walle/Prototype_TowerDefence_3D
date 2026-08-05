@@ -99,8 +99,7 @@ namespace TD.Towers
 		{
 			if (HasTarget)
 			{
-				float distanceToTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
-				if (distanceToTarget > EffectiveRange)
+				if (!enemiesInRange.Contains(currentTarget))
 				{
 					LoseTarget();
 				}
@@ -320,6 +319,12 @@ namespace TD.Towers
 
 		private void LoseTarget()
 		{
+			if (Logs && currentTarget != null)
+			{
+				float distanceToTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
+				Debug.Log($"[TowerTargetLost] tower={name};target={currentTarget.name};distance={distanceToTarget:F2};range={EffectiveRange:F2}", this);
+			}
+
 			currentTarget = null;
 			onTargetLost?.Invoke();
 		}
@@ -356,8 +361,15 @@ namespace TD.Towers
 		{
 			if (!CanUpgrade()) return;
 
+			var previousGrade = stats.currentGrade;
+			var previousDamage = stats.Damage.Value;
+			var previousRange = EffectiveRange;
 			stats.UpgradeGrade();
+			TowerStatsVisual?.UpdateRange(this);
 			IsTargetingDirty = true;
+			Debug.Log(
+				$"[TowerUpgrade] tower={name};grade={previousGrade}->{stats.currentGrade};" +
+				$"damage={previousDamage:F2}->{stats.Damage.Value:F2};range={previousRange:F2}->{EffectiveRange:F2}");
 		}
 
 		public void OnSelected()
@@ -387,6 +399,7 @@ namespace TD.Towers
 
 		private void OnDestroy()
 		{
+			TowerStatsVisual?.Dispose();
 			onTargetAcquired?.RemoveAllListeners();
 			onTargetLost?.RemoveAllListeners();
 			onFire?.RemoveAllListeners();
@@ -434,7 +447,10 @@ namespace TD.Towers
 		{
 			ResourceManager.Instance.AddCurrency(SellValue);
 			gameObject.SetActive(false);
-			Destroy(gameObject);
+			if (Application.isPlaying)
+				Destroy(gameObject);
+			else
+				DestroyImmediate(gameObject);
 		}
 
 		public LocalizedString UpgradeButtonText

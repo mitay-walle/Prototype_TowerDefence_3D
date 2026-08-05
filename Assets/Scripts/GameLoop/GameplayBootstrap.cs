@@ -1,18 +1,36 @@
-using UnityEngine;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TD.Levels;
 using TD.Towers;
 using TD.UI;
+using UnityEngine;
 
 namespace TD.GameLoop
 {
 	public class GameplayBootstrap : MonoBehaviour
 	{
+		public readonly struct BootstrapResult
+		{
+			public bool Succeeded { get; }
+			public string FailureReason { get; }
+
+			private BootstrapResult(bool succeeded, string failureReason)
+			{
+				Succeeded = succeeded;
+				FailureReason = failureReason;
+			}
+
+			public static BootstrapResult Success => new(true, string.Empty);
+
+			public static BootstrapResult Failure(string reason) => new(false, reason);
+		}
+
 		[SerializeField] private LevelGenerator levelGenerator;
 		[SerializeField] private GameManager gameManager;
+		[SerializeField] private ResourceManager resourceManager;
 		[SerializeField] private GameHUD gameHUD;
 		[SerializeField] private WaveManager waveManager;
+		[SerializeField] private PlayerBase playerBase;
 		[SerializeField] private TilePlacementSystem tilePlacementSystem;
 		[SerializeField] private NavMeshSurfaceWrapper navMeshSurfaceWrapper;
 		[SerializeField] private bool Logs;
@@ -22,131 +40,137 @@ namespace TD.GameLoop
 			_ = BootstrapSequenceAsync();
 		}
 
-		private async UniTask BootstrapSequenceAsync()
+		private async UniTask<BootstrapResult> BootstrapSequenceAsync()
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP STARTED ===");
 
 			if (gameManager != null)
 			{
 				gameManager.BeginBoot();
-				gameManager.BeginMapBuild();
 			}
 
-			await GenerateLevelAsync();
-			await BakeNavMeshAsync();
-			await PlaceGameplayObjectsAsync();
-			await InitializeSystemsAsync();
+			var validation = ValidateRequiredReferences();
+			if (!validation.Succeeded)
+				return ReportFailure(validation);
 
-			if (gameManager != null)
-			{
-				gameManager.CompleteMapBuild();
-			}
+			gameManager.BeginMapBuild();
+
+			var levelResult = await GenerateLevelAsync();
+			if (!levelResult.Succeeded)
+				return ReportFailure(levelResult);
+
+			var navMeshResult = await BakeNavMeshAsync();
+			if (!navMeshResult.Succeeded)
+				return ReportFailure(navMeshResult);
+
+			var placementResult = await PlaceGameplayObjectsAsync();
+			if (!placementResult.Succeeded)
+				return ReportFailure(placementResult);
+
+			var systemsResult = await InitializeSystemsAsync();
+			if (!systemsResult.Succeeded)
+				return ReportFailure(systemsResult);
+
+			gameManager.CompleteMapBuild();
 
 			if (Logs) Debug.Log("[GameplayBootstrap] === BOOTSTRAP COMPLETE ===");
+			return BootstrapResult.Success;
 		}
 
-		private async UniTask GenerateLevelAsync()
+		private BootstrapResult ValidateRequiredReferences()
+		{
+			var missing = new List<string>();
+			if (levelGenerator == null) missing.Add(nameof(levelGenerator));
+			if (gameManager == null) missing.Add(nameof(gameManager));
+			if (resourceManager == null) missing.Add(nameof(resourceManager));
+			if (gameHUD == null) missing.Add(nameof(gameHUD));
+			if (waveManager == null) missing.Add(nameof(waveManager));
+			if (playerBase == null) missing.Add(nameof(playerBase));
+			if (tilePlacementSystem == null) missing.Add(nameof(tilePlacementSystem));
+			if (navMeshSurfaceWrapper == null) missing.Add(nameof(navMeshSurfaceWrapper));
+
+			return missing.Count == 0
+				? BootstrapResult.Success
+				: BootstrapResult.Failure($"Missing required references: {string.Join(", ", missing)}");
+		}
+
+		private BootstrapResult ReportFailure(BootstrapResult result)
+		{
+			Debug.LogError($"[GameplayBootstrap] Bootstrap blocked: {result.FailureReason}");
+			return result;
+		}
+
+		private UniTask<BootstrapResult> GenerateLevelAsync()
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] Generating level...");
 
-			if (levelGenerator != null)
-				levelGenerator.GenerateLevel();
+			if (levelGenerator == null)
+				return UniTask.FromResult(BootstrapResult.Failure("LevelGenerator reference is missing."));
 
-			return;
+			return UniTask.FromResult(levelGenerator.GenerateLevel()
+				? BootstrapResult.Success
+				: BootstrapResult.Failure("Level generation failed validation."));
 		}
 
-		private async UniTask BakeNavMeshAsync()
+		private UniTask<BootstrapResult> BakeNavMeshAsync()
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] Baking NavMesh...");
 
-			if (navMeshSurfaceWrapper != null)
-			{
-				if (!navMeshSurfaceWrapper.BuildNavMesh())
-				{
-					Debug.LogError("[GameplayBootstrap] NavMesh rebuild did not produce NavMesh data!");
-					return;
-				}
+			if (navMeshSurfaceWrapper == null)
+				return UniTask.FromResult(BootstrapResult.Failure("NavMeshSurfaceWrapper reference is missing."));
 
-				await UniTask.CompletedTask;
-			}
-			else
-			{
-				if (Logs) Debug.LogWarning("[GameplayBootstrap] NavMeshSurface wrapper not found!");
-			}
+			return UniTask.FromResult(navMeshSurfaceWrapper.BuildNavMesh()
+				? BootstrapResult.Success
+				: BootstrapResult.Failure("NavMesh rebuild did not produce NavMesh data."));
 		}
 
-		private async UniTask PlaceGameplayObjectsAsync()
+		private UniTask<BootstrapResult> PlaceGameplayObjectsAsync()
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] Placing gameplay objects...");
 
-			if (levelGenerator == null)
-			{
-				if (Logs) Debug.LogError("[GameplayBootstrap] LevelGenerator not found!");
-				return;
-			}
-
-			var tileMapManager = levelGenerator.GetTileMapManager();
+			var tileMapManager = levelGenerator != null ? levelGenerator.GetTileMapManager() : null;
 			if (tileMapManager == null)
-			{
-				if (Logs) Debug.LogError("[GameplayBootstrap] TileMapManager not found!");
-				return;
-			}
+				return UniTask.FromResult(BootstrapResult.Failure("TileMapManager reference is missing from LevelGenerator."));
 
-			Vector3 basePosition = tileMapManager.BasePosition;
 			List<Vector3> spawnPositions = tileMapManager.SpawnPositions;
+			if (spawnPositions == null || spawnPositions.Count == 0)
+				return UniTask.FromResult(BootstrapResult.Failure("Validated map has no spawn positions."));
 
-			if (Logs) Debug.Log($"[GameplayBootstrap] Base at {basePosition}, spawners: {spawnPositions.Count}");
-
-			var playerBase = FindFirstObjectByType<PlayerBase>();
-			if (playerBase != null)
+			foreach (var spawnPosition in spawnPositions)
 			{
-				playerBase.transform.position = basePosition;
+				if (spawnPosition == Vector3.zero)
+					return UniTask.FromResult(BootstrapResult.Failure("Validated map contains an origin spawn position."));
 			}
 
-			if (waveManager != null)
-			{
-				var spawnTransforms = new Transform[spawnPositions.Count];
-				for (int i = 0; i < spawnPositions.Count; i++)
-				{
-					var spawnGo = new GameObject($"Spawner_{i}");
-					spawnGo.transform.position = spawnPositions[i];
-					spawnTransforms[i] = spawnGo.transform;
-				}
+			if (Logs) Debug.Log($"[GameplayBootstrap] Base at {tileMapManager.BasePosition}, spawners: {spawnPositions.Count}");
+			playerBase.transform.position = tileMapManager.BasePosition;
 
-				waveManager.Initialize(null, spawnTransforms);
-				if (Logs) Debug.Log("[GameplayBootstrap] WaveManager initialized with spawn points");
-			}
-			else
+			var spawnTransforms = new Transform[spawnPositions.Count];
+			for (int i = 0; i < spawnPositions.Count; i++)
 			{
-				if (Logs) Debug.LogWarning("[GameplayBootstrap] WaveManager not found!");
+				var spawnGo = new GameObject($"Spawner_{i}");
+				spawnGo.transform.position = spawnPositions[i];
+				spawnTransforms[i] = spawnGo.transform;
 			}
 
-			await UniTask.CompletedTask;
+			waveManager.Initialize(null, spawnTransforms, playerBase, tileMapManager, tilePlacementSystem);
+			if (Logs) Debug.Log("[GameplayBootstrap] WaveManager initialized with spawn points and inter-wave owners");
+			return UniTask.FromResult(BootstrapResult.Success);
 		}
 
-		private async UniTask InitializeSystemsAsync()
+		private UniTask<BootstrapResult> InitializeSystemsAsync()
 		{
 			if (Logs) Debug.Log("[GameplayBootstrap] Initializing systems...");
 
-			if (gameHUD != null)
-			{
-				gameHUD.Initialize();
-			}
-			else
-			{
-				if (Logs) Debug.LogWarning("[GameplayBootstrap] GameHUD not found!");
-			}
+			if (gameHUD == null)
+				return UniTask.FromResult(BootstrapResult.Failure("GameHUD reference is missing."));
 
-			if (gameManager != null)
-			{
-				gameManager.Initialize();
-			}
-			else
-			{
-				if (Logs) Debug.LogError("[GameplayBootstrap] GameManager not found!");
-			}
+			if (gameManager == null)
+				return UniTask.FromResult(BootstrapResult.Failure("GameManager reference is missing."));
 
-			await UniTask.CompletedTask;
+			gameHUD.Initialize();
+			gameManager.Initialize();
+			return UniTask.FromResult(BootstrapResult.Success);
 		}
 	}
 }

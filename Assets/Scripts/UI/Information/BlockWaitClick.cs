@@ -128,7 +128,12 @@ namespace TD.UI.Information
 			_currentTarget = null;
 
 			if (_attachedTrigger != null)
-				Destroy(_attachedTrigger);
+			{
+				if (Application.isPlaying)
+					Destroy(_attachedTrigger);
+				else
+					DestroyImmediate(_attachedTrigger);
+			}
 
 			_attachedTrigger = null;
 
@@ -136,10 +141,16 @@ namespace TD.UI.Information
 			{
 				if (_attachedCanvas.TryGetComponent(out GraphicRaycaster graphicRaycaster))
 				{
-					Destroy(graphicRaycaster);
+					if (Application.isPlaying)
+						Destroy(graphicRaycaster);
+					else
+						DestroyImmediate(graphicRaycaster);
 				}
 
-				Destroy(_attachedCanvas);
+				if (Application.isPlaying)
+					Destroy(_attachedCanvas);
+				else
+					DestroyImmediate(_attachedCanvas);
 			}
 
 			_attachedCanvas = null;

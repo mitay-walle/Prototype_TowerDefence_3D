@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TD.GameLoop;
 using TD.Interactions;
+using TD.Towers;
 using TD.Voxels;
 using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace TD.Levels
@@ -30,6 +32,16 @@ namespace TD.Levels
 
         public bool IsPlacing => isPlacingTile;
         public IReadOnlyList<TilePlacementChoice> PlacementChoices => placementChoices;
+        public int SelectedChoiceIndex => selectedChoiceIndex;
+        public bool HasSelectedChoice => isPlacingTile && placementChoices.Count > 0 && selectedChoiceIndex < placementChoices.Count;
+        public TilePlacementChoice SelectedChoice => placementChoices[selectedChoiceIndex];
+        public int SelectedChoiceCoveredEntrancesBefore { get; private set; }
+        public int SelectedChoiceTotalEntrancesBefore { get; private set; }
+        public int SelectedChoiceCoveredEntrancesAfter { get; private set; }
+        public int SelectedChoiceTotalEntrancesAfter { get; private set; }
+        public UnityEvent<int> onPlacementChoiceSelected = new UnityEvent<int>();
+        public UnityEvent<int> onTilePlaced = new UnityEvent<int>();
+        public UnityEvent<int> onPlacementCancelled = new UnityEvent<int>();
         private bool Logs;
         private IRTSCInputProvider inputProvider;
         private InputAction clickAction;
@@ -79,6 +91,7 @@ namespace TD.Levels
 
             placementChoices.Clear();
             selectedChoiceIndex = 0;
+            ClearSelectedChoiceCoverage();
             currentTileDef = tileDef;
             currentTilePrefab = tilePrefab;
             currentRotation = 0;
@@ -98,6 +111,8 @@ namespace TD.Levels
             selectedChoiceIndex = 0;
             isPlacingTile = true;
             ApplySelectedChoice();
+            if (isPlacingTile)
+                onPlacementChoiceSelected?.Invoke(selectedChoiceIndex);
         }
 
         private void ApplySelectedChoice()
@@ -115,42 +130,93 @@ namespace TD.Levels
             }
 
             CreateGhost();
+            UpdateSelectedChoiceCoverage(choice);
             if (Logs)
             {
                 Debug.Log(
                     $"[TilePlacement] Option {selectedChoiceIndex + 1}/{placementChoices.Count}: " +
                     $"{choice.TileName} {choice.Rotation * 90}° at {choice.GridPosition}, " +
-                    $"open ends {choice.OpenRoadEndCountBefore}->{choice.OpenRoadEndCountAfter}");
+                    $"open ends {choice.OpenRoadEndCountBefore}->{choice.OpenRoadEndCountAfter}, " +
+                    $"coverage={SelectedChoiceCoveredEntrancesBefore}/{SelectedChoiceTotalEntrancesBefore}->" +
+                    $"{SelectedChoiceCoveredEntrancesAfter}/{SelectedChoiceTotalEntrancesAfter}");
             }
         }
 
-        private void SelectPreviousOption()
+        private void UpdateSelectedChoiceCoverage(TilePlacementChoice choice)
+        {
+            if (tileMapManager == null)
+            {
+                ClearSelectedChoiceCoverage();
+                return;
+            }
+
+            var spawnPositionsBefore = tileMapManager.SpawnPositions;
+            var spawnPositionsAfter = tileMapManager.GetSpawnPositionsAfter(choice);
+            var towers = FindObjectsByType<Tower>(FindObjectsSortMode.None);
+
+            SelectedChoiceTotalEntrancesBefore = spawnPositionsBefore.Count;
+            SelectedChoiceTotalEntrancesAfter = spawnPositionsAfter.Count;
+            SelectedChoiceCoveredEntrancesBefore = TowerPlacementSystem.CountCoveredEntrances(towers, spawnPositionsBefore);
+            SelectedChoiceCoveredEntrancesAfter = TowerPlacementSystem.CountCoveredEntrances(towers, spawnPositionsAfter);
+        }
+
+        private void ClearSelectedChoiceCoverage()
+        {
+            SelectedChoiceCoveredEntrancesBefore = 0;
+            SelectedChoiceTotalEntrancesBefore = 0;
+            SelectedChoiceCoveredEntrancesAfter = 0;
+            SelectedChoiceTotalEntrancesAfter = 0;
+        }
+
+        public void SelectPreviousOption()
         {
             if (!isPlacingTile || placementChoices.Count < 2)
                 return;
 
             selectedChoiceIndex = (selectedChoiceIndex + placementChoices.Count - 1) % placementChoices.Count;
             ApplySelectedChoice();
+            if (isPlacingTile)
+                onPlacementChoiceSelected?.Invoke(selectedChoiceIndex);
         }
 
-        private void SelectNextOption()
+        public void SelectNextOption()
         {
             if (!isPlacingTile || placementChoices.Count < 2)
                 return;
 
             selectedChoiceIndex = (selectedChoiceIndex + 1) % placementChoices.Count;
             ApplySelectedChoice();
+            if (isPlacingTile)
+                onPlacementChoiceSelected?.Invoke(selectedChoiceIndex);
         }
 
         public void CancelPlacement()
         {
+            var cancelledChoiceIndex = selectedChoiceIndex;
+            var wasPlacing = isPlacingTile;
+            ClearPlacementState();
+
+            if (wasPlacing)
+            {
+                onPlacementCancelled?.Invoke(cancelledChoiceIndex);
+                if (Logs) Debug.Log("[TilePlacement] Placement cancelled");
+            }
+        }
+
+        private void ClearPlacementState()
+        {
             if (ghostTile != null)
-                Destroy(ghostTile);
+            {
+                if (Application.isPlaying)
+                    Destroy(ghostTile);
+                else
+                    DestroyImmediate(ghostTile);
+            }
 
             isPlacingTile = false;
             placementChoices.Clear();
             selectedChoiceIndex = 0;
-            if (Logs) Debug.Log("[TilePlacement] Placement cancelled");
+            ClearSelectedChoiceCoverage();
         }
 
         public void RotateTile()
@@ -165,12 +231,17 @@ namespace TD.Levels
 
         public void PlaceTile()
         {
-            if (!isPlacingTile || currentTileDef.name == null) return;
+            TryPlaceSelectedTile();
+        }
+
+        public bool TryPlaceSelectedTile()
+        {
+            if (!isPlacingTile || currentTileDef.name == null) return false;
 
             if (!tileMapManager.CanPlaceTile(currentGridPosition, currentTileDef, currentRotation))
             {
                 if (Logs) Debug.LogWarning($"[TilePlacement] Cannot place tile at {currentGridPosition}");
-                return;
+                return false;
             }
 
             tileMapManager.PlaceTile(currentGridPosition, currentTileDef, currentRotation, currentTilePrefab);
@@ -179,9 +250,12 @@ namespace TD.Levels
                 Debug.LogError("[TilePlacement] NavMesh rebuild did not produce NavMesh data!");
             }
 
-            CancelPlacement();
+            var committedChoiceIndex = selectedChoiceIndex;
+            ClearPlacementState();
+            onTilePlaced?.Invoke(committedChoiceIndex);
 
             if (Logs) Debug.Log($"[TilePlacement] Tile placed at {currentGridPosition}");
+            return true;
         }
 
         private void Update()
@@ -281,16 +355,25 @@ namespace TD.Levels
         private void CreateGhost()
         {
             if (ghostTile != null)
-                Destroy(ghostTile);
-
-            ghostTile = Instantiate(ghostPrefab ?? currentTilePrefab, Vector3.zero, Quaternion.identity);
-            ghostGenerator = ghostTile.GetComponent<VoxelGenerator>();
-
-            if (ghostGenerator != null && currentTileDef.name != null)
             {
-                var profile = new LevelTileGenerationProfile();
-                ghostGenerator.profile = profile;
-                ghostGenerator.Generate();
+                if (Application.isPlaying)
+                    Destroy(ghostTile);
+                else
+                    DestroyImmediate(ghostTile);
+            }
+
+			ghostTile = Instantiate(ghostPrefab ?? currentTilePrefab, Vector3.zero, Quaternion.identity);
+			ghostGenerator = ghostTile.GetComponent<VoxelGenerator>();
+
+			if (ghostGenerator != null && currentTileDef.name != null)
+			{
+				var roadTileComponent = ghostTile.GetComponent<RoadTileComponent>();
+				if (roadTileComponent != null)
+					roadTileComponent.Initialize(currentTileDef.connections);
+
+				var profile = new LevelTileGenerationProfile();
+				ghostGenerator.profile = profile;
+				ghostGenerator.Generate();
             }
 
             var renderers = ghostTile.GetComponentsInChildren<Renderer>();

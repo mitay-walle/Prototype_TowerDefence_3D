@@ -1,0 +1,71 @@
+{
+  "description": "Mechanical safety and instruction-routing hooks for Prototype Tower Defence 3D.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "commandWindows": "py -3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "timeout": 5,
+            "statusMessage": "Loading TD3D mechanical policy"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "commandWindows": "py -3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "timeout": 15,
+            "statusMessage": "Routing TD3D role, skills, and docs"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "commandWindows": "py -3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking TD3D tool policy"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "commandWindows": "py -3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking TD3D change follow-up"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "commandWindows": "py -3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_policy.py\"",
+            "timeout": 3,
+            "statusMessage": "Cleaning TD3D routing state"
+          }
+        ]
+      }
+    ]
+  }
+}

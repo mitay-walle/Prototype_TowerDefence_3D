@@ -7,8 +7,15 @@ namespace TD.Levels
 	public class LevelGenerator : MonoBehaviour
 	{
 		[SerializeField] private TileMapManager tileMapManager;
-		[SerializeField] private int tilesToGenerate = 10;
+		[SerializeField] private int tilesToGenerate = 4;
+		[Range(2, 4)]
+		[SerializeField] private int difficulty = 4;
+		[SerializeField] private int seed;
 		[ShowInInspector, ReadOnly] MapGenerator mapGenerator;
+		[ShowInInspector, ReadOnly] private int generatedSeed;
+
+		public int GeneratedSeed => generatedSeed;
+		public bool IsValid { get; private set; }
 		[ShowInInspector, ReadOnly] Dictionary<Vector2Int, RoadTileDef> generatedMap;
 
 		[SerializeField] private bool Logs;
@@ -19,21 +26,32 @@ namespace TD.Levels
 				tileMapManager = GetComponent<TileMapManager>();
 		}
 
-		public void GenerateLevel()
+		public bool GenerateLevel()
 		{
+			IsValid = false;
 			if (tileMapManager == null)
 			{
 				Debug.LogError("[LevelGenerator] TileMapManager not found!");
-				return;
+				return false;
 			}
 
 			if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION STARTED ===");
 
+			ClearLevel();
 			GenerateInitialTiles();
-			ValidateLevel();
+			IsValid = ValidateLevel();
 			//VisualizeMaps();
 
-			if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
+			if (IsValid)
+			{
+				if (Logs) Debug.Log("[LevelGenerator] === TILE-BASED LEVEL GENERATION COMPLETE ===");
+			}
+			else
+			{
+				Debug.LogError("[LevelGenerator] Level generation failed validation; bootstrap must remain in MapBuild.");
+			}
+
+			return IsValid;
 		}
 
 		private void GenerateInitialTiles()
@@ -47,14 +65,16 @@ namespace TD.Levels
 				return;
 			}
 
-			mapGenerator = new MapGenerator(tilesToGenerate, Logs);
+			generatedSeed = seed != 0 ? seed : CreateRandomSeed();
+			if (Logs) Debug.Log($"[LevelGenerator] Using generation seed: {generatedSeed}");
+
+			mapGenerator = new MapGenerator(tilesToGenerate, Logs, generatedSeed, difficulty);
 			generatedMap = mapGenerator.GenerateMap(TileDatabase.Instance.GetAllTileKinds());
 
 			foreach (KeyValuePair<Vector2Int, RoadTileDef> kvp in generatedMap)
 			{
 				Vector2Int gridPosition = kvp.Key;
 				RoadTileDef tileDef = kvp.Value;
-
 				RoadTileComponent tileComponent = TileDatabase.Instance.GetPrefabByConnections(tileDef.connections);
 				if (tileComponent == null)
 				{
@@ -70,12 +90,62 @@ namespace TD.Levels
 			if (Logs) Debug.Log($"[LevelGenerator] Road network created with prefabs: {generatedMap.Count - 1} tiles placed");
 		}
 
-		private void ValidateLevel()
+		private int CreateRandomSeed()
+		{
+			int randomSeed;
+			do
+			{
+				randomSeed = MapGenerator.CreateRandomSeed();
+			}
+			while (randomSeed == generatedSeed);
+
+			return randomSeed;
+		}
+
+		private bool ValidateLevel()
 		{
 			if (Logs) Debug.Log("[LevelGenerator] Validating level...");
 
 			IReadOnlyDictionary<Vector2Int, RoadTileDef> allTiles = tileMapManager.GetAllTiles();
 			List<Vector3> spawnPositions = tileMapManager.SpawnPositions;
+			var isValid = generatedMap != null && generatedMap.Count > 1;
+			isValid &= allTiles != null && allTiles.ContainsKey(Vector2Int.zero);
+			isValid &= allTiles != null && generatedMap != null && allTiles.Count == generatedMap.Count;
+			isValid &= spawnPositions != null && spawnPositions.Count > 0;
+
+			if (!tileMapManager.ValidateTopology(out var topologyReason))
+			{
+				isValid = false;
+				if (Logs) Debug.LogWarning($"[LevelGenerator] Invalid tile topology: {topologyReason}");
+			}
+
+			if (spawnPositions != null)
+			{
+				foreach (var spawnPosition in spawnPositions)
+				{
+					if (spawnPosition == Vector3.zero)
+						isValid = false;
+				}
+			}
+
+			if (allTiles != null)
+			{
+				foreach (var tile in allTiles)
+				{
+					var connections = tile.Value.GetRotatedConnections(tile.Value.rotation);
+					foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+					{
+						var neighborPosition = tile.Key + GetGridDirection(side);
+						if (!allTiles.TryGetValue(neighborPosition, out var neighbor))
+							continue;
+
+						var neighborConnections = neighbor.GetRotatedConnections(neighbor.rotation);
+						if (connections.HasConnection(side) !=
+							neighborConnections.HasConnection(RoadConnectionsExtensions.GetOppositeSide(side)))
+							isValid = false;
+					}
+				}
+			}
 
 			if (Logs) Debug.Log($"[LevelGenerator] Level validation complete:");
 			if (Logs) Debug.Log($"  - Tiles placed: {allTiles.Count}");
@@ -86,6 +156,20 @@ namespace TD.Levels
 			{
 				if (Logs) Debug.Log($"    • {spawn}");
 			}
+
+			return isValid;
+		}
+
+		private static Vector2Int GetGridDirection(RoadSide side)
+		{
+			return side switch
+			{
+				RoadSide.North => Vector2Int.up,
+				RoadSide.South => Vector2Int.down,
+				RoadSide.East => Vector2Int.right,
+				RoadSide.West => Vector2Int.left,
+				_ => Vector2Int.zero
+			};
 		}
 
 		private void VisualizeMaps()
@@ -125,7 +209,6 @@ namespace TD.Levels
 		[Button("Reload Level")]
 		public void ReloadLevel()
 		{
-			ClearLevel();
 			GenerateLevel();
 		}
 

@@ -4816,7 +4816,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &8972636884644607724
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4863,6 +4863,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 5
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4894,7 +4895,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1001 &644644984395991708
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19090,6 +19090,10 @@ PrefabInstance:
     - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: showRange
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
+      propertyPath: TargetPriority
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6156850882460053632, guid: 1bd96e5457f02914dbf0c6b0f507d6cc, type: 3}
       propertyPath: projectilePrefab

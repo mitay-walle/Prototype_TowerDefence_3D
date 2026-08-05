@@ -248,7 +248,7 @@ namespace TD.Towers
 						break;
 
 					case TowerStat.RotateSpeed:
-						stats.RotateSpeed.Init(stats, stats.statsSO.ProjectileSpeed);
+						stats.RotateSpeed.Init(stats, stats.statsSO.RotateSpeed);
 						break;
 
 					case TowerStat.UpgradeCost:

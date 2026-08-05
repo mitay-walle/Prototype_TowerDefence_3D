@@ -10,6 +10,7 @@
 		Victory = 5,
 		MapBuild = 6,
 		WaveResolve = 7,
+		ChallengeSelection = 8,
 		Initial = Boot,
 		WavePreparing = Preparation,
 		GameOver = Defeat,

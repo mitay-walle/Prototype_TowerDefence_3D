@@ -215,6 +215,34 @@ MonoBehaviour:
     m_Key: wave.challenge.reinforced_horde_active
     m_Metadata:
       m_Items: []
+  - m_Id: 105651814584541184
+    m_Key: wave.tile_choice.header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105651814626484224
+    m_Key: wave.tile_choice.summary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105653631762554880
+    m_Key: wave.tile_choice.previous
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105653631817080832
+    m_Key: wave.tile_choice.next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105653631817080833
+    m_Key: wave.tile_choice.submit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 105653631817080834
+    m_Key: wave.tile_choice.cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 106250247561273344
+    m_Key: wave.info.last_result
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

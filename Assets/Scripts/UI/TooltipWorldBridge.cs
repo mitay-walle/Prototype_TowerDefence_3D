@@ -152,10 +152,13 @@ namespace TD.UI
 
 		private void OnDestroy()
 		{
-			if (proxyRect != null)
-			{
+			if (proxyRect == null)
+				return;
+
+			if (Application.isPlaying)
 				Destroy(proxyRect.gameObject);
-			}
+			else
+				DestroyImmediate(proxyRect.gameObject);
 		}
 
 		private void OnDisable()

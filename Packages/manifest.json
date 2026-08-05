@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.1.0",
     "com.cqf.urpoutline": "https://github.com/CristianQiu/Unity-URP-Outline.git",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#",
     "com.matthewminer.consolation": "https://github.com/mminer/consolation.git",
@@ -31,6 +31,7 @@
     "com.unity.ide.rider": "3.0.40",
     "com.unity.inputsystem": "1.18.0",
     "com.unity.localization": "1.5.12",
+    "com.unity.ml-agents": "4.0.0",
     "com.unity.probuilder": "6.0.9",
     "com.unity.recorder": "5.1.6",
     "com.unity.render-pipelines.universal": "17.3.0",

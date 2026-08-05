@@ -1,0 +1,181 @@
+{
+    "TD3DAgent": {
+        "checkpoints": [
+            {
+                "steps": 58009,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-58009.onnx",
+                "reward": -3.5315705239772797,
+                "creation_time": 1785894336.8297055,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-58009.pt"
+                ]
+            },
+            {
+                "steps": 59417,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-59417.onnx",
+                "reward": null,
+                "creation_time": 1785894542.8500113,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-59417.pt"
+                ]
+            },
+            {
+                "steps": 85017,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-85017.onnx",
+                "reward": null,
+                "creation_time": 1785896161.6090803,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-85017.pt"
+                ]
+            },
+            {
+                "steps": 96921,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-96921.onnx",
+                "reward": null,
+                "creation_time": 1785897717.2905838,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-96921.pt"
+                ]
+            },
+            {
+                "steps": 110568,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-110568.onnx",
+                "reward": null,
+                "creation_time": 1785898562.5130944,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-110568.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 110568,
+            "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DAgent.onnx",
+            "reward": null,
+            "creation_time": 1785898562.5130944,
+            "auxillary_file_paths": [
+                "results\\td3d-three-agent-20260805-r3\\TD3DAgent\\TD3DAgent-110568.pt"
+            ]
+        }
+    },
+    "TD3DEnemyLevelAgent": {
+        "checkpoints": [
+            {
+                "steps": 58521,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-58521.onnx",
+                "reward": null,
+                "creation_time": 1785894336.6894999,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-58521.pt"
+                ]
+            },
+            {
+                "steps": 59993,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-59993.onnx",
+                "reward": null,
+                "creation_time": 1785894543.0037847,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-59993.pt"
+                ]
+            },
+            {
+                "steps": 85657,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-85657.onnx",
+                "reward": null,
+                "creation_time": 1785896161.4863255,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-85657.pt"
+                ]
+            },
+            {
+                "steps": 97625,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-97625.onnx",
+                "reward": null,
+                "creation_time": 1785897717.2218225,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-97625.pt"
+                ]
+            },
+            {
+                "steps": 111336,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-111336.onnx",
+                "reward": null,
+                "creation_time": 1785898562.3857965,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-111336.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 111336,
+            "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent.onnx",
+            "reward": null,
+            "creation_time": 1785898562.3857965,
+            "auxillary_file_paths": [
+                "results\\td3d-three-agent-20260805-r3\\TD3DEnemyLevelAgent\\TD3DEnemyLevelAgent-111336.pt"
+            ]
+        }
+    },
+    "TD3DBalanceAgent": {
+        "checkpoints": [
+            {
+                "steps": 58521,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-58521.onnx",
+                "reward": null,
+                "creation_time": 1785894336.761582,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-58521.pt"
+                ]
+            },
+            {
+                "steps": 59993,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-59993.onnx",
+                "reward": null,
+                "creation_time": 1785894543.0734375,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-59993.pt"
+                ]
+            },
+            {
+                "steps": 85657,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-85657.onnx",
+                "reward": null,
+                "creation_time": 1785896161.5493977,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-85657.pt"
+                ]
+            },
+            {
+                "steps": 97625,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-97625.onnx",
+                "reward": null,
+                "creation_time": 1785897717.3658895,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-97625.pt"
+                ]
+            },
+            {
+                "steps": 111336,
+                "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-111336.onnx",
+                "reward": null,
+                "creation_time": 1785898562.447646,
+                "auxillary_file_paths": [
+                    "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-111336.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 111336,
+            "file_path": "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent.onnx",
+            "reward": null,
+            "creation_time": 1785898562.447646,
+            "auxillary_file_paths": [
+                "results\\td3d-three-agent-20260805-r3\\TD3DBalanceAgent\\TD3DBalanceAgent-111336.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.1.1+cpu"
+    }
+}

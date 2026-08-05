@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1785888652",
+        "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "F:\\UnityProjectsSmall\\Prototype_TowerDefence_3D\\MLAgents\\.venv\\Scripts\\mlagents-learn MLAgents/td3d_ppo.yaml --run-id=td3d-two-agent-20260805-r2 --force --timeout-wait=120 --debug",
+        "mlagents_version": "1.1.0",
+        "mlagents_envs_version": "1.1.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.1.1+cpu",
+        "numpy_version": "1.23.5",
+        "end_time_seconds": "1785888775"
+    },
+    "total": 122.46133819999523,
+    "count": 1,
+    "self": 0.005041299998993054,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07264160001068376,
+            "count": 1,
+            "self": 0.07264160001068376
+        },
+        "TrainerController.start_learning": {
+            "total": 122.38365529998555,
+            "count": 1,
+            "self": 9.379995753988624e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 122.38335810002172,
+                    "count": 1,
+                    "self": 122.38335810002172
+                },
+                "TrainerController._save_models": {
+                    "total": 0.00020340000628493726,
+                    "count": 1,
+                    "self": 0.00020340000628493726
+                }
+            }
+        }
+    }
+}

@@ -72,7 +72,10 @@ public class ShadowSorter : MonoBehaviour
                 var existings = FindObjectsOfType<ShadowSorter>();
                 for (int i = existings.Length - 1; i > 0; i--)
                 {
-                    Destroy(existings[i]);
+                    if (Application.isPlaying)
+                        Destroy(existings[i]);
+                    else
+                        DestroyImmediate(existings[i]);
                 }
 
 #if UNITY_EDITOR

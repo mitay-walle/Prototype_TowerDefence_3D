@@ -18,9 +18,24 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 7970266418737536391, guid: 349d5c8d24aafd54e957f2e6bace4131, type: 3}
     count: 7
     spawnDelay: 1
-    healthMultiplier: 1
+    healthMultiplier: 0.8
     speedMultiplier: 1
   delayBeforeWave: 5
   completionReward: 5
   healthScaling: 1
   countScaling: 1
+  generatedByMl: 0
+  generationSeed: 0
+  predictedBaseDamage: 0
+  predictedCombatSeconds: 0
+  appliedAdaptiveEnemyHealthFactor: 1
+  appliedAdaptiveEnemyCountFactor: 1
+  appliedAdaptiveEnemySpeedFactor: 1
+  appliedAdaptiveRewardFactor: 1
+  safetyMargin: 0
+  tensionScore: 0
+  lastEvaluationScore: 0
+  lastObservedBaseHealthFraction: 0
+  evaluationCount: 0
+  lastEvaluationVictory: 0
+  lastEvaluationDefeat: 0

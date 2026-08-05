@@ -16,21 +16,31 @@ MonoBehaviour:
   waveNumber: 2
   enemySpawns:
   - enemyPrefab: {fileID: 7970266418737536391, guid: 349d5c8d24aafd54e957f2e6bace4131, type: 3}
-    count: 9
+    count: 8
     spawnDelay: 1
     healthMultiplier: 1.1
     speedMultiplier: 1.1
   - enemyPrefab: {fileID: 4039716555362393745, guid: cfb6eac0b4687af4488391516e2a026c, type: 3}
-    count: 5
+    count: 4
     spawnDelay: 2
-    healthMultiplier: 1
-    speedMultiplier: 1
-  - enemyPrefab: {fileID: 133989316118575833, guid: ac454eafc7839444cae9d2999544433f, type: 3}
-    count: 1
-    spawnDelay: 0.5
     healthMultiplier: 1
     speedMultiplier: 1
   delayBeforeWave: 5
   completionReward: 75
-  healthScaling: 1.15
-  countScaling: 1.1
+  healthScaling: 0.9
+  countScaling: 1
+  generatedByMl: 0
+  generationSeed: 0
+  predictedBaseDamage: 0
+  predictedCombatSeconds: 0
+  appliedAdaptiveEnemyHealthFactor: 1
+  appliedAdaptiveEnemyCountFactor: 1
+  appliedAdaptiveEnemySpeedFactor: 1
+  appliedAdaptiveRewardFactor: 1
+  safetyMargin: 0
+  tensionScore: 0
+  lastEvaluationScore: 0
+  lastObservedBaseHealthFraction: 0
+  evaluationCount: 0
+  lastEvaluationVictory: 0
+  lastEvaluationDefeat: 0

@@ -42,7 +42,8 @@ namespace TD.Levels
         {
             connections = generator.GetComponent<RoadTileComponent>().GetConnections();
             base.Generate(generator);
-            ClearMeshes(generator.transform.parent ?? generator.transform);
+            var tileRoot = generator.transform;
+            ClearMeshes(tileRoot);
 
             var parts = new Part[2];
 
@@ -51,7 +52,7 @@ namespace TD.Levels
 
             foreach (var part in parts)
             {
-                GeneratePart(generator, part, generator.transform.parent ?? generator.transform, Vector3.zero);
+                GeneratePart(generator, part, tileRoot, Vector3.zero);
             }
         }
 
@@ -125,10 +126,10 @@ namespace TD.Levels
             if (x == RoadCellIndex && z > RoadCellIndex && connections.HasConnection(RoadSide.North))
                 return true;
 
-            if (x < RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.East))
+            if (x < RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.West))
                 return true;
 
-            if (x > RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.West))
+            if (x > RoadCellIndex && z == RoadCellIndex && connections.HasConnection(RoadSide.East))
                 return true;
 
             return false;

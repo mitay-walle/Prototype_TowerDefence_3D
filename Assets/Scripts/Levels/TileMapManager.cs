@@ -16,6 +16,7 @@ namespace TD.Levels
 		private List<Vector3> spawnPositions = new();
 
 		public Vector3 BasePosition => basePosition;
+		public float TileSize => tileSize;
 		public List<Vector3> SpawnPositions => spawnPositions;
 
 		public Vector2Int WorldToGrid(Vector3 worldPosition)
@@ -91,12 +92,25 @@ namespace TD.Levels
 		{
 			basePosition = Vector3.zero;
 			spawnPositions.Clear();
+			validator.AddBaseTile(Vector2Int.zero, new RoadTileDef
+			{
+				position = Vector2Int.zero,
+				rotation = 0,
+				name = "Base",
+				connections = RoadConnections.North | RoadConnections.South | RoadConnections.East | RoadConnections.West
+			});
 
 			if (Logs) Debug.Log($"[TileMapManager] Base position initialized at {basePosition}");
 		}
 
 		public void PlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation, GameObject prefab)
 		{
+			if (gridPosition == Vector2Int.zero && validator.GetTile(gridPosition).HasValue && !placedTiles.ContainsKey(gridPosition))
+			{
+				PlaceTilePrefab(gridPosition, tileDef, rotation, prefab);
+				return;
+			}
+
 			if (!PlaceTileLogic(gridPosition, tileDef, rotation))
 				return;
 
@@ -126,15 +140,21 @@ namespace TD.Levels
 		{
 			GameObject tileInstance = Instantiate(prefab, tilesParent);
 			tileInstance.name = $"Tile_{gridPosition.x}_{gridPosition.y}";
+			tileInstance.transform.position = GridToWorld(gridPosition);
+			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
 
 			var roadTileComponent = tileInstance.GetComponent<RoadTileComponent>();
 			if (roadTileComponent != null)
 			{
-				roadTileComponent.Initialize(tileDef.GetRotatedConnections(rotation));
+				roadTileComponent.Initialize(tileDef.connections);
 			}
 
-			tileInstance.transform.position = GridToWorld(gridPosition);
-			tileInstance.transform.rotation = Quaternion.Euler(0, rotation * 90, 0);
+			var voxelGenerator = tileInstance.GetComponent<TD.Voxels.VoxelGenerator>();
+			if (voxelGenerator != null)
+			{
+				voxelGenerator.profile = new LevelTileGenerationProfile();
+				voxelGenerator.Generate();
+			}
 			placedTiles[gridPosition] = tileInstance;
 
 			UpdateSpawnerPositions();
@@ -159,45 +179,7 @@ namespace TD.Levels
 		private void UpdateSpawnerPositions()
 		{
 			spawnPositions.Clear();
-
-			var allTiles = validator.GetAllTiles();
-			var tilesSet = new System.Collections.Generic.HashSet<Vector2Int>(allTiles.Keys);
-			var spawnPointsSet = new System.Collections.Generic.HashSet<Vector3>();
-
-			foreach (var kvp in allTiles)
-			{
-				var position = kvp.Key;
-				var tileDef = kvp.Value;
-
-				if (tileDef.name == null || position == Vector2Int.zero) continue;
-
-				int rotation = validator.GetTileRotation(position);
-				var connections = tileDef.GetRotatedConnections(rotation);
-
-				bool hasOpenEdge = false;
-
-				if (connections.HasConnection(RoadSide.North) && !tilesSet.Contains(position + Vector2Int.up))
-					hasOpenEdge = true;
-
-				if (connections.HasConnection(RoadSide.South) && !tilesSet.Contains(position + Vector2Int.down))
-					hasOpenEdge = true;
-
-				if (connections.HasConnection(RoadSide.East) && !tilesSet.Contains(position + Vector2Int.right))
-					hasOpenEdge = true;
-
-				if (connections.HasConnection(RoadSide.West) && !tilesSet.Contains(position + Vector2Int.left))
-					hasOpenEdge = true;
-
-				if (hasOpenEdge)
-				{
-					var spawnPos = GridToWorld(position);
-
-					if (spawnPointsSet.Add(spawnPos))
-					{
-						spawnPositions.Add(spawnPos);
-					}
-				}
-			}
+			spawnPositions.AddRange(CollectSpawnPositions(validator.GetAllTiles(), GetTileRotations()));
 
 			if (spawnPositions.Count == 0)
 			{
@@ -205,6 +187,84 @@ namespace TD.Levels
 			}
 
 			if (Logs) Debug.Log($"[TileMapManager] Updated spawner positions: {spawnPositions.Count} dead-end points");
+		}
+
+		public List<Vector3> GetSpawnPositionsAfter(TilePlacementChoice choice)
+		{
+			if (!choice.IsValid)
+				return new List<Vector3>();
+
+			var tiles = new Dictionary<Vector2Int, RoadTileDef>(validator.GetAllTiles());
+			var rotations = GetTileRotations();
+			tiles[choice.GridPosition] = choice.TileDefinition;
+			rotations[choice.GridPosition] = choice.Rotation;
+			return CollectSpawnPositions(tiles, rotations);
+		}
+
+		private Dictionary<Vector2Int, int> GetTileRotations()
+		{
+			var rotations = new Dictionary<Vector2Int, int>();
+			foreach (var tile in validator.GetAllTiles())
+				rotations[tile.Key] = validator.GetTileRotation(tile.Key);
+
+			return rotations;
+		}
+
+		private List<Vector3> CollectSpawnPositions(
+			IReadOnlyDictionary<Vector2Int, RoadTileDef> allTiles,
+			IReadOnlyDictionary<Vector2Int, int> rotations)
+		{
+			var spawnPositions = new List<Vector3>();
+			var tilesSet = new HashSet<Vector2Int>(allTiles.Keys);
+			var spawnPointsSet = new HashSet<Vector3>();
+
+			foreach (var kvp in allTiles)
+			{
+				var position = kvp.Key;
+				var tileDef = kvp.Value;
+
+				if (tileDef.name == null || position == Vector2Int.zero)
+					continue;
+
+				var rotation = rotations.TryGetValue(position, out var storedRotation) ? storedRotation : 0;
+				var connections = tileDef.GetRotatedConnections(rotation);
+				foreach (RoadSide side in System.Enum.GetValues(typeof(RoadSide)))
+				{
+					if (!connections.HasConnection(side) || tilesSet.Contains(position + GetGridDirection(side)))
+						continue;
+
+					var spawnPosition = GridToWorld(position) +
+						GetWorldDirection(side) * Mathf.Max(0f, tileSize * 0.5f - 0.5f);
+					if (spawnPointsSet.Add(spawnPosition))
+						spawnPositions.Add(spawnPosition);
+				}
+			}
+
+			return spawnPositions;
+		}
+
+		private static Vector2Int GetGridDirection(RoadSide side)
+		{
+			return side switch
+			{
+				RoadSide.North => Vector2Int.up,
+				RoadSide.South => Vector2Int.down,
+				RoadSide.East => Vector2Int.right,
+				RoadSide.West => Vector2Int.left,
+				_ => Vector2Int.zero
+			};
+		}
+
+		private static Vector3 GetWorldDirection(RoadSide side)
+		{
+			return side switch
+			{
+				RoadSide.North => Vector3.forward,
+				RoadSide.South => Vector3.back,
+				RoadSide.East => Vector3.right,
+				RoadSide.West => Vector3.left,
+				_ => Vector3.zero
+			};
 		}
 
 		public bool CanPlaceTile(Vector2Int gridPosition, RoadTileDef tileDef, int rotation)
@@ -222,6 +282,12 @@ namespace TD.Levels
 		{
 			return validator.GetAllTiles();
 		}
+
+		public bool ValidateTopology(out string reason)
+		{
+			return validator.ValidateTopology(Vector2Int.zero, out reason);
+		}
+
 
 		public List<TilePlacementChoice> BuildPlacementChoices(IReadOnlyList<RoadTileComponent> tilePrefabs, int minimumOptions)
 		{
@@ -271,14 +337,78 @@ namespace TD.Levels
 							openRoadEndsBefore,
 							openRoadEndsAfter,
 							affectedOpenRoadEnds));
-
-						if (choices.Count >= minimumOptions)
-							return choices;
 					}
 				}
 			}
 
-			return choices;
+			return SelectMeaningfulPlacementChoices(choices, minimumOptions);
+		}
+
+		private List<TilePlacementChoice> SelectMeaningfulPlacementChoices(List<TilePlacementChoice> candidates, int minimumOptions)
+		{
+			candidates.Sort(ComparePlacementChoices);
+			var selected = new List<TilePlacementChoice>(minimumOptions);
+			var selectedOutcomeCounts = new HashSet<int>();
+
+			for (var i = 0; i < candidates.Count && selected.Count < minimumOptions; i++)
+			{
+				var candidate = candidates[i];
+				if (selectedOutcomeCounts.Add(candidate.OpenRoadEndCountAfter))
+					selected.Add(candidate);
+			}
+
+			for (var i = 0; i < candidates.Count && selected.Count < minimumOptions; i++)
+			{
+				var candidate = candidates[i];
+				if (ContainsPlacementChoice(selected, candidate))
+					continue;
+
+				selected.Add(candidate);
+			}
+
+			if (Logs)
+				Debug.Log($"[TileMapManager] Selected {selected.Count} meaningful tile choices from {candidates.Count} valid candidates");
+
+			return selected;
+		}
+
+		private static int ComparePlacementChoices(TilePlacementChoice left, TilePlacementChoice right)
+		{
+			var comparison = left.OpenRoadEndCountAfter.CompareTo(right.OpenRoadEndCountAfter);
+			if (comparison != 0)
+				return comparison;
+
+			comparison = left.AffectedOpenRoadEnds.Count.CompareTo(right.AffectedOpenRoadEnds.Count);
+			if (comparison != 0)
+				return comparison;
+
+			comparison = right.ConnectedNeighborCount.CompareTo(left.ConnectedNeighborCount);
+			if (comparison != 0)
+				return comparison;
+
+			comparison = left.GridPosition.x.CompareTo(right.GridPosition.x);
+			if (comparison != 0)
+				return comparison;
+
+			comparison = left.GridPosition.y.CompareTo(right.GridPosition.y);
+			if (comparison != 0)
+				return comparison;
+
+			comparison = string.CompareOrdinal(left.TileName, right.TileName);
+			return comparison != 0 ? comparison : left.Rotation.CompareTo(right.Rotation);
+		}
+
+		private static bool ContainsPlacementChoice(List<TilePlacementChoice> choices, TilePlacementChoice candidate)
+		{
+			for (var i = 0; i < choices.Count; i++)
+			{
+				var choice = choices[i];
+				if (choice.GridPosition == candidate.GridPosition && choice.Rotation == candidate.Rotation &&
+					choice.TileName == candidate.TileName)
+					return true;
+			}
+
+			return false;
 		}
 
 		public List<Vector2Int> GetOpenRoadEnds()

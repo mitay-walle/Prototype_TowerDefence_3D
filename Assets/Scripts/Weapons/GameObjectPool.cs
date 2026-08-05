@@ -32,12 +32,32 @@ namespace TD.Weapons
 					copy.AddComponent<PrefabSource>().SourcePrefab = prefab;
 
 					return copy;
-				}, copy => copy.SetActive(true), copy => copy.SetActive(false), Object.Destroy);
+				}, copy =>
+				{
+					if (copy)
+						copy.SetActive(true);
+				}, copy => copy.SetActive(false), DestroyPooledObject);
 
 				_pools.Add(prefab, pool);
 			}
 
+			var instance = pool.Get();
+			if (instance)
+				return instance;
+
+			pool.Clear();
 			return pool.Get();
+		}
+
+		private static void DestroyPooledObject(GameObject copy)
+		{
+			if (!copy)
+				return;
+
+			if (Application.isPlaying)
+				Object.Destroy(copy);
+			else
+				Object.DestroyImmediate(copy);
 		}
 
 		public void Return(GameObject instance)

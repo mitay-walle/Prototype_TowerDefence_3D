@@ -37,6 +37,23 @@ Before calling gameplay work complete, check whether the slice has enough player
 - Feedback is attached to the real gameplay owner or authored asset, not duplicated through fallback state, rescue paths, or scene-wide shortcuts.
 - Quiet or sparse moments are intentional pacing choices, not missing implementation.
 
+## Gameplay Object Completeness Gate
+
+Before calling any gameplay object complete, require a complete project representation across the authored content and its runtime handoffs:
+
+- code logic and an explicit runtime behavior owner;
+- `runtime-values` and runtime state;
+- `save-state`, including save and restore behavior;
+- `settings-values` and authoring configuration;
+- 3D gameplay representation plus a UI icon made by rendering the 3D representation to a sprite;
+- inclusion in all applicable lists and databases;
+- localized name, localized artistic description, and localized gameplay tooltip;
+- SFX, VFX, and 3D graphics;
+- input or a UI window when intended by design, with every player input supporting rebinding;
+- an explicit lifecycle covering creation, registration, activation, use, deactivation, destruction, save, and load at the applicable stages.
+
+Track a concrete owner, path, reference, and verification status for every surface. Every surface is required; when a surface other than the conditional input/UI window is genuinely not applicable, record that design decision explicitly instead of silently omitting it. Route implementation details through the existing specialist handoffs and preserve the real owner chain without duplicate managers, bridges, fallback state, or parallel registries.
+
 ## UI Boundary
 
 Do not own broad UI design or standalone UI prefab implementation. Gameplay design must define what the player needs to understand, when feedback is missing, and where pacing/readability breaks; UI structure and implementation belong to `ui-designer.md` unless the task explicitly asks this agent to author UI through the matching UI skills.

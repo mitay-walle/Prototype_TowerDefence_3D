@@ -33,6 +33,22 @@ namespace TD.GameLoop
         [Tooltip("Multiplier for enemy count based on difficulty")]
         [SerializeField] private float countScaling = 1f;
 
+        [SerializeField] private bool generatedByMl;
+        [SerializeField] private int generationSeed;
+        [SerializeField] private float predictedBaseDamage;
+        [SerializeField] private float predictedCombatSeconds;
+        [SerializeField] private float appliedAdaptiveEnemyHealthFactor = 1f;
+        [SerializeField] private float appliedAdaptiveEnemyCountFactor = 1f;
+        [SerializeField] private float appliedAdaptiveEnemySpeedFactor = 1f;
+        [SerializeField] private float appliedAdaptiveRewardFactor = 1f;
+        [SerializeField] private float safetyMargin;
+        [SerializeField] private float tensionScore;
+        [SerializeField] private float lastEvaluationScore;
+        [SerializeField] private float lastObservedBaseHealthFraction;
+        [SerializeField] private int evaluationCount;
+        [SerializeField] private bool lastEvaluationVictory;
+        [SerializeField] private bool lastEvaluationDefeat;
+
         public string WaveName => waveName;
         public int WaveNumber => waveNumber;
         public List<EnemySpawnData> EnemySpawns => enemySpawns;
@@ -40,6 +56,21 @@ namespace TD.GameLoop
         public int CompletionReward => completionReward;
         public float HealthScaling => healthScaling;
         public float CountScaling => countScaling;
+        public bool GeneratedByMl => generatedByMl;
+        public int GenerationSeed => generationSeed;
+        public float PredictedBaseDamage => predictedBaseDamage;
+        public float PredictedCombatSeconds => predictedCombatSeconds;
+        public float AppliedAdaptiveEnemyHealthFactor => appliedAdaptiveEnemyHealthFactor;
+        public float AppliedAdaptiveEnemyCountFactor => appliedAdaptiveEnemyCountFactor;
+        public float AppliedAdaptiveEnemySpeedFactor => appliedAdaptiveEnemySpeedFactor;
+        public float AppliedAdaptiveRewardFactor => appliedAdaptiveRewardFactor;
+        public float SafetyMargin => safetyMargin;
+        public float TensionScore => tensionScore;
+        public float LastEvaluationScore => lastEvaluationScore;
+        public float LastObservedBaseHealthFraction => lastObservedBaseHealthFraction;
+        public int EvaluationCount => evaluationCount;
+        public bool LastEvaluationVictory => lastEvaluationVictory;
+        public bool LastEvaluationDefeat => lastEvaluationDefeat;
 
         public int GetTotalEnemyCount()
         {
@@ -49,6 +80,81 @@ namespace TD.GameLoop
                 total += spawn.count;
             }
             return total;
+        }
+
+        public static WaveConfig CreateGenerated(
+            string generatedWaveName,
+            int generatedWaveNumber,
+            List<EnemySpawnData> generatedSpawns,
+            float generatedDelayBeforeWave,
+            int generatedCompletionReward,
+            float generatedHealthScaling,
+            float generatedCountScaling,
+            int seed,
+            float predictedDamage,
+            float generatedSafetyMargin,
+            float generatedTensionScore,
+            float generatedPredictedCombatSeconds = 0f,
+            float generatedAdaptiveEnemyHealthFactor = 1f,
+            float generatedAdaptiveEnemyCountFactor = 1f,
+            float generatedAdaptiveEnemySpeedFactor = 1f,
+            float generatedAdaptiveRewardFactor = 1f)
+        {
+            if (generatedSpawns == null || generatedSpawns.Count == 0)
+                return null;
+
+            var generatedWave = CreateInstance<WaveConfig>();
+            generatedWave.name = generatedWaveName;
+            generatedWave.waveName = generatedWaveName;
+            generatedWave.waveNumber = Mathf.Max(1, generatedWaveNumber);
+            generatedWave.delayBeforeWave = Mathf.Max(0f, generatedDelayBeforeWave);
+            generatedWave.completionReward = Mathf.Max(0, generatedCompletionReward);
+            generatedWave.healthScaling = Mathf.Max(0.1f, generatedHealthScaling);
+            generatedWave.countScaling = Mathf.Max(0.1f, generatedCountScaling);
+            generatedWave.generatedByMl = true;
+            generatedWave.generationSeed = seed;
+            generatedWave.predictedBaseDamage = Mathf.Max(0f, predictedDamage);
+            generatedWave.predictedCombatSeconds = Mathf.Max(0f, generatedPredictedCombatSeconds);
+            generatedWave.appliedAdaptiveEnemyHealthFactor = Mathf.Max(0f, generatedAdaptiveEnemyHealthFactor);
+            generatedWave.appliedAdaptiveEnemyCountFactor = Mathf.Max(0f, generatedAdaptiveEnemyCountFactor);
+            generatedWave.appliedAdaptiveEnemySpeedFactor = Mathf.Max(0f, generatedAdaptiveEnemySpeedFactor);
+            generatedWave.appliedAdaptiveRewardFactor = Mathf.Max(0f, generatedAdaptiveRewardFactor);
+            generatedWave.safetyMargin = generatedSafetyMargin;
+            generatedWave.tensionScore = Mathf.Clamp01(generatedTensionScore);
+
+            foreach (var spawn in generatedSpawns)
+            {
+                if (spawn == null || spawn.enemyPrefab == null)
+                    continue;
+
+                generatedWave.enemySpawns.Add(new EnemySpawnData
+                {
+                    enemyPrefab = spawn.enemyPrefab,
+                    count = Mathf.Max(1, spawn.count),
+                    spawnDelay = Mathf.Max(0f, spawn.spawnDelay),
+                    healthMultiplier = Mathf.Max(0f, spawn.healthMultiplier),
+                    speedMultiplier = Mathf.Max(0f, spawn.speedMultiplier)
+                });
+            }
+
+            return generatedWave.enemySpawns.Count > 0 ? generatedWave : null;
+        }
+
+        public void RecordGenerationEvaluation(float score, float observedBaseHealthFraction, bool victory, bool defeat)
+        {
+            lastEvaluationScore = score;
+            lastObservedBaseHealthFraction = observedBaseHealthFraction;
+            lastEvaluationVictory = victory;
+            lastEvaluationDefeat = defeat;
+            evaluationCount++;
+
+#if UNITY_EDITOR
+            if (UnityEditor.AssetDatabase.Contains(this))
+            {
+                UnityEditor.EditorUtility.SetDirty(this);
+                UnityEditor.AssetDatabase.SaveAssets();
+            }
+#endif
         }
 
         [Button("Create Next Wave")]
